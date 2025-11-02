@@ -1,0 +1,125 @@
+<!--Este perfil tiene el máximo acceso, ya que necesita
+supervisar todas las operaciones, aprobar precios y generar reportes financieros -->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AUTOS AMISTOSOS - Administrador</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        /* Estilos personalizados para simular el look del encabezado y el texto grande */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa; /* Fondo claro de Bootstrap */
+        }
+        .navbar-custom {
+            /* Simular un navbar simple o solo pestañas */
+            border-bottom: 1px solid #dee2e6;
+        }
+        .welcome-header {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #343a40;
+            margin-top: 20px;
+        }
+        .info-box {
+            border: 1px solid #adb5bd;
+            padding: 15px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .control-panel table {
+            text-align: center;
+        }
+        .control-panel th {
+            font-weight: bold;
+            background-color: #e9ecef;
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-light bg-white navbar-custom">
+        <div class="container-fluid">
+            <a class="navbar-brand text-dark fw-bold" href="#">AUTOS AMISTOSOS</a>
+            
+            <ul class="nav nav-tabs border-0 mx-auto">
+                <li class="nav-item"><a class="nav-link text-dark" href="#">Gestión de Datos</a></li>
+                <li class="nav-item"><a class="nav-link text-dark" href="#">Finanzas</a></li>
+                <li class="nav-item"><a class="nav-link text-dark" href="#">Configuración</a></li>
+                <li class="nav-item"><a class="nav-link text-dark" href="#">Reportes</a></li>
+                <li class="nav-item"><a class="nav-link text-dark" href="#">Análisis</a></li>
+            </ul>
+
+            <div class="d-flex align-items-center">
+                <span class="navbar-text me-3">
+                    Bienvenido *empleado_Administrador*
+                </span>
+                <a class="btn btn-outline-secondary btn-sm" href="#">Cerrar Sesion</a>
+                <span class="ms-2">👤</span> </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        
+        <div class="text-center mb-4">
+            <div class="welcome-header">
+                Bienvenido Administrador
+            </div>
+            <div class="info-box bg-light">
+                Esta es tu página principal. Aquí puedes encontrar información y herramientas útiles.
+            </div>
+        </div>
+        
+        <h2 class="text-center mb-3">Panel de Control</h2>
+        
+        <div class="control-panel">
+            <table class="table table-bordered bg-white shadow-sm">
+                <thead>
+                    <tr>
+                        <th scope="col"></th>
+                        <th scope="col">Empleado</th>
+                        <th scope="col">Cliente</th>
+                        <th scope="col">Proveedor</th>
+                        <th scope="col">Inventario</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <th scope="row">Altas</th>
+                        <td><a href="./ABCC_Administrador_Empleado/Altas_Empleado.html" class="btn btn-link p-0">Registrar Empleado</a></td>
+                        <td><a href="#" class="btn btn-link p-0">Registrar Cliente</a></td>
+                        <td><a href="#" class="btn btn-link p-0">Registrar Proveedor</a></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Bajas</th>
+                        <td><a href="#" class="btn btn-link p-0 text-danger">Eliminar Empleado</a></td>
+                        <td><a href="#" class="btn btn-link p-0 text-danger">Eliminar Cliente</a></td>
+                        <td><a href="#" class="btn btn-link p-0 text-danger">Eliminar Proveedor</a></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Cambios</th>
+                        <td><a href="#" class="btn btn-link p-0">Actualizar información de Empleado</a></td>
+                        <td><a href="#" class="btn btn-link p-0">Actualizar información de Cliente</a></td>
+                        <td><a href="#" class="btn btn-link p-0">Modificar detalles de Proveedor</a></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Consultas</th>
+                        <td><a href="#" class="btn btn-link p-0">Buscar información Empleado</a></td>
+                        <td><a href="#" class="btn btn-link p-0">Buscar información Cliente</a></td>
+                        <td><a href="#" class="btn btn-link p-0">Buscar información Proveedor</a></td>
+                        <td><a href="#" class="btn btn-link p-0">Verificar estado de Inventario</a></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
