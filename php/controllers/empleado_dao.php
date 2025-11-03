@@ -1,5 +1,5 @@
 <?php
-include_once('../../database/conexion_bdd_autos_amistosos.php');
+include_once(__DIR__ . '../../database/conexion_bdd_autos_amistosos.php');
 
 class EmpleadoDAO{
     private $conexion;
@@ -57,6 +57,65 @@ public function  mostrarAlumno (){
 
 }
 */
+  public function mostrarEmpleado($filtro){
+            //$sql = "SELECT * FROM alumnos";
+            $sql = "SELECT ID_Empleado, Nombre, Primer_Apellido,Segundo_Apellido, ID_Puesto
+             FROM empleados";
+            
+            return mysqli_query($this->conexion->getConexion(), $sql);
+        }
+
+public function eliminarEmpleado($ID_Empleado){
+    $sql = "DELETE FROM empleados WHERE ID_Empleado ='$ID_Empleado'";
+    return mysqli_query($this ->conexion->getConexion(), $sql);
+}
+
+public function getEmpleadoByID($id_empleado) {
+    $conn = $this->conexion->getConexion();
+    
+    // Consulta segura para buscar un solo empleado por su ID
+    $sql = "SELECT ID_Empleado, Nombre, Primer_Apellido, Segundo_Apellido, ID_Puesto 
+            FROM EMPLEADOS 
+            WHERE ID_Empleado = ?"; 
+
+    $stmt = $conn->prepare($sql);
+
+    // Bind: 'i' porque ID_Empleado es un entero
+    $stmt->bind_param("i", $id_empleado); 
+
+    $stmt->execute();
+    
+    // Devolvemos el resultado para que el script de edición lo use
+    return $stmt->get_result(); 
+}
+
+
+// En EmpleadoDAO.php
+
+public function actualizarEmpleado($id, $nombre, $primerAp, $segundoAp, $idPuesto) {
+    $conn = $this->conexion->getConexion();
+    
+    // Consulta SQL para actualizar los campos
+    $sql = "UPDATE EMPLEADOS 
+            SET Nombre = ?, Primer_Apellido = ?, Segundo_Apellido = ?, ID_Puesto = ?
+            WHERE ID_Empleado = ?";
+
+    $stmt = $conn->prepare($sql);
+
+    if ($stmt === false) {
+        error_log("Error al preparar la consulta de actualización: " . $conn->error);
+        return false;
+    }
+
+    // Vincular parámetros: sssii (tres strings y dos integers, el último es el ID)
+    $stmt->bind_param("sssii", $nombre, $primerAp, $segundoAp, $idPuesto, $id);
+
+    $res = $stmt->execute();
+
+    $stmt->close();
+    
+    return $res;
+}
 
 }
 ?>
