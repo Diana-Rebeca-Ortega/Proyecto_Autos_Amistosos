@@ -1,3 +1,9 @@
+<?php
+  session_start();
+  if(!$_SESSION['usuario_autenticado'])
+    header("location: login.php");
+?>
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -26,7 +32,10 @@
                 <li class="nav-item"><a class="nav-link" href="#">Reportes de Desempeño</a></li>
                 <li class="nav-item"><a class="nav-link" href="#">Configuración</a></li>
                 <li class="nav-item"><a class="nav-link" href="#">Análisis</a></li>
-                <li class="nav-item"><a class="nav-link" href="../../loginEmpleados.html">Cerrar Sesion</a></li>
+                 <form action="../../php/controllers/cerrar_sesion.php">
+   <button class="btn btn-outline-warning" type="submit">CERRAR SESION</button>
+      </form>
+               
             </ul>
         </div>
     </nav>
