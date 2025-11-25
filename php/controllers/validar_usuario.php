@@ -5,17 +5,15 @@ session_start();
 //1. Recepcion de parametros 
 $u = $_POST['usuario'] ?? null;
 $p = $_POST['password'] ?? null;
-$perfil = $_POST['perfil'] ?? null;
 
 //1.5cifrar la contraseña 
 $p_cifrado= sha1($p);
 
 $user_encoded = urlencode($u ?? '');
-$perfil_encoded = urlencode($perfil ?? '');
 
 // 2. Verificación básica de que los campos estén presentes
-if (empty($u) || empty($p) || empty($perfil)) {
-    header("location:../../pages/login/loginEmpleados.php?error=campos_vacios&usuario={$user_encoded}&perfil={$perfil_encoded}");
+if (empty($u) || empty($p) ) {
+    header("location:../../pages/login/loginEmpleados.php?error=campos_vacios&usuario={$user_encoded}");
     exit();
 }
 
@@ -25,7 +23,7 @@ $con = new ConexionBDUsuarios();
 $conexion = $con->getConexion();
 
 if (!$conexion) { // Verifica si la conexión falló
-    header("location:../../pages/login/loginEmpleados.php?error=db_error&usuario={$user_encoded}&perfil={$perfil_encoded}");
+    header("location:../../pages/login/loginEmpleados.php?error=db_error&usuario={$user_encoded}");
     exit();
 }
 
@@ -34,16 +32,16 @@ if (!$conexion) { // Verifica si la conexión falló
 $u_cifrado = ($u);
 $p_cifrado = sha1($p);
 
-// 4a. Primera consulta: ¿Coinciden Usuario, Contraseña Y Perfil?
-$sql = "SELECT  ID_Usuario, Nombre, ID_Puesto FROM usuarios WHERE Usuario = ? AND Password = ? AND Perfil = ?";
+// 4a. Primera consulta: ¿Coinciden Usuario, Contraseña?
+$sql = "SELECT  ID_Usuario, Nombre FROM usuarios WHERE Usuario = ? AND Password = ? ";
 $stmt = $conexion->prepare($sql);
 
 if ($stmt === false) {
-    header("location:../../pages/login/loginEmpleados.php?error=db_error&usuario={$user_encoded}&perfil={$perfil_encoded}");
+    header("location:../../pages/login/loginEmpleados.php?error=db_error&usuario={$user_encoded}");
     exit(); 
 }
 
-$stmt->bind_param("sss", $u_cifrado, $p_cifrado, $perfil);
+$stmt->bind_param("ss", $u_cifrado, $p_cifrado);
 $stmt->execute();
 $res = $stmt->get_result();
 $stmt->close(); // Cierra el primer statement
@@ -57,7 +55,7 @@ if ($res->num_rows == 1) {
     
     $_SESSION['usuario_autenticado'] = true;
     $_SESSION['nombre_usuario'] = $usuario_data['Nombre']; 
-    $_SESSION['ID_Puesto'] = $usuario_data['ID_Puesto']; 
+  
     
     header('location:../../pages/Empleado_Dueño/menuPrincipal_ED.php');
     exit();
@@ -75,7 +73,7 @@ if ($res->num_rows == 1) {
     
     if ($res_user->num_rows == 0) {
         // ERROR ESPECÍFICO: Usuario no existe
-        header("location:../../pages/login/loginEmpleados.php?error=usuario_invalido&usuario={$user_encoded}&perfil={$perfil_encoded}");
+        header("location:../../pages/login/loginEmpleados.php?error=usuario_invalido&usuario={$user_encoded}");
         exit();
     }
 
@@ -90,14 +88,11 @@ if ($res->num_rows == 1) {
 
     if ($res_up->num_rows == 0) {
         // ERROR ESPECÍFICO: Contraseña INCORRECTA
-        header("location:../../pages/login/loginEmpleados.php?error=password_invalida&usuario={$user_encoded}&perfil={$perfil_encoded}");
+        header("location:../../pages/login/loginEmpleados.php?error=password_invalida&usuario={$user_encoded}&");
         exit();
     }
     
-    // Si llega aquí, significa que (Usuario + Contraseña) son CORRECTOS, pero el Perfil seleccionado NO coincide
-    // ERROR ESPECÍFICO: Perfil INCORRECTO
-    header("location:../../pages/login/loginEmpleados.php?error=perfil_invalido&usuario={$user_encoded}&perfil={$perfil_encoded}");
-    exit();
+   
 }
 // La conexión se cierra automáticamente al final del script si no se usa mysqli::close()
 ?>

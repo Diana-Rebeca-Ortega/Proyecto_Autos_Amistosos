@@ -3,104 +3,139 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Autos Amistosos</title>
+    <title>Login Empleados - Autos Amistosos</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    
     <style>
-        /* Estilos básicos para centrar el formulario */
-        body {
-            background-color: #f8f9fa;
+        /* 1. Estilos del Contenedor Principal (Pantalla Completa) */
+        html, body {
+            height: 100%;
+            margin: 0;
+            font-family: 'Arial', sans-serif;
+        }
+        .main-login-wrapper {
+            display: flex; /* Habilita el diseño de dos columnas */
+            height: 100vh; /* Ocupa el 100% de la altura de la vista */
+        }
+
+        /* 2. Estilos del Panel de la Imagen (Izquierda) */
+        .image-panel {
+            flex: 1.5; /* Ocupa más espacio que el panel del formulario (ej. 60%) */
+            background: url('../../images/autorosa.jpg') no-repeat center center;
+            /* **IMPORTANTE:** Cambia 'https://via.placeholder/...' por la URL o ruta local de tu propia imagen. */
+            background-size: cover;
+            position: relative;
+            display: flex;
+            
+        }
+        
+        /* 3. Estilos del Panel del Formulario (Derecha) */
+        .form-panel {
+            flex: 1; /* Ocupa menos espacio que el panel de la imagen (ej. 40%) */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #e0f7fa; /* Un color suave para el fondo del formulario, similar al ejemplo */
         }
         .login-container {
-            max-width: 400px;
-            margin: 100px auto;
-            padding: 30px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            background-color: white;
-            border-radius: 8px;
+            width: 100%;
+            max-width: 380px; /* Ancho máximo para el formulario */
+            padding: 40px;
+            background-color: white; /* El formulario en sí tiene fondo blanco */
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Estilo para el título grande, similar al "Iniciar Sesión" */
+        .login-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1f3a5f; /* Un color oscuro para el título */
+            margin-bottom: 25px;
+            text-align: center;
+        }
+        
+        /* Estilo para el botón */
+        .btn-primary {
+            background-color: #007bff; /* Color azul, puedes usar el color de tu marca */
+            border-color: #007bff;
+        }
+
+        /* 4. Media Queries para Móviles */
+        @media (max-width: 992px) {
+            .image-panel {
+                display: none; /* Oculta la imagen en dispositivos pequeños */
+            }
+            .form-panel {
+                width: 100%;
+                flex: 1;
+            }
         }
     </style>
 </head>
 <body>
     <?php
-// Captura las variables de la URL.
-$usuario_anterior = isset($_GET['usuario']) ? htmlspecialchars($_GET['usuario']) : '';
-$perfil_anterior = isset($_GET['perfil']) ? htmlspecialchars($_GET['perfil']) : '';
-?>
+    // ... (Tu lógica PHP para capturar variables y errores va aquí)
+    $usuario_anterior = isset($_GET['usuario']) ? htmlspecialchars($_GET['usuario']) : '';
+    $perfil_anterior = isset($_GET['perfil']) ? htmlspecialchars($_GET['perfil']) : '';
 
-<?php
-// ... (Bloque para capturar $usuario_anterior y $perfil_anterior es el mismo)
+    if (isset($_GET['error'])) {
+        $error = $_GET['error'];
+        $mensaje = '';
 
-if (isset($_GET['error'])) {
-    $error = $_GET['error'];
-    $mensaje = '';
-
-    if ($error == 'campos_vacios') {
-        $mensaje = '🚨 Por favor, ingresa tu Usuario, Contraseña y selecciona tu Perfil.';
-    } elseif ($error == 'usuario_invalido') {
-        $mensaje = '❌ El **Usuario** ingresado no existe. Inténtalo de nuevo.';
-    } elseif ($error == 'password_invalida') {
-        $mensaje = '❌ **Contraseña** incorrecta. Por favor, verifica tu clave.';
-    } elseif ($error == 'perfil_invalido') {
-        $mensaje = '❌ El **Perfil** seleccionado no coincide con el Usuario/Contraseña.';
-    } elseif ($error == 'db_error') {
-        $mensaje = '⚠️ Error interno del sistema. Inténtalo más tarde.';
+        // ... (lógica PHP para los mensajes de error va aquí)
+        if ($error == 'campos_vacios') { $mensaje = '🚨 Por favor, ingresa tu Usuario, Contraseña.';
+        } elseif ($error == 'usuario_invalido') { $mensaje = '❌ El **Usuario** ingresado no existe. Inténtalo de nuevo.';
+        } elseif ($error == 'password_invalida') { $mensaje = '❌ **Contraseña** incorrecta. Por favor, verifica tu clave.';
+        } elseif ($error == 'db_error') { $mensaje = '⚠️ Error interno del sistema. Inténtalo más tarde.';
+        }
+        
+        // Muestra el mensaje de alerta de Bootstrap
+        if (!empty($mensaje)) {
+            echo '<div class="alert alert-danger alert-dismissible fade show fixed-top m-3" role="alert" style="z-index: 1050;">';
+            echo $mensaje;
+            echo '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>';
+            echo '</div>';
+        }
     }
-    
-    // Muestra el mensaje de alerta de Bootstrap
-    if (!empty($mensaje)) {
-        echo '<div class="alert alert-danger alert-dismissible fade show fixed-top m-3" role="alert" style="z-index: 1050;">';
-        echo $mensaje;
-        echo '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>';
-        echo '</div>';
-    }
-}
-?>
-<div class="login-container">
-    <h2 class="text-center mb-4">Iniciar Sesión</h2>
-    
-   <!-- <form action="../../php/login/validar_login.php" method="POST" novalidate>-->
-    <form action="../../php/controllers/validar_usuario.php" method="POST" novalidate >
-      <div class="mb-3">
-    <label for="perfil" class="form-label">Selecciona tu Perfil</label>
-    <select class="form-select" id="perfil" name="perfil" required>
-        <option disabled value="" <?php echo empty($perfil_anterior) ? 'selected' : ''; ?>>Elegir...</option> 
-        
-        <option value="dueno" <?php echo ($perfil_anterior === 'dueno') ? 'selected' : ''; ?>>Dueño (Jim Amistoso)</option>
-        
-        <option value="administrador" <?php echo ($perfil_anterior === 'administrador') ? 'selected' : ''; ?>>Administrador</option>
-        
-        <option value="vendedor" <?php echo ($perfil_anterior === 'vendedor') ? 'selected' : ''; ?>>Vendedor</option>
-    </select>
-    <div class="invalid-feedback">
-        Por favor, selecciona un perfil.
-    </div>
-</div>
+    ?>
 
-      <div class="mb-3">
-    <label for="usuario" class="form-label">Usuario o Email</label>
-    <input type="text" class="form-control" id="usuario" name="usuario" 
-           autocomplete="username" 
-           value="<?php echo $usuario_anterior; ?>" > <div class="invalid-feedback">
-        Ingresa tu usuario.
-    </div>
-</div>
+    <div class="main-login-wrapper">
+        
+        <div class="image-panel">
+        </div>
 
-        <div class="mb-4">
-            <label for="password" class="form-label">Contraseña</label>
-            <input type="password" class="form-control" id="password" name="password" 
-                  autocomplete="current-password">
-            <div class="invalid-feedback">
-                Ingresa tu contraseña.
+        <div class="form-panel">
+            <div class="login-container">
+                <h2 class="login-title">INICIAR SESIÓN</h2>
+                
+                <form action="../../php/controllers/validar_usuario.php" method="POST" novalidate>
+
+                    <div class="mb-3">
+                        <label for="usuario" class="form-label">Usuario o Email</label>
+                        <input type="text" class="form-control" id="usuario" name="usuario" 
+                               autocomplete="username" 
+                               value="<?php echo $usuario_anterior; ?>" > 
+                        <div class="invalid-feedback">Ingresa tu usuario.</div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="password" class="form-label">Contraseña</label>
+                        <input type="password" class="form-control" id="password" name="password" 
+                               autocomplete="current-password">
+                        <div class="invalid-feedback">Ingresa tu contraseña.</div>
+                    </div>
+
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary btn-lg" id="entrar">Entrar al Sistema</button>
+                    </div>
+                </form>
             </div>
         </div>
+    </div>
 
-        <div class="d-grid">
-            <button type="submit" class="btn btn-primary" id="entrar">Entrar al Sistema</button>
-        </div>
-    </form>
-</div>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
+ 
 </body>
 </html>
