@@ -1,6 +1,4 @@
 <?php
-// Incluimos la clase que contiene la lógica de la base de datos para el cliente.
-// Asegúrate de que esta ruta sea correcta para tu proyecto (Ej: si están en la misma carpeta).
 
 include_once('./clienteDAO.php'); 
 // 1. Inicializa el objeto de la clase Cliente

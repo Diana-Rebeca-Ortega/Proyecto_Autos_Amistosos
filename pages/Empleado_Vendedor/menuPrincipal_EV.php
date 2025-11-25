@@ -61,7 +61,7 @@
                         </tr>
                         <tr>
                             <td class="fw-bold">Bajas</td>
-                            <td><a href="#">Eliminar Cliente</a></td>
+                            <td><a href="../../php/controllers/ABCC_Clientes/formularios/formulario_eliminarCliente.php">Eliminar Cliente</a></td>
                             <td><a href="#">Retirar Vehículo del Inventario</a></td>
                             <td></td>
                         </tr>

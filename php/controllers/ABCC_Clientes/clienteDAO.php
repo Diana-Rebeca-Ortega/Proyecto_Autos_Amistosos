@@ -31,5 +31,31 @@ class ClienteDAO {
         $stmt->close();
         return $res;
     }
+     // ***************** CONSULTAS (C) - Mostrar Todos para las tablas *****************
+    public function obtenerTodos(){
+        $conn = $this->conexion->getConexion();
+        
+        $sql = "SELECT idCliente, Nombre, Apellido1, Apellido2, Direccion, Telefono, Email FROM Cliente";
+        
+        // Usamos query() para una SELECT sin parámetros (es más sencillo)
+        $res = $conn->query($sql);
+        
+        return $res; // Devuelve el objeto mysqli_result
+    }
+// ***************** BAJAS (B) *****************
+    public function eliminar($idCliente){
+        $conn = $this->conexion->getConexion();
+        $sql = "DELETE FROM Cliente WHERE idCliente = ?";
+        $stmt = $conn->prepare($sql);
+        if ($stmt === false) {
+             error_log("Error al preparar la consulta de Baja Cliente: " . $conn->error);
+             return false; 
+        }
+        $stmt->bind_param("i", $idCliente); // i = integer
+        $res = $stmt->execute();
+        $stmt->close();
+        return $res;
+    }
+
 }
 ?>
