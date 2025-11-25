@@ -25,7 +25,7 @@
         <div class="container-fluid">
             <a class="navbar-brand me-5" href="#">AUTOS AMISTOSOS</a>
             <span class="navbar-text me-auto text-white">
-                Bienvenido empleado_Dueño 
+               Bienvenido <?php echo htmlspecialchars($_SESSION['nombre_usuario'] ?? 'Usuario'); ?>
             </span>
             <ul class="navbar-nav">
                 <li class="nav-item"><a class="nav-link" href="#">Info de vntas y finanzas</a></li>

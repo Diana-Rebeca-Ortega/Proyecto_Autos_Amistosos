@@ -67,7 +67,7 @@ if ($res->num_rows == 1) {
         header('location:../../pages/Empleado_Dueño/menuPrincipal_ED.php');
     } elseif ($perfil_usuario === 'vendedor') {
         // Redireccionar al vendedor (usando tu ruta original)
-        header('location:../../pages/Empleado_Vendedor/menuPrincipal_EV.html');
+        header('location:../../pages/Empleado_Vendedor/menuPrincipal_EV.php');
     } 
 
     exit(); // ¡Siempre importante llamar a exit() después de un header Location!

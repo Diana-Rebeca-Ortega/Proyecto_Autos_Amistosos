@@ -1,3 +1,9 @@
+<?php
+  session_start();
+  if(!$_SESSION['usuario_autenticado'])
+    header("location: login.php");
+?>
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -17,7 +23,7 @@
         <div class="container-fluid">
             <a class="navbar-brand me-5" href="#">AUTOS AMISTOSOS</a>
             <span class="navbar-text me-auto text-white">
-                Bienvenido empleado_vendedor 
+                Bienvenido <?php echo htmlspecialchars($_SESSION['nombre_usuario'] ?? 'Usuario'); ?>
             </span>
             <ul class="navbar-nav">
                 <li class="nav-item"><a class="nav-link" href="#">Gestión de ventas</a></li>
@@ -49,7 +55,7 @@
                     <tbody>
                         <tr>
                             <td class="fw-bold">Altas</td>
-                            <td><a href="#">Registrar Cliente</a></td>
+                            <td><a href="../../php/controllers/ABCC_Clientes/formularios/formulario_registrarCliente.php">Registrar Cliente</a></td>
                             <td><a href="#">Agregar Vehículo al Inventario</a></td>
                             <td></td>
                         </tr>
