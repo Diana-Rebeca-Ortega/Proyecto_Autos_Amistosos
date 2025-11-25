@@ -73,7 +73,7 @@
                         </tr>
                         <tr>
                             <td class="fw-bold">Consultas</td>
-                            <td><a href="#">Buscar información Cliente</a></td>
+                             <td><a href="../../php/controllers/ABCC_Clientes/formularios/formulario_consultasCliente.php">Buscar Datos sobre el Cliente</a></td>
                             <td><a href="#">Buscar información Vehículo</a></td>
                             <td><a href="#">Consultar historial de ventas y comisiones</a></td>
                         </tr>

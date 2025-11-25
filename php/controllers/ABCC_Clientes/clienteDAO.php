@@ -102,6 +102,26 @@ class ClienteDAO {
         
         return $res;
     }
-
+public function buscarClientes($termino) {
+    // 1. Obtener la conexión
+    $conn = $this->conexion->getConexion();
+    // 2. Preparar el término de búsqueda para LIKE
+    $like_term = "%" . $termino . "%";
+    // 3. Consulta SQL con búsqueda
+    $sql = "SELECT idCliente, Nombre, Apellido1, Apellido2, Direccion, Telefono, Email 
+            FROM Cliente 
+            WHERE Nombre LIKE ? OR Apellido1 LIKE ? OR Email LIKE ?";
+    $stmt = $conn->prepare($sql);
+    if ($stmt === false) {
+        error_log("Error al preparar la consulta de Búsqueda: " . $conn->error);
+        return false; 
+    }
+    $stmt->bind_param("sss", $like_term, $like_term, $like_term); 
+    
+    $stmt->execute();
+    
+    // Devolver el resultado
+    return $stmt->get_result(); 
+}
 }
 ?>
