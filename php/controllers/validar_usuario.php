@@ -33,7 +33,7 @@ $u_cifrado = ($u);
 $p_cifrado = sha1($p);
 
 // 4a. Primera consulta: ¿Coinciden Usuario, Contraseña?
-$sql = "SELECT  ID_Usuario, Nombre FROM usuarios WHERE Usuario = ? AND Password = ? ";
+$sql = "SELECT ID_Usuario, Nombre, Perfil FROM usuarios WHERE Usuario = ? AND Password = ? ";
 $stmt = $conexion->prepare($sql);
 
 if ($stmt === false) {
@@ -52,14 +52,25 @@ $stmt->close(); // Cierra el primer statement
 if ($res->num_rows == 1) {
     // ÉXITO: Autenticación completa
     $usuario_data = $res->fetch_assoc();
-    
     $_SESSION['usuario_autenticado'] = true;
     $_SESSION['nombre_usuario'] = $usuario_data['Nombre']; 
-  
+    $_SESSION['perfil'] = $usuario_data['Perfil']; // <-- Capturamos el perfil en la sesión
+    // 1. Obtenemos el perfil del usuario
+    $perfil_usuario = $usuario_data['Perfil'];
     
-    header('location:../../pages/Empleado_Dueño/menuPrincipal_ED.php');
-    exit();
-    
+    // 2. Validamos el perfil para direccionar
+    if ($perfil_usuario === 'administrador') {
+        // Redireccionar al administrador
+        header('Location: ../../pages/Empleado_Administrador/menuPrincipal_EA.html');
+    } elseif ($perfil_usuario === 'dueno') {
+        // Redireccionar al dueño (usando tu ruta original)
+        header('location:../../pages/Empleado_Dueño/menuPrincipal_ED.php');
+    } elseif ($perfil_usuario === 'vendedor') {
+        // Redireccionar al vendedor (usando tu ruta original)
+        header('location:../../pages/Empleado_Vendedor/menuPrincipal_EV.html');
+    } 
+
+    exit(); // ¡Siempre importante llamar a exit() después de un header Location!
 } else {
     // FALLO: Hacer verificaciones más detalladas para dar una alerta específica
 
