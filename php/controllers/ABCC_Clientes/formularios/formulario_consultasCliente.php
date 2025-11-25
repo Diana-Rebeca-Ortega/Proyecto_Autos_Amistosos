@@ -106,7 +106,7 @@ $contador = 1;
         }
     ?>
     <div class="text-center mt-4">
-        <a href="../menuPrincipal.php" class="btn btn-secondary">Volver al Menú Principal</a>
+        <a href="../../../../pages/Empleado_Vendedor/menuPrincipal_EV.php" class="btn btn-secondary">Volver al Menú Principal</a>
     </div>
 </div>
 

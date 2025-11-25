@@ -9,16 +9,12 @@ class EmpleadoDAO{
     }
     //METODOS ABCC (CRUD)
     //*****************ALTAS***************** */
-public function agregarEmpleado($nombre, $primerAp, $segundoAp, $idPuesto) {
-    
+ public function agregarEmpleado($nombre, $apellido1, $apellido2, $salario_base, $porcentaje_comision) {   
     // 1. Obtener el objeto de conexión
     $conn = $this->conexion->getConexion();
-
     // 2. Definir la consulta SQL para la tabla EMPLEADOS
-    // Nota: Las columnas deben coincidir con tu diseño. Se asume que ID_Empleado es autoincremental.
-    $sql = "INSERT INTO EMPLEADOS (Nombre, Primer_Apellido, Segundo_Apellido, ID_Puesto) 
-            VALUES (?,?,?,?)";
-
+   $sql = "INSERT INTO Vendedor (Nombre, Apellido1, Apellido2, Salario_Base, Porcentaje_Comisión) 
+        VALUES (?, ?, ?, ?, ?)";
     // 3. Preparar la sentencia
     $stmt = $conn->prepare($sql);
 
@@ -28,45 +24,25 @@ public function agregarEmpleado($nombre, $primerAp, $segundoAp, $idPuesto) {
         error_log("Error al preparar la consulta: " . $conn->error);
         return false; 
     }
-
     // 4. Vincular los parámetros y especificar los tipos (s=string, i=integer)
     // ssst: tres strings (nombre, primer apellido, segundo apellido) y un integer (ID_Puesto)
-    $stmt->bind_param("sssi", $nombre, $primerAp, $segundoAp, $idPuesto);
-
+    $stmt->bind_param('sssdd', $nombre, $apellido1, $apellido2, $salario_base, $porcentaje_comision);
     // 5. Ejecutar la sentencia
     $res = $stmt->execute();
-
     // 6. Cerrar la sentencia
     $stmt->close();
-
     return $res;
 }
-//*****************BAJAS***************** */
-/*
-public function aliminarAlumno($nc){
-    $sql = "DELETE FROM alumnos WHERE Num_Control ='$nc'";
-    return mysqli_query($this ->conexion->getConexion(), $sql);
-}
-//*****************CAMBIOS***************** */
-//*****************CONSULTAS***************** */
-/*
-public function  mostrarAlumno (){
-  //  $sql = "  select * from alumnos ";  no se recomienda
-  $sql = "select  Num_Control, Nombre, Primer_Ap, Segundo_Ap FROM alumnos";
-  return mysqli_query($this-> conexion-> get (conexion(), $sql));
 
-}
-*/
   public function mostrarEmpleado($filtro){
             //$sql = "SELECT * FROM alumnos";
-            $sql = "SELECT ID_Empleado, Nombre, Primer_Apellido,Segundo_Apellido, ID_Puesto
-             FROM empleados";
-            
+           $sql = "SELECT idVendedor, Nombre, Apellido1, Apellido2, Salario_Base, Porcentaje_Comisión
+            FROM Vendedor";
             return mysqli_query($this->conexion->getConexion(), $sql);
         }
 
-public function eliminarEmpleado($ID_Empleado){
-    $sql = "DELETE FROM empleados WHERE ID_Empleado ='$ID_Empleado'";
+public function eliminarEmpleado($id_vendedor){
+    $sql = "DELETE FROM Vendedor WHERE idVendedor ='$id_vendedor'";
     return mysqli_query($this ->conexion->getConexion(), $sql);
 }
 
