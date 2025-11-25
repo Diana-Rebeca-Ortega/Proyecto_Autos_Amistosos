@@ -57,5 +57,51 @@ class ClienteDAO {
         return $res;
     }
 
+       // ***************** CAMBIOS (C) - Obtener por ID *****************
+    public function obtenerPorId($idCliente) {
+        $conn = $this->conexion->getConexion();
+        
+        $sql = "SELECT idCliente, Nombre, Apellido1, Apellido2, Direccion, Telefono, Email 
+                FROM Cliente 
+                WHERE idCliente = ?"; 
+
+        $stmt = $conn->prepare($sql);
+
+        if ($stmt === false) {
+             error_log("Error al preparar la consulta de Obtener Cliente: " . $conn->error);
+             return false; 
+        }
+
+        $stmt->bind_param("i", $idCliente); 
+        $stmt->execute();
+        
+        // Devolvemos el resultado (mysqli_result)
+        return $stmt->get_result(); 
+    }
+
+    // ***************** CAMBIOS (C) - Actualizar *****************
+    public function actualizar($id, $nombre, $apellido1, $apellido2, $direccion, $telefono, $email) {
+        $conn = $this->conexion->getConexion();
+        
+        $sql = "UPDATE Cliente 
+                SET Nombre = ?, Apellido1 = ?, Apellido2 = ?, Direccion = ?, Telefono = ?, Email = ?
+                WHERE idCliente = ?";
+
+        $stmt = $conn->prepare($sql);
+
+        if ($stmt === false) {
+             error_log("Error al preparar la consulta de Actualización Cliente: " . $conn->error);
+             return false;
+        }
+
+        // Vincular parámetros: ssssssi (seis strings y un integer al final para el ID)
+        $stmt->bind_param("ssssssi", $nombre, $apellido1, $apellido2, $direccion, $telefono, $email, $id);
+
+        $res = $stmt->execute();
+        $stmt->close();
+        
+        return $res;
+    }
+
 }
 ?>

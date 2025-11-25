@@ -67,7 +67,7 @@
                         </tr>
                         <tr>
                             <td class="fw-bold">Cambios</td>
-                            <td><a href="#">Actualizar información de Cliente</a></td>
+                                 <td><a href="../../php/controllers/ABCC_Clientes/formularios/formulario_cambiosCliente.php">Actualizar Cliente</a></td>
                             <td><a href="#">Modificar detalles de Vehículo</a></td>
                             <td></td>
                         </tr>

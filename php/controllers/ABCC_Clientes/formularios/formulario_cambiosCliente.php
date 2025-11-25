@@ -22,7 +22,7 @@ $contador = 1;
 <body>
 
 <div class="container">
-    <h2 class="mb-4 text-primary">Eliminar Cliente 👤</h2>
+    <h2 class="mb-4 text-primary">Modificar Cliente 👤</h2>
 </div>
 
 <div class="container">
@@ -57,10 +57,9 @@ $contador = 1;
                         <td>%s</td>
                         <td>%s</td>
                         <td> 
-                             
-                            
-                            <a href=\"../procesar_bajaCliente.php?accion=eliminar&id=%s\" class=\"btn btn-danger btn-sm\"
-                                onclick=\"return confirm('¿Está seguro de ELIMINAR al cliente %s?');\"> Eliminar </a>   
+                           
+                            <a href=\"./actualizacion_formCliente.php?accion=actualizar&id=%s\" class=\"btn btn-warning btn-sm\"
+                            > Modificar </a> 
                         </td>
                     </tr>", 
                     
