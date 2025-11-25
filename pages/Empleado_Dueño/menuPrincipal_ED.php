@@ -71,7 +71,7 @@
                         </tr>
                         <tr>
                             <td class="fw-bold">Cambios</td>
-                            <td><a href="#">Actualizar información de Empleado</a></td>
+                            <td><a href="../../php/formulario_actualizarEmpleado.php">Actualizar información de Empleado</a></td>
                             <td><a href="#">Modificar detalles de Proveedor</a></td>
                             <td></td>
                         </tr>

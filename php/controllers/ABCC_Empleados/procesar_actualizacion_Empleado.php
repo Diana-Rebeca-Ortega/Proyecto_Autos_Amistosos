@@ -10,16 +10,17 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 }
 
 // 2. Validar que el ID del empleado exista, es crucial
-if (!isset($_POST['id_empleado']) || empty($_POST['id_empleado'])) {
+if (!isset($_POST['idVendedor']) || empty($_POST['idVendedor'])) {
     die("Error de seguridad: ID de empleado no proporcionado para la actualización.");
 }
 
 // Captura segura de los datos del formulario
-$id_vendedor       = $_POST['idVendedor']; 
-$nombre            = $_POST['nombre'];
-$apellido1         = $_POST['POST']['apellido1']; 
-$apellido2         = $_POST['POST']['apellido2']; 
-$salario_base      = $_POST['salario_base'];
+// Captura segura de los datos del formulario
+$id_vendedor         = $_POST['idVendedor']; 
+$nombre              = $_POST['nombre'];
+$apellido1           = $_POST['apellido1']; 
+$apellido2           = $_POST['apellido2']; 
+$salario_base        = $_POST['salario_base'];
 $porcentaje_comision = $_POST['porcentaje_comision'];
 
 // 3. Ejecutar la Actualización
@@ -27,13 +28,19 @@ $porcentaje_comision = $_POST['porcentaje_comision'];
 $empleadoDAO = new EmpleadoDAO();
 
 // Llama al método que crearemos en el DAO (actualizarEmpleado)
-$resultado = $empleadoDAO->actualizarEmpleado($id_empleado, $nombre, $primer_apellido, $segundo_apellido, $id_puesto);
-
+$resultado = $empleadoDAO->actualizarEmpleado(
+    $id_vendedor, 
+    $nombre, 
+    $apellido1, 
+    $apellido2, 
+    $salario_base, 
+    $porcentaje_comision 
+);
 // 4. Redirección y Feedback
 // -----------------------------------------------------------------
 if ($resultado) {
     // Éxito: Redirige de vuelta a la lista de empleados
-    header("Location: ../../formulario_dar_baja_empleado.php?status=success_update");
+    header("Location: ../../formulario_actualizarEmpleado.php?status=success_update");
     exit();
 } else {
     // Error: Muestra un mensaje o redirige con un error

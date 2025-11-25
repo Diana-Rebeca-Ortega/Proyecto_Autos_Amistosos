@@ -46,18 +46,17 @@ public function eliminarEmpleado($id_vendedor){
     return mysqli_query($this ->conexion->getConexion(), $sql);
 }
 
-public function getEmpleadoByID($id_empleado) {
+public function getEmpleadoByID($id_vendedor) {
     $conn = $this->conexion->getConexion();
     
-    // Consulta segura para buscar un solo empleado por su ID
-    $sql = "SELECT ID_Empleado, Nombre, Primer_Apellido, Segundo_Apellido, ID_Puesto 
-            FROM EMPLEADOS 
-            WHERE ID_Empleado = ?"; 
+ $sql = "SELECT idVendedor, Nombre, Apellido1, Apellido2, Salario_Base, Porcentaje_Comisión 
+            FROM Vendedor 
+            WHERE idVendedor = ?";
 
     $stmt = $conn->prepare($sql);
 
     // Bind: 'i' porque ID_Empleado es un entero
-    $stmt->bind_param("i", $id_empleado); 
+    $stmt->bind_param("i",$id_vendedor); 
 
     $stmt->execute();
     
@@ -68,13 +67,13 @@ public function getEmpleadoByID($id_empleado) {
 
 // En EmpleadoDAO.php
 
-public function actualizarEmpleado($id, $nombre, $primerAp, $segundoAp, $idPuesto) {
+public function actualizarEmpleado($id, $nombre, $primerAp, $segundoAp, $salarioBase, $porcentajeComision) {
     $conn = $this->conexion->getConexion();
     
-    // Consulta SQL para actualizar los campos
-    $sql = "UPDATE EMPLEADOS 
-            SET Nombre = ?, Primer_Apellido = ?, Segundo_Apellido = ?, ID_Puesto = ?
-            WHERE ID_Empleado = ?";
+    // Consulta SQL: 5 SETs + 1 WHERE = 6 marcadores de posición
+    $sql = "UPDATE Vendedor
+          SET Nombre = ?, Apellido1 = ?, Apellido2 = ?, Salario_Base = ?, Porcentaje_Comisión = ?
+          WHERE idVendedor = ?";
 
     $stmt = $conn->prepare($sql);
 
@@ -83,8 +82,15 @@ public function actualizarEmpleado($id, $nombre, $primerAp, $segundoAp, $idPuest
         return false;
     }
 
-    // Vincular parámetros: sssii (tres strings y dos integers, el último es el ID)
-    $stmt->bind_param("sssii", $nombre, $primerAp, $segundoAp, $idPuesto, $id);
+    // Vincular parámetros: 3 strings, 2 decimals/doubles, 1 integer (ID)
+    $stmt->bind_param("sssddi", 
+        $nombre, 
+        $primerAp, 
+        $segundoAp, 
+        $salarioBase, // Dato Salario Base (double)
+        $porcentajeComision, // Dato Porcentaje Comisión (double)
+        $id // Dato ID Vendedor (integer)
+    );
 
     $res = $stmt->execute();
 
