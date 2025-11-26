@@ -1,4 +1,5 @@
 <?php
+session_start();
 echo "Validando";
 
 // =========================================================
@@ -21,13 +22,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     
     // 3. Verificar si el perfil fue seleccionado y si existe una ruta definida
     if ($perfil_seleccionado && isset($rutas[$perfil_seleccionado])) {
-        
-        // ** (Aquí iría la LÓGICA DE VALIDACIÓN REAL con la base de datos) **
-        // Por ahora, asumimos que el login es exitoso si se seleccionó un perfil válido
-        
         $pagina_destino = $rutas[$perfil_seleccionado];
-        
-        // Realizar la redirección
         header("Location: " . $pagina_destino);
         exit(); // Detiene la ejecución del script después de la redirección
         

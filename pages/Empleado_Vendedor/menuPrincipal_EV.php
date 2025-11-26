@@ -1,7 +1,8 @@
 <?php
-  session_start();
-  if(!$_SESSION['usuario_autenticado'])
-    header("location: login.php");
+session_start();
+// Si la sesión no está autenticada, redirige al login.
+if(!$_SESSION['usuario_autenticado'])
+  header("location: login.php");
 ?>
 
 <!DOCTYPE html>
@@ -19,22 +20,59 @@
 </head>
 <body>
 
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <div class="container-fluid">
-            <a class="navbar-brand me-5" href="#">AUTOS AMISTOSOS</a>
-            <span class="navbar-text me-auto text-white">
-                Bienvenido <?php echo htmlspecialchars($_SESSION['nombre_usuario'] ?? 'Usuario'); ?>
-            </span>
-            <ul class="navbar-nav">
-                <li class="nav-item"><a class="nav-link" href="#">Gestión de ventas</a></li>
-                <li class="nav-item"><a class="nav-link" href="#">Gestión de Clientes</a></li>
-                <li class="nav-item"><a class="nav-link" href="#">Gestión de Inventario</a></li>
-                <li class="nav-item"><a class="nav-link" href="#">Reportes y Análisis</a></li>
-                <li class="nav-item"><a class="nav-link" href="#">Configuración</a></li>
-                <li class="nav-item"><a class="nav-link" href="../../loginEmpleados.html">Cerrar Sesion</a></li>
-            </ul>
-        </div>
-    </nav>
+<?php 
+// 1. BLOQUE DE CÓDIGO PARA MOSTRAR LA ALERTA DE SESIÓN
+if (isset($_SESSION['alert_message'])) {
+    $alert_type = $_SESSION['alert_type'];
+    $alert_message = $_SESSION['alert_message'];
+    
+    // Limpiar las variables de sesión para que la alerta no se muestre de nuevo al recargar
+    unset($_SESSION['alert_type']);
+    unset($_SESSION['alert_message']);
+    
+    // 2. HTML de la Alerta de Bootstrap
+?>
+<div class="container mt-3">
+    <div class="alert alert-<?php echo htmlspecialchars($alert_type); ?> alert-dismissible fade show" role="alert">
+        <?php echo htmlspecialchars($alert_message); ?>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+</div>
+<?php
+}
+// FIN DEL BLOQUE DE ALERTA
+?>
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand me-5" href="#">AUTOS AMISTOSOS</a>
+        
+        <span class="navbar-text me-auto text-white">
+            Bienvenido <?php echo htmlspecialchars($_SESSION['nombre_usuario'] ?? 'Usuario'); ?>
+        </span>
+        
+        <ul class="navbar-nav">
+            
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="ventasDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    Gestión de ventas
+                </a>
+                <ul class="dropdown-menu" aria-labelledby="ventasDropdown">
+                    <li><a class="dropdown-item" href="./registrar_venta.php">Registrar Nueva Venta</a></li>
+                    <li><hr class="dropdown-divider"></li> 
+                    <li><a class="dropdown-item" href="consultar_ventas.php">Consultar Ventas</a></li>
+                    <li><a class="dropdown-item" href="reporte_comisiones.php">Historial de Comisiones</a></li>
+                </ul>
+            </li>
+            <li class="nav-item"><a class="nav-link" href="#">Gestión de Clientes</a></li>
+            <li class="nav-item"><a class="nav-link" href="#">Gestión de Inventario</a></li>
+            <li class="nav-item"><a class="nav-link" href="#">Reportes y Análisis</a></li>
+            <li class="nav-item"><a class="nav-link" href="#">Configuración</a></li>
+            <li class="nav-item"><a class="nav-link" href="../../loginEmpleados.html">Cerrar Sesion</a></li>
+        </ul>
+    </div>
+</nav>
+
     
     <div class="container mt-5">
         <h1 class="text-center mb-4">Bienvenido Vendedor</h1>
@@ -67,13 +105,13 @@
                         </tr>
                         <tr>
                             <td class="fw-bold">Cambios</td>
-                                 <td><a href="../../php/controllers/ABCC_Clientes/formularios/formulario_cambiosCliente.php">Actualizar Cliente</a></td>
+                                    <td><a href="../../php/controllers/ABCC_Clientes/formularios/formulario_cambiosCliente.php">Actualizar Cliente</a></td>
                             <td><a href="#">Modificar detalles de Vehículo</a></td>
                             <td></td>
                         </tr>
                         <tr>
                             <td class="fw-bold">Consultas</td>
-                             <td><a href="../../php/controllers/ABCC_Clientes/formularios/formulario_consultasCliente.php">Buscar Datos sobre el Cliente</a></td>
+                                    <td><a href="../../php/controllers/ABCC_Clientes/formularios/formulario_consultasCliente.php">Buscar Datos sobre el Cliente</a></td>
                             <td><a href="#">Buscar información Vehículo</a></td>
                             <td><a href="#">Consultar historial de ventas y comisiones</a></td>
                         </tr>
@@ -83,6 +121,6 @@
             </div>
         </div>
     </div>
-
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
