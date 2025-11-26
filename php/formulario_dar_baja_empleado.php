@@ -6,7 +6,6 @@
     <title>Bajas y Edición de Vendedores</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        /* Aumentamos el ancho para acomodar las nuevas columnas */
         .container { max-width: 900px; margin-top: 50px; }
     </style>
 </head>
@@ -17,12 +16,9 @@
 </div>
 
     <?php
-        // 📢 CAMBIO 3: Incluir el nuevo DAO
         include('./controllers/empleado_dao.php');
-        
-        // 📢 CAMBIO 4: Instanciar la nueva clase y llamar al nuevo método
         $vendedorDAO = new EmpleadoDAO();
-        $datos = $vendedorDAO->mostrarEmpleado('x'); // Llama a mostrarVendedor()
+        $datos = $vendedorDAO->mostrarEmpleado('x');
        
 
         if(mysqli_num_rows($datos)==0){
@@ -32,13 +28,13 @@
             echo '<thead>';
                 echo '<tr>';
                     echo '<th scope="col">#</th>';
-                    // 📢 CAMBIO 5: Encabezados de tabla actualizados
+                    // Encabezados de tabla actualizados
                     echo '<th scope="col">ID Vendedor</th>';
                     echo ' <th scope="col">Nombre</th>';
                     echo '<th scope="col">Apellido 1</th>';
                     echo '<th scope="col">Apellido 2</th>';
                     echo '<th scope="col">Salario Base</th>';
-                    echo '<th scope="col">Comisión %</th>'; // Nueva columna
+                    echo '<th scope="col">Comisión %</th>';
                     echo '<th scope="col">ACCIONES</th>';
                 echo ' </tr>';
             echo '</thead>';

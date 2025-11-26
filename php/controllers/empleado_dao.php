@@ -99,5 +99,38 @@ public function actualizarEmpleado($id, $nombre, $primerAp, $segundoAp, $salario
     return $res;
 }
 
+public function obtenerTodos(){
+    $conn = $this->conexion->getConexion();
+    $sql = "SELECT idVendedor, Nombre, Apellido1, Apellido2, Salario_Base, Porcentaje_Comisión FROM Vendedor";
+    $res = $conn->query($sql);
+    return $res;
+}
+
+// Método en tu clase vendedorDAO
+public function buscarVendedores($termino) {
+    // 1. Obtener la conexión
+    $conn = $this->conexion->getConexion();
+    // 2. Preparar el término de búsqueda para LIKE
+    $like_term = "%" . $termino . "%";
+    // 3. Consulta SQL ACTUALIZADA para la tabla Vendedor
+    $sql = "SELECT idVendedor, Nombre, Apellido1, Apellido2, Salario_Base, Porcentaje_Comisión 
+            FROM Vendedor 
+            WHERE Nombre LIKE ? OR Apellido1 LIKE ? OR Apellido2 LIKE ?"; // Búsqueda en Nombre y los dos Apellidos
+            
+    $stmt = $conn->prepare($sql);
+    
+    if ($stmt === false) {
+        error_log("Error al preparar la consulta de Búsqueda de Vendedor: " . $conn->error);
+        return false; 
+    }
+    
+    // El número de 's' debe coincidir con el número de ? en el WHERE (3 en este caso)
+    $stmt->bind_param("sss", $like_term, $like_term, $like_term); 
+    
+    $stmt->execute();
+    
+    // Devolver el resultado (mysqli_result)
+    return $stmt->get_result(); 
+}
 }
 ?>

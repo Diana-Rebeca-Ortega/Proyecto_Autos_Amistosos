@@ -77,7 +77,7 @@
                         </tr>
                         <tr>
                             <td class="fw-bold">Consultas</td>
-                            <td><a href="#">Buscar información Empleado</a></td>
+                            <td><a href="../../php/formulario_consultasEmpleado.php">Buscar información Empleado</a></td>
                             <td><a href="#">Buscar información Proveedor</a></td>
                             <td><a href="#">Verificar estado de inventario</a></td>
                         </tr>
