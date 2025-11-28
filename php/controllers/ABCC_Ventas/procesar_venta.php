@@ -1,6 +1,12 @@
 <?php
 session_start();
-// Asegúrate de que el path a tu VentaDAO sea correcto
+
+  if (!isset($_SESSION['usuario_autenticado']) || $_SESSION['usuario_autenticado'] !== true) {
+    session_unset();
+    session_destroy();
+    header("Location: ../cerrar_sesion.php");
+    exit;
+  }
 include_once('./ventaDAO.php'); 
 $venta_obj = new VentaDAO();
 

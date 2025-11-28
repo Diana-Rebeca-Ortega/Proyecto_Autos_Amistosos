@@ -1,3 +1,13 @@
+<?php
+session_start();
+
+  if (!isset($_SESSION['usuario_autenticado']) || $_SESSION['usuario_autenticado'] !== true) {
+    session_unset();
+    session_destroy();
+   header("Location: ./controllers/cerrar_sesion.php");
+    exit;
+  }
+  ?>
 <!DOCTYPE html>
 <html lang="es">
 <head>

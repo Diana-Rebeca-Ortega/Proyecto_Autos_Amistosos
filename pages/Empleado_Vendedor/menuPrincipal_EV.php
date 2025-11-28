@@ -1,8 +1,16 @@
 <?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 session_start();
-// Si la sesión no está autenticada, redirige al login.
-if(!$_SESSION['usuario_autenticado'])
-  header("location: login.php");
+
+  if (!isset($_SESSION['usuario_autenticado']) || $_SESSION['usuario_autenticado'] !== true) {
+    // Si la sesión no existe o no está autenticada:
+    session_unset();
+    session_destroy();
+   header("Location: ../../php/controllers/cerrar_sesion.php");
+    exit;
+  }
 ?>
 
 <!DOCTYPE html>
@@ -60,15 +68,15 @@ if (isset($_SESSION['alert_message'])) {
                 <ul class="dropdown-menu" aria-labelledby="ventasDropdown">
                     <li><a class="dropdown-item" href="./registrar_venta.php">Registrar Nueva Venta</a></li>
                     <li><hr class="dropdown-divider"></li> 
-                    <li><a class="dropdown-item" href="consultar_ventas.php">Consultar Ventas</a></li>
-                    <li><a class="dropdown-item" href="reporte_comisiones.php">Historial de Comisiones</a></li>
+                    <li><a class="dropdown-item" href="#">Consultar Ventas</a></li>
+                    <li><a class="dropdown-item" href="#">Historial de Comisiones</a></li>
                 </ul>
             </li>
             <li class="nav-item"><a class="nav-link" href="#">Gestión de Clientes</a></li>
             <li class="nav-item"><a class="nav-link" href="#">Gestión de Inventario</a></li>
             <li class="nav-item"><a class="nav-link" href="#">Reportes y Análisis</a></li>
             <li class="nav-item"><a class="nav-link" href="#">Configuración</a></li>
-            <li class="nav-item"><a class="nav-link" href="../../loginEmpleados.html">Cerrar Sesion</a></li>
+           <li class="nav-item"><a class="nav-link" href="../../php/controllers/cerrar_sesion.php">Cerrar Sesion</a></li>
         </ul>
     </div>
 </nav>

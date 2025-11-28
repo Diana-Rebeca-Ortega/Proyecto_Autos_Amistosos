@@ -1,7 +1,16 @@
 <?php
-  session_start();
-  if(!$_SESSION['usuario_autenticado'])
-    header("location: login.php");
+ ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+session_start();
+
+  if (!isset($_SESSION['usuario_autenticado']) || $_SESSION['usuario_autenticado'] !== true) {
+    // Si la sesión no existe o no está autenticada:
+    session_unset();
+    session_destroy();
+   header("Location: ../../php/controllers/cerrar_sesion.php");
+    exit;
+  }
 ?>
 
 <!DOCTYPE html>
@@ -33,7 +42,7 @@
                 <li class="nav-item"><a class="nav-link" href="#">Configuración</a></li>
                 <li class="nav-item"><a class="nav-link" href="#">Análisis</a></li>
                  <form action="../../php/controllers/cerrar_sesion.php">
-   <button class="btn btn-outline-warning" type="submit">CERRAR SESION</button>
+   <li class="nav-item"><a class="nav-link" href="../../php/controllers/cerrar_sesion.php">Cerrar Sesion</a></li>
       </form>
                
             </ul>

@@ -1,5 +1,12 @@
 <?php
+session_start();
 
+  if (!isset($_SESSION['usuario_autenticado']) || $_SESSION['usuario_autenticado'] !== true) {
+    session_unset();
+    session_destroy();
+    header("Location: ../cerrar_sesion.php");
+    exit;
+  }
     include(__DIR__.'/../empleado_dao.php');
     $empleadoDAO = new EmpleadoDAO();
     if($empleadoDAO->eliminarEmpleado($_GET['idVendedor'])){

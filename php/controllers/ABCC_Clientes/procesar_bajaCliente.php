@@ -1,4 +1,12 @@
 <?php
+session_start();
+
+  if (!isset($_SESSION['usuario_autenticado']) || $_SESSION['usuario_autenticado'] !== true) {
+    session_unset();
+    session_destroy();
+   header("Location: ../cerrar_sesion.php");
+    exit;
+  }
 include_once('./clienteDAO.php');  
 $cliente_obj = new clienteDAO(); 
 // 2. Captura la acción y el ID. La acción puede venir por POST (Alta) o GET (Baja)

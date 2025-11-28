@@ -77,21 +77,26 @@
 </head>
 <body>
     <?php
-    // ... (Tu lógica PHP para capturar variables y errores va aquí)
+    // ... (Tu lógica PHP para capturar variables y errores)
     $usuario_anterior = isset($_GET['usuario']) ? htmlspecialchars($_GET['usuario']) : '';
-    $perfil_anterior = isset($_GET['perfil']) ? htmlspecialchars($_GET['perfil']) : '';
 
     if (isset($_GET['error'])) {
         $error = $_GET['error'];
         $mensaje = '';
 
-        // ... (lógica PHP para los mensajes de error va aquí)
-        if ($error == 'campos_vacios') { $mensaje = '🚨 Por favor, ingresa tu Usuario, Contraseña.';
-        } elseif ($error == 'usuario_invalido') { $mensaje = '❌ El **Usuario** ingresado no existe. Inténtalo de nuevo.';
-        } elseif ($error == 'password_invalida') { $mensaje = '❌ **Contraseña** incorrecta. Por favor, verifica tu clave.';
-        } elseif ($error == 'db_error') { $mensaje = '⚠️ Error interno del sistema. Inténtalo más tarde.';
+        // ... (lógica PHP para los mensajes de error)
+       if ($error == 'campos_vacios') { 
+            $mensaje = '🚨 Por favor, ingresa tu Usuario y Contraseña.';
+        } elseif ($error == 'db_error') { 
+            $mensaje = '⚠️ Error de conexión. Inténtalo más tarde.';
+        } elseif ($error == 'credenciales_invalidas') { 
+            // NUEVO: Mensaje genérico, seguro y consistente.
+            $mensaje = '❌ Usuario o Contraseña incorrectos. Verifica tus datos.';
+        } else {
+            // Manejo de cualquier otro error inesperado
+            $mensaje = '⚠️ Error desconocido. Inténtalo de nuevo.';
         }
-        
+
         // Muestra el mensaje de alerta de Bootstrap
         if (!empty($mensaje)) {
             echo '<div class="alert alert-danger alert-dismissible fade show fixed-top m-3" role="alert" style="z-index: 1050;">';

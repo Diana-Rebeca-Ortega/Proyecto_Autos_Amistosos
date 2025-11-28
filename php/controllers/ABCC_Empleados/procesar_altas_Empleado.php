@@ -1,13 +1,18 @@
 <?php
+session_start();
+
+  if (!isset($_SESSION['usuario_autenticado']) || $_SESSION['usuario_autenticado'] !== true) {
+    session_unset();
+    session_destroy();
+    header("Location: ../cerrar_sesion.php");
+    exit;
+  }
 include_once('../empleado_dao.php'); 
 
-// 1. Inicializa el objeto DAO
-// 📢 CAMBIO 2: Instanciar la nueva clase
+
 $vendedorDAO = new EmpleadoDAO();
 echo "<h1>PROCESAMIENTO DE ALTAS DE VENDEDORES</h1>";
 
-
-// 2. Captura los datos enviados por el formulario (POST)
 $nombre              = $_POST['nombre'] ?? '';
 $apellido1           = $_POST['apellido1'] ?? '';
 $apellido2           = $_POST['apellido2'] ?? '';
@@ -21,10 +26,6 @@ echo "Apellido 2: " . htmlspecialchars($apellido2) . "<br>";
 echo "Salario Base: " . htmlspecialchars($salario_base) . "<br>";
 echo "Comisión: " . htmlspecialchars($porcentaje_comision) . "<br>";
 
-
-// NOTA: La variable $datos_correctos debería provenir de una VALIDACIÓN REAL.
-// La mantenemos por estructura, pero la validación de negocio (ej. Salario > 0)
-// debería ir aquí.
 $datos_correctos = true;
 
 if($datos_correctos){

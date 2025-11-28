@@ -1,5 +1,14 @@
 <?php
 
+session_start();
+
+  if (!isset($_SESSION['usuario_autenticado']) || $_SESSION['usuario_autenticado'] !== true) {
+    session_unset();
+    session_destroy();
+    header("Location: ../cerrar_sesion.php");
+    exit;
+  }
+ 
 include_once('./clienteDAO.php'); 
 // 1. Inicializa el objeto de la clase Cliente
 $cliente_obj = new Cliente();

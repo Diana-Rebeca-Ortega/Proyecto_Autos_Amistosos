@@ -1,11 +1,15 @@
 <?php
-// Incluye el DAO (Data Access Object) para interactuar con la DB
-// Ajusta la ruta si es necesario
+session_start();
+
+  if (!isset($_SESSION['usuario_autenticado']) || $_SESSION['usuario_autenticado'] !== true) {
+    session_unset();
+    session_destroy();
+    header("Location: ../cerrar_sesion.php");
+    exit;
+  }
 include_once('../empleado_dao.php');
 
 // 1. OBTENER EL ID DEL EMPLEADO
-
-// -----------------------------------------------------------------
 if (!isset($_GET['idVendedor']) || empty($_GET['idVendedor'])) {
     die("Error: No se proporcionó el ID del empleado para editar.");
 }

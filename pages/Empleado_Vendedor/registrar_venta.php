@@ -1,23 +1,28 @@
 <?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 session_start();
+
+  if (!isset($_SESSION['usuario_autenticado']) || $_SESSION['usuario_autenticado'] !== true) {
+    // Si la sesión no existe o no está autenticada:
+    session_unset();
+    session_destroy();
+   header("Location: ../../php/controllers/cerrar_sesion.php");
+    exit;
+  }
+
 require_once '../../php/controllers/ABCC_Clientes/clienteDAO.php';
 $clienteDAO = new ClienteDAO();
 $clientesResult = $clienteDAO->obtenerTodos();
-
-require_once '../../php/controllers/ABCC_Automovil/automovilDAO';
+require_once '../../php/controllers/ABCC_Automovil/automovilDAO.php';
 $automovilDAO = new AutomovilDAO();
 $autosResult = $automovilDAO->obtenerTodos();
 
-// 1. CORRECCIÓN DE SEGURIDAD: Añadir exit; después de la redirección
-/*
-if (!isset($_SESSION['usuario_autenticado']) || $_SESSION['usuario_autenticado'] !== true) {
-    header("location: login.php");
-    exit;
-}*/
-// 2. OBTENER ID DE VENDEDOR LOGUEADO (Asumiendo que lo guardaste en la sesión)
-$id_vendedor_logueado =3;
+$id_vendedor_logueado = $_SESSION['idVendedor'] ?? 0;
 echo "$id_vendedor_logueado";
 ?>
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -47,15 +52,15 @@ echo "$id_vendedor_logueado";
                 <ul class="dropdown-menu" aria-labelledby="ventasDropdown">
                     <li><a class="dropdown-item" href="registrar_venta.php">Registrar Nueva Venta</a></li>
                     <li><hr class="dropdown-divider"></li> 
-                    <li><a class="dropdown-item" href="consultar_ventas.php">Consultar Ventas</a></li>
-                    <li><a class="dropdown-item" href="reporte_comisiones.php">Historial de Comisiones</a></li>
+                    <li><a class="dropdown-item" href="#">Consultar Ventas</a></li>
+                    <li><a class="dropdown-item" href="#">Historial de Comisiones</a></li>
                 </ul>
             </li>
             <li class="nav-item"><a class="nav-link" href="#">Gestión de Clientes</a></li>
             <li class="nav-item"><a class="nav-link" href="#">Gestión de Inventario</a></li>
             <li class="nav-item"><a class="nav-link" href="#">Reportes y Análisis</a></li>
             <li class="nav-item"><a class="nav-link" href="#">Configuración</a></li>
-            <li class="nav-item"><a class="nav-link" href="../../loginEmpleados.html">Cerrar Sesion</a></li>
+            <li class="nav-item"><a class="nav-link" href="../../php/controllers/cerrar_sesion.php">Cerrar Sesion</a></li>
         </ul>
     </div>
 </nav>

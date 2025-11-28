@@ -1,12 +1,14 @@
 <?php
-// 1. INICIAR LA SESIÓN
 session_start();
-
- if(!$_SESSION['usuario_autenticado']) {
-    header("location: ../../login.php");
-    exit();
-}
-// 2. INCLUIR LAS CLASES NECESARIAS
+header("Cache-Control: no-cache, no-store, must-revalidate"); 
+header("Pragma: no-cache"); 
+header("Expires: 0");
+  if (!isset($_SESSION['usuario_autenticado']) || $_SESSION['usuario_autenticado'] !== true) {
+    session_unset();
+    session_destroy();
+   header("Location: ../../cerrar_sesion.php");
+    exit;
+  }
 include_once('../clienteDAO.php'); 
 include_once('../../../database/conexion_bdd_autos_amistosos.php'); 
 
@@ -111,7 +113,7 @@ $email = $cliente_datos['Email'] ?? '';
             </div>
 
             <button type="submit" class="btn btn-success me-2">Guardar Cambios</button>
-            <a href="../clientes_lista.php" class="btn btn-secondary">Cancelar</a>
+            <a href="./formulario_cambiosCliente.php" class="btn btn-secondary">Cancelar</a>
         </form>
     </div>
 </body>

@@ -1,5 +1,12 @@
 <?php
-// Este script maneja la lógica de actualizar el registro en la base de datos (Método POST)
+session_start();
+
+  if (!isset($_SESSION['usuario_autenticado']) || $_SESSION['usuario_autenticado'] !== true) {
+    session_unset();
+    session_destroy();
+    header("Location: ../cerrar_sesion.php");
+    exit;
+  }
 
 include_once('../empleado_dao.php'); 
 
