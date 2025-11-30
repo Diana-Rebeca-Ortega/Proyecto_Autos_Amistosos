@@ -2,12 +2,6 @@
 session_start();
 echo "Validando";
 
-// =========================================================
-// Archivo: validar_login.php
-// Función: Redireccionar al panel según el perfil seleccionado
-// =========================================================
-
-// Siempre verifica que la solicitud sea POST
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // 1. Capturar el valor del campo 'perfil'

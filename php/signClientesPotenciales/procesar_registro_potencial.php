@@ -43,8 +43,7 @@ if ($accion === 'insertar') {
         exit;
     }
     
-    // Hashing seguro de la contraseña
-    $password_hashed = password_hash($password, PASSWORD_DEFAULT);
+    $password_hashed = sha1($password);
 
     // 5. INSERCIÓN TRANSACCIONAL (Doble Inserción)
 

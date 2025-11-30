@@ -1,13 +1,12 @@
 <?php
 // AJUSTA ESTA RUTA SEGÚN DÓNDE SE ENCUENTRE tu archivo de conexión
-include_once(__DIR__ . '/../database/conexion_bdd_autos_amistosos.php'); 
+include_once(__DIR__ . '/../database/conexion_bd_usuarios.php'); 
 
 class UsuarioDAO {
     private $conexion;
 
     public function __construct(){
-        // Usa la misma clase de conexión que el DAO original
-        $this->conexion = new ConexionBDautosAmistosos();
+        $this->conexion = new ConexionBDUsuarios();
     }
 
     /**
