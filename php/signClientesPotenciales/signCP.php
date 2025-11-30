@@ -152,6 +152,19 @@ if (isset($_GET['status'])) {
         autocomplete="email"
         value="<?php echo $email_anterior; ?>" required>
 </div>
+<div class="mb-3">
+    <label for="password" class="form-label">Contraseña</label>
+    <input type="password" class="form-control" id="password" name="password" 
+        autocomplete="new-password"
+        required minlength="6">
+    <div class="form-text">Mínimo 6 caracteres.</div>
+</div>
+<div class="mb-3">
+    <label for="confirmar_password" class="form-label">Confirmar Contraseña</label>
+    <input type="password" class="form-control" id="confirmar_password" name="confirmar_password" 
+        autocomplete="new-password"
+        required minlength="6">
+</div>
                     <div class="mb-4">
                         <label for="fuente" class="form-label">¿Cómo se enteró de nosotros?</label>
                         <select class="form-select" id="fuente" name="fuente" required>
@@ -162,6 +175,8 @@ if (isset($_GET['status'])) {
                             <option value="FERIA">Feria o Evento</option>
                         </select>
                     </div>
+
+
 
 
                     <div class="d-grid">

@@ -11,7 +11,7 @@ include_once('./clienteDAO.php');
 $cliente_obj = new clienteDAO(); 
 // 2. Captura la acción y el ID. La acción puede venir por POST (Alta) o GET (Baja)
 $accion = $_POST['accion'] ?? $_GET['accion'] ?? null;
-$id = $_POST['id'] ?? $_GET['id'] ?? null; // El ID para eliminar o actualizar viene por GET o POST
+$id = $_POST['id'] ?? $_GET['id'] ?? null; 
 // 3. Procesamiento de la acción
 switch ($accion) {
     case 'eliminar':

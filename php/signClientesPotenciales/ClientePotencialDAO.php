@@ -36,11 +36,18 @@ class ClientePotencialDAO {
             return false; 
         }
         
-        // 4. Vincular los parámetros y especificar los tipos 
-        // ssssss: Seis strings (Nombre, Apellido1, Apellido2, Direccion, Email, Fuente)
         $stmt->bind_param("ssssss", $nombre, $apellido1, $apellido2, $direccion, $email, $fuente);
         
         $res = $stmt->execute();
+        if ($res) {
+            $ultimo_id = $stmt->insert_id; 
+            $stmt->close();
+            return $ultimo_id; 
+        } else {
+            error_log("Error al ejecutar la inserción del Cliente Potencial: " . $stmt->error);
+            $stmt->close();
+            return false;
+        }
         $stmt->close();
         return $res;
     }

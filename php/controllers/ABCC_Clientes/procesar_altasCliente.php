@@ -11,13 +11,11 @@ session_start();
  
 include_once('./clienteDAO.php'); 
 // 1. Inicializa el objeto de la clase Cliente
-$cliente_obj = new Cliente();
+$cliente_obj = new clienteDAO();
 
 // 2. Captura la acción (Alta/Baja/Cambio)
 $accion = $_POST['accion'] ?? null; // Esperamos que el formulario envíe 'accion' con valor 'insertar'
 
-// 3. Captura los datos enviados por el formulario (POST)
-// Usamos los nombres de los campos de tu formulario de Cliente:
 $nombre = $_POST['nombre'] ?? '';
 $apellido1 = $_POST['apellido1'] ?? '';
 $apellido2 = $_POST['apellido2'] ?? '';

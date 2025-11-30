@@ -18,7 +18,6 @@
             display: flex; /* Habilita el diseño de dos columnas */
             height: 100vh; /* Ocupa el 100% de la altura de la vista */
         }
-
         /* 2. Estilos del Panel de la Imagen (Izquierda) */
         .image-panel {
             flex: 1.5; /* Ocupa más espacio que el panel del formulario (ej. 60%) */
@@ -26,10 +25,8 @@
             /* **IMPORTANTE:** Cambia 'https://via.placeholder/...' por la URL o ruta local de tu propia imagen. */
             background-size: cover;
             position: relative;
-            display: flex;
-            
+            display: flex; 
         }
-        
         /* 3. Estilos del Panel del Formulario (Derecha) */
         .form-panel {
             flex: 1; /* Ocupa menos espacio que el panel de la imagen (ej. 40%) */
@@ -46,7 +43,6 @@
             border-radius: 10px;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
         }
-        
         /* Estilo para el título grande, similar al "Iniciar Sesión" */
         .login-title {
             font-family: 'Montserrat', sans-serif;
@@ -83,7 +79,6 @@
     if (isset($_GET['error'])) {
         $error = $_GET['error'];
         $mensaje = '';
-
         // ... (lógica PHP para los mensajes de error)
        if ($error == 'campos_vacios') { 
             $mensaje = '🚨 Por favor, ingresa tu Usuario y Contraseña.';
@@ -125,14 +120,12 @@
                                value="<?php echo $usuario_anterior; ?>" > 
                         <div class="invalid-feedback">Ingresa tu usuario.</div>
                     </div>
-
                     <div class="mb-4">
                         <label for="password" class="form-label">Contraseña</label>
                         <input type="password" class="form-control" id="password" name="password" 
                                autocomplete="current-password">
                         <div class="invalid-feedback">Ingresa tu contraseña.</div>
                     </div>
-
                     <div class="d-grid">
                         <button type="submit" class="btn btn-primary btn-lg" id="entrar">Entrar al Sistema</button>
                     </div>
@@ -140,7 +133,6 @@
             </div>
         </div>
     </div>
-
- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 </body>
 </html>
