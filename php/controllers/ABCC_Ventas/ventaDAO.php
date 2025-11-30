@@ -1,12 +1,11 @@
 <?php
 // Asegúrate de cambiar el path a tu archivo de conexión si es necesario
 // Si tu archivo de conexión está en el mismo nivel, puedes usar solo 'conexion.php'
-include_once(__DIR__ . '../../../database/conexion_bdd_autos_amistosos.php');
+include_once(__DIR__ . '/../../database/conexion_bdd_autos_amistosos.php');
 
 class VentaDAO {
     private $conexion; // Almacena la instancia de la clase Conexion
 
- 
     public function __construct(){
         $this->conexion = new ConexionBDautosAmistosos ();
     }
