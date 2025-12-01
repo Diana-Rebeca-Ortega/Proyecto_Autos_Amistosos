@@ -32,5 +32,7 @@ class AutomovilDAO {
         $res = $conn->query($sql);
         return $res;
         }
+
+        
     }
 ?>

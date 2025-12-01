@@ -68,7 +68,7 @@ if (isset($_SESSION['alert_message'])) {
                 <ul class="dropdown-menu" aria-labelledby="ventasDropdown">
                     <li><a class="dropdown-item" href="./registrar_venta.php">Registrar Nueva Venta</a></li>
                     <li><hr class="dropdown-divider"></li> 
-                    <li><a class="dropdown-item" href="./VentasListado.php">Consultar Ventas</a></li>
+                    <li><a class="dropdown-item" href="./VentasPropiasListado.php">Consultar Ventas</a></li>
                     <li><a class="dropdown-item" href="#">Historial de Comisiones</a></li>
                 </ul>
             </li>

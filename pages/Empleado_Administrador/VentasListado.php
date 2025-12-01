@@ -65,7 +65,9 @@ $sin_resultados = (is_array($listado_ventas) && empty($listado_ventas));
                         <?php foreach ($listado_ventas as $venta): ?>
                             <tr>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"><?= htmlspecialchars($venta['idVenta']) ?></td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><?= htmlspecialchars(date('d/m/Y', strtotime($venta['Fecha_Venta']))) ?></td>
+                               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+    <?= htmlspecialchars(date('d/m/Y H:i', strtotime($venta['Fecha_Venta']))) ?>
+</td>
                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
     <?= htmlspecialchars($venta['Nombre_Vendedor']) ?>
 </td>

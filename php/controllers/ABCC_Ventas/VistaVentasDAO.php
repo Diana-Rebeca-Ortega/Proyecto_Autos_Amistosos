@@ -1,7 +1,6 @@
 <?php
 // Asegúrate de que esta ruta sea correcta para incluir la conexión
 include_once(__DIR__.'../../../database/conexion_bdd_autos_amistosos.php'); 
-
 class VistaVentasDAO {
     private $conexion;
 
@@ -16,10 +15,6 @@ class VistaVentasDAO {
         }
     }
 
-    /**
-     * Obtiene el listado completo de ventas consultando la VIEW VistaVenta.
-     * @return array|false Un array de filas o false si hay un error o no hay resultados.
-     */
     public function listarVentas() {
         // La consulta simplemente selecciona todo de la VIEW.
         $sql = "SELECT * FROM VistaVenta ORDER BY Fecha_Venta DESC";
@@ -44,6 +39,20 @@ class VistaVentasDAO {
             return false;
         }
     }
+ public function listarVentasPropias($idVendedor) {
+   $sql = "SELECT * FROM VistaVentaVendedor WHERE Vendedor_idVendedor = ?";
+    $stmt = $this->conexion->prepare($sql);
+    if ($stmt === false) {
+        error_log("Error preparando la consulta para listarVentasPropias: " . $this->conexion->error);
+        return false;
+    }
+    $stmt->bind_param("i", $idVendedor);
+    $stmt->execute();
+    $resultado = $stmt->get_result();
+    $stmt->close();
+    return $resultado;
+ }
+
 
     public function cerrarConexion() {
         if ($this->conexion) {

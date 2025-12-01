@@ -18,6 +18,9 @@ $clientesResult = $clienteDAO->obtenerTodos();
 require_once '../../php/controllers/ABCC_Automovil/automovilDAO.php';
 $automovilDAO = new AutomovilDAO();
 $autosResult = $automovilDAO->obtenerDisponibles();
+require_once '../../php/controllers/ABCC_Garantia/GarantiaDAO.php';
+$garantiaDAO = new GarantiaDAO();
+$garantiasArray = $garantiaDAO->obtenerTodasGarantias();
 
 $id_vendedor_logueado = $_SESSION['idVendedor'] ?? 0;
 echo "$id_vendedor_logueado";
@@ -147,8 +150,19 @@ echo "$id_vendedor_logueado";
                         <label for="id_garantia" class="form-label">Garantía Aplicada:</label>
                         <select id="id_garantia" name="idGarantia" class="form-select">
                             <option value="" selected>Ninguna (NULL)</option>
-                            <option value="1">Garantía Extendida 1 Año (ID: 1)</option>
-                            <option value="2">Garantía Básica 3 Meses (ID: 2)</option>
+        <?php
+if (!empty($garantiasArray)) {
+foreach ($garantiasArray as $garantia) {
+$costoFormateado = '$' . number_format($garantia['Costo'], 2);
+ $etiqueta = htmlspecialchars($garantia['Nombre_Garantia']) . 
+' | ' . $costoFormateado . 
+ ' (ID: ' . htmlspecialchars($garantia['idGarantia']) . ')';
+echo '<option value="' . htmlspecialchars($garantia['idGarantia']) . '">' 
+. $etiqueta 
+. '</option>';
+}
+}
+?>
                             </select>
                     </div>
                     
