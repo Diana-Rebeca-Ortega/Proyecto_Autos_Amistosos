@@ -17,7 +17,7 @@ $clienteDAO = new ClienteDAO();
 $clientesResult = $clienteDAO->obtenerTodos();
 require_once '../../php/controllers/ABCC_Automovil/automovilDAO.php';
 $automovilDAO = new AutomovilDAO();
-$autosResult = $automovilDAO->obtenerTodos();
+$autosResult = $automovilDAO->obtenerDisponibles();
 
 $id_vendedor_logueado = $_SESSION['idVendedor'] ?? 0;
 echo "$id_vendedor_logueado";
@@ -64,6 +64,7 @@ echo "$id_vendedor_logueado";
         </ul>
     </div>
 </nav>
+
 <div class="container venta-form-container">
     <h2 class="mb-4 text-info">✍️ Registro de Nueva Venta</h2>
     <form action="../../php/controllers/ABCC_Ventas/procesar_venta.php" method="POST"> 
@@ -101,12 +102,14 @@ echo "$id_vendedor_logueado";
           <?php
     if ($autosResult && $autosResult->num_rows > 0) {
         while($automovil = $autosResult->fetch_assoc()) { 
-            $descripcionAutomovil = 
-                $automovil["Modelo"] . " - " . 
-                $automovil["Tipo_Vehiculo"] . 
-                " | $" . number_format($automovil["Precio_Lista"], 2) . 
-                " | VIN: " . $automovil["idAutomovil"];
-            echo '<option value="' . $automovil["idAutomovil"] . '">' 
+            $kilometrajeActual = $automovil["Kilometraje_Entrega"];
+           $descripcionAutomovil = 
+    $automovil["Modelo"] . " - " . 
+    $automovil["Tipo_Carroceria"] . 
+    " | $" . number_format($automovil["Precio_Lista"], 2) . 
+    " | VIN: " . $automovil["idAutomovil"];
+    $descripcionAutomovil .= " | KM: " . number_format($kilometrajeActual);
+          echo '<option value="' . $automovil["idAutomovil"] . '" data-km="' . $kilometrajeActual . '">' 
                  . $descripcionAutomovil 
                  . '</option>';
         }
@@ -128,7 +131,7 @@ echo "$id_vendedor_logueado";
                         <label for="costo_licencia" class="form-label">Costo de Licencia ($):</label>
                         <input type="number" id="costo_licencia" name="Costo_Licencia" step="0.01" min="0" class="form-control" value="0.00" required>
                     </div>
-                    
+                    <input type="hidden" id="kilometraje_entrega_hidden" name="Kilometraje_Entrega" value="0">
                     <input type="hidden" name="Vendedor_idVendedor" value="<?php echo $id_vendedor_logueado; ?>">
                 </div>
             </div>
@@ -165,7 +168,28 @@ echo "$id_vendedor_logueado";
         
     </form>
 </div>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const selectAutomovil = document.getElementById('id_automovil');
+        const hiddenKilometraje = document.getElementById('kilometraje_entrega_hidden');
 
+        selectAutomovil.addEventListener('change', function() {
+            // Obtiene la opción seleccionada (el elemento <option>)
+            const selectedOption = this.options[this.selectedIndex];
+            
+            // Obtiene el valor del atributo data-km, o 0 si no existe
+            const kilometraje = selectedOption.getAttribute('data-km') || 0;
+            
+            // Actualiza el campo oculto que se enviará en el POST
+            hiddenKilometraje.value = kilometraje;
+            
+            console.log('Kilometraje actualizado a:', kilometraje);
+        });
+        
+        // Ejecutar al cargar por si hay una opción preseleccionada (aunque no parece ser el caso aquí)
+        selectAutomovil.dispatchEvent(new Event('change')); 
+    });
+</script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

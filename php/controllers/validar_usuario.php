@@ -35,7 +35,7 @@ $sql = "
             u.ID_Usuario, 
             u.Nombre, 
             u.Perfil, 
-            u.ID_Puesto AS ID_Referencia, 
+            u.ID_Usuario AS ID_Referencia, 
             'empleado' AS Tipo_Usuario
         FROM usuarios u
         WHERE u.Usuario = ? AND u.Password = ?
@@ -80,7 +80,9 @@ if ($res->num_rows == 1) {
     $_SESSION['tipo_usuario'] = $usuario_data['Tipo_Usuario']; // Nuevo: 'empleado' o 'cliente'
 
     $perfil_usuario = $usuario_data['Perfil'];
-    
+    if ($perfil_usuario === 'vendedor') {
+        $_SESSION['idVendedor'] = $usuario_data['ID_Referencia']; 
+    }
     // 5. Redirección según el tipo de usuario/perfil
     if ($usuario_data['Tipo_Usuario'] === 'empleado') {
         // Redirecciones de Empleados

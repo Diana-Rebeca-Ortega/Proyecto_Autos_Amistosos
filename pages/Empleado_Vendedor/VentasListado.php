@@ -66,12 +66,13 @@ $sin_resultados = (is_array($listado_ventas) && empty($listado_ventas));
                             <tr>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"><?= htmlspecialchars($venta['idVenta']) ?></td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><?= htmlspecialchars(date('d/m/Y', strtotime($venta['Fecha_Venta']))) ?></td>
+                               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+    <?= htmlspecialchars($venta['Nombre_Vendedor']) ?>
+</td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                    <?= htmlspecialchars($venta['Nombre_Vendedor']) . " " . htmlspecialchars($venta['Apellido_Vendedor']) ?>
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                    <?= htmlspecialchars($venta['Modelo_Automovil']) ?> (<?= htmlspecialchars($venta['Color_Automovil']) ?>)
-                                </td>
+    <?= htmlspecialchars($venta['Modelo_Automovil']) ?> 
+    (VIN: <?= htmlspecialchars($venta['idAutomovil']) ?>)
+</td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                     <?= number_format($venta['Kilometraje_Entrega']) ?> km
                                 </td>
