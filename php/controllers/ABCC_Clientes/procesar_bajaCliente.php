@@ -8,7 +8,9 @@ session_start();
     exit;
   }
 include_once('./clienteDAO.php');  
+include_once('../ABCC_Ventas/VentaDAO.php');
 $cliente_obj = new clienteDAO(); 
+$venta_obj = new VentaDAO();
 // 2. Captura la acción y el ID. La acción puede venir por POST (Alta) o GET (Baja)
 $accion = $_POST['accion'] ?? $_GET['accion'] ?? null;
 $id = $_POST['id'] ?? $_GET['id'] ?? null; 
@@ -19,6 +21,7 @@ switch ($accion) {
         // Lógica de BAJA (ELIMINAR)
         // ==========================================
         if ($id) {
+          $venta_obj->eliminarVentasPorCliente($id);
             $res = $cliente_obj->eliminar($id); // Llama al método que creamos en Cliente.php
             
             if ($res) {

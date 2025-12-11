@@ -3,12 +3,26 @@
 include_once(__DIR__ . '../../../database/conexion_bdd_autos_amistosos.php'); 
 
 class ClienteDAO {
-    private $conexion; // Este será el objeto PDO
+  
+    private $conexion; 
 
-    public function __construct(){
-        // USO CORRECTO DEL SINGLETON (Punto 8)
-        $this->conexion = ConexionBDautosAmistosos::getInstancia()->getConexion();
+  public function __construct(){
+    $instancia_singleton = ConexionBDautosAmistosos::getInstancia();
+
+    if ($instancia_singleton === null) {
+        // La instancia falló en su creación (por error de conexión).
+        $this->conexion = null;
+        die("Error Fatal: La instancia SINGLETON de conexión es NULA en ClienteDAO. (Revisa credenciales de BD)");
     }
+    
+    // Si la instancia existe, obtenemos la conexión (que no debería ser null si no falló la creación)
+    $this->conexion = $instancia_singleton->getConexion();
+    
+    if (!$this->conexion) {
+        // Esto captura la conexión interna nula (aunque es improbable con la Modificación 1).
+        die("Error Fatal: La conexión interna es nula en ClienteDAO.");
+    }
+}
 
     // ***************** ALTAS (A) *****************
     public function insertar($nombre, $apellido1, $apellido2, $direccion, $telefono, $email) {
