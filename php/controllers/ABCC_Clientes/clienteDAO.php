@@ -3,100 +3,117 @@
 include_once(__DIR__ . '../../../database/conexion_bdd_autos_amistosos.php'); 
 
 class ClienteDAO {
-    private $conexion;
+    private $conexion; // Este será el objeto PDO
 
     public function __construct(){
-        $this->conexion = new ConexionBDautosAmistosos ();
+        // USO CORRECTO DEL SINGLETON (Punto 8)
+        $this->conexion = ConexionBDautosAmistosos::getInstancia()->getConexion();
     }
 
     // ***************** ALTAS (A) *****************
     public function insertar($nombre, $apellido1, $apellido2, $direccion, $telefono, $email) {
-        // 1. Obtener el objeto de conexión (mysqli)
-        $conn = $this->conexion->getConexion();
-        // 2. Definir la consulta SQL para la tabla CLIENTE
         $sql = "INSERT INTO Cliente (Nombre, Apellido1, Apellido2, Direccion, Telefono, Email) 
                 VALUES (?, ?, ?, ?, ?, ?)";
-        $stmt = $conn->prepare($sql);
-        if ($stmt === false) {
-            error_log("Error al preparar la consulta de Alta Cliente: " . $conn->error);
-            return false; 
+        
+        try {
+            // PDO: preparamos la consulta directamente
+            $stmt = $this->conexion->prepare($sql); 
+            
+            // PDO: Ejecutamos pasando los parámetros en un array (se gestionan los tipos automáticamente)
+            return $stmt->execute([$nombre, $apellido1, $apellido2, $direccion, $telefono, $email]);
+            
+        } catch (PDOException $e) {
+            error_log("Error al insertar Cliente: " . $e->getMessage());
+            return false;
         }
-        // 4. Vincular los parámetros y especificar los tipos 
-        // ssssss: Seis strings (Nombre, Apellido1, Apellido2, Direccion, Telefono, Email)
-        $stmt->bind_param("ssssss", $nombre, $apellido1, $apellido2, $direccion, $telefono, $email);
-        $res = $stmt->execute();
-        $stmt->close();
-        return $res;
     }
-     // ***************** CONSULTAS (C) - Mostrar Todos para las tablas *****************
+    
+    // ***************** CONSULTAS (C) - Mostrar Todos para las tablas *****************
     public function obtenerTodos(){
-        $conn = $this->conexion->getConexion();
         $sql = "SELECT idCliente, Nombre, Apellido1, Apellido2, Direccion, Telefono, Email FROM Cliente";
-        $res = $conn->query($sql);
-        return $res; // Devuelve el objeto mysqli_result
-    }
-// ***************** BAJAS (B) *****************
-    public function eliminar($idCliente){
-        $conn = $this->conexion->getConexion();
-        $sql = "DELETE FROM Cliente WHERE idCliente = ?";
-        $stmt = $conn->prepare($sql);
-        if ($stmt === false) {
-             error_log("Error al preparar la consulta de Baja Cliente: " . $conn->error);
-             return false; 
+        
+        try {
+            $stmt = $this->conexion->prepare($sql);
+            $stmt->execute();
+            
+            // PDO: Devolvemos un array asociativo
+            return $stmt->fetchAll(PDO::FETCH_ASSOC); 
+        } catch (PDOException $e) {
+            error_log("Error al obtener todos los Clientes: " . $e->getMessage());
+            return [];
         }
-        $stmt->bind_param("i", $idCliente); // i = integer
-        $res = $stmt->execute();
-        $stmt->close();
-        return $res;
     }
-       // ***************** CAMBIOS (C) - Obtener por ID *****************
+    
+    // ***************** BAJAS (B) *****************
+    public function eliminar($idCliente){
+        $sql = "DELETE FROM Cliente WHERE idCliente = ?";
+        
+        try {
+            $stmt = $this->conexion->prepare($sql);
+            
+            // PDO: El resultado de execute ya es un booleano
+            return $stmt->execute([$idCliente]);
+            
+        } catch (PDOException $e) {
+            error_log("Error al eliminar Cliente: " . $e->getMessage());
+            return false;
+        }
+    }
+    
+    // ***************** CAMBIOS (C) - Obtener por ID *****************
     public function obtenerPorId($idCliente) {
-        $conn = $this->conexion->getConexion();
         $sql = "SELECT idCliente, Nombre, Apellido1, Apellido2, Direccion, Telefono, Email 
                 FROM Cliente 
                 WHERE idCliente = ?"; 
-        $stmt = $conn->prepare($sql);
-        if ($stmt === false) {
-             error_log("Error al preparar la consulta de Obtener Cliente: " . $conn->error);
-             return false; 
+        
+        try {
+            $stmt = $this->conexion->prepare($sql);
+            $stmt->execute([$idCliente]);
+            
+            // PDO: Devuelve la primera fila
+            return $stmt->fetch(PDO::FETCH_ASSOC); 
+        } catch (PDOException $e) {
+            error_log("Error al obtener Cliente por ID: " . $e->getMessage());
+            return false; 
         }
-        $stmt->bind_param("i", $idCliente); 
-        $stmt->execute();
-        return $stmt->get_result(); 
     }
+    
     // ***************** CAMBIOS (C) - Actualizar *****************
     public function actualizar($id, $nombre, $apellido1, $apellido2, $direccion, $telefono, $email) {
-        $conn = $this->conexion->getConexion();
         $sql = "UPDATE Cliente 
                 SET Nombre = ?, Apellido1 = ?, Apellido2 = ?, Direccion = ?, Telefono = ?, Email = ?
                 WHERE idCliente = ?";
-        $stmt = $conn->prepare($sql);
-        if ($stmt === false) {
-             error_log("Error al preparar la consulta de Actualización Cliente: " . $conn->error);
-             return false;
-        }
-        // Vincular parámetros: ssssssi (seis strings y un integer al final para el ID)
-        $stmt->bind_param("ssssssi", $nombre, $apellido1, $apellido2, $direccion, $telefono, $email, $id);
-
-        $res = $stmt->execute();
-        $stmt->close();
         
-        return $res;
+        try {
+            $stmt = $this->conexion->prepare($sql);
+            
+            // Todos los parámetros en orden, incluyendo el ID al final
+            return $stmt->execute([$nombre, $apellido1, $apellido2, $direccion, $telefono, $email, $id]);
+            
+        } catch (PDOException $e) {
+            error_log("Error al actualizar Cliente: " . $e->getMessage());
+            return false;
+        }
     }
-public function buscarClientes($termino) {
-    $conn = $this->conexion->getConexion();
-    $like_term = "%" . $termino . "%";
-    $sql = "SELECT idCliente, Nombre, Apellido1, Apellido2, Direccion, Telefono, Email 
-            FROM Cliente 
-            WHERE Nombre LIKE ? OR Apellido1 LIKE ? OR Email LIKE ?";
-    $stmt = $conn->prepare($sql);
-    if ($stmt === false) {
-        error_log("Error al preparar la consulta de Búsqueda: " . $conn->error);
-        return false; 
+    
+    // ***************** BÚSQUEDA *****************
+    public function buscarClientes($termino) {
+        $like_term = "%" . $termino . "%";
+        $sql = "SELECT idCliente, Nombre, Apellido1, Apellido2, Direccion, Telefono, Email 
+                FROM Cliente 
+                WHERE Nombre LIKE ? OR Apellido1 LIKE ? OR Email LIKE ?";
+        
+        try {
+            $stmt = $this->conexion->prepare($sql);
+            // Pasar el término LIKE tres veces
+            $stmt->execute([$like_term, $like_term, $like_term]);
+            
+            // PDO: Devuelve el array de resultados
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            error_log("Error al buscar Clientes: " . $e->getMessage());
+            return []; 
+        }
     }
-    $stmt->bind_param("sss", $like_term, $like_term, $like_term); 
-    $stmt->execute();
-    return $stmt->get_result(); 
-}
 }
 ?>
