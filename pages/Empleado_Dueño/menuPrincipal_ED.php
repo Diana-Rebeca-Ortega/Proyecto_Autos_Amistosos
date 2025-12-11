@@ -38,7 +38,7 @@ session_start();
             </span>
             <ul class="navbar-nav">
                 <li class="nav-item"><a class="nav-link" href="#">Info de vntas y finanzas</a></li>
-                <li class="nav-item"><a class="nav-link" href="#">Reportes de Desempeño</a></li>
+                <li class="nav-item"><a class="nav-link" href="./reportesDueño.php">Reportes de Desempeño</a></li>
                 <li class="nav-item"><a class="nav-link" href="#">Configuración</a></li>
                 <li class="nav-item"><a class="nav-link" href="#">Análisis</a></li>
                  <form action="../../php/controllers/cerrar_sesion.php">
