@@ -1,44 +1,44 @@
 <?php
 // AJUSTA ESTA RUTA SEGÚN DÓNDE SE ENCUENTRE tu archivo de conexión
+// Asumimos que esta clase ahora usa PDO.
 include_once(__DIR__ . '/../database/conexion_bd_usuarios.php'); 
 
 class UsuarioDAO {
     private $conexion;
 
     public function __construct(){
+        // Esta instancia debe devolver un objeto PDO en getConexion()
         $this->conexion = new ConexionBDUsuarios();
     }
 
-    /**
-     * Inserta un nuevo usuario para el cliente potencial en la tabla Usuario_Cliente.
-     * @param string $email
-     * @param string $password_hashed La contraseña ya debe estar cifrada (hashed).
-     * @param int $idClientePotencial El ID de la tabla Cliente_Potencial.
-     * @return bool True si la inserción fue exitosa, False en caso contrario.
-     */
+   
     public function insertarUsuario($email, $password_hashed, $idClientePotencial) {
         
-        $conn = $this->conexion->getConexion();
+        $conn = $this->conexion->getConexion(); // Objeto PDO
         
         // Usar la tabla Usuario_Cliente creada
         $sql = "INSERT INTO Usuario_Cliente (Email, Password, idCliente_Potencial) 
-                 VALUES (?, ?, ?)";
+                  VALUES (?, ?, ?)";
         
         $stmt = $conn->prepare($sql);
         
         if ($stmt === false) {
-            error_log("Error al preparar la consulta de Alta de Usuario: " . $conn->error);
+            // Manejo de error de PDO al preparar
+            error_log("Error PDO al preparar INSERT de Usuario: " . print_r($conn->errorInfo(), true));
             return false; 
         }
         
-        // ssi: dos strings (Email, Password) y un integer (idCliente_Potencial)
-        $stmt->bind_param("ssi", $email, $password_hashed, $idClientePotencial);
+        // 1. Definir los parámetros en un array (PDO ya detecta el tipo de dato)
+        $parametros = [$email, $password_hashed, $idClientePotencial];
         
-        $res = $stmt->execute();
-        $stmt->close();
+        // 2. Ejecutar pasando el array de parámetros
+        $res = $stmt->execute($parametros); 
+        
+        $stmt->closeCursor(); // Cierra el statement de PDO
 
         if (!$res) {
-            error_log("Error al ejecutar la inserción del Usuario: " . $stmt->error);
+            // Manejo de error de PDO al ejecutar
+            error_log("Error PDO al ejecutar la inserción del Usuario: " . print_r($stmt->errorInfo(), true));
         }
 
         return $res;

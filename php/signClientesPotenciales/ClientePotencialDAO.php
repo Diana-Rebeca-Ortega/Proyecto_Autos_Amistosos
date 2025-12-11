@@ -1,71 +1,70 @@
 <?php
+// Incluimos la clase de conexión que ahora usa PDO
 include_once(__DIR__ . '/../database/conexion_bdd_autos_amistosos.php'); 
 
 class ClientePotencialDAO {
     private $conexion;
 
     public function __construct(){
-        // Usa la misma clase de conexión que el DAO original
-        $this->conexion = new ConexionBDautosAmistosos ();
+        // Crea una instancia de la clase que gestiona la conexión PDO
+        $this->conexion = new ConexionBDautosAmistosos();
     }
 
-    // ***************** ALTAS (A) *****************
+    // ***************** ALTAS (A) - INSERTAR *****************
     /**
-     * Inserta un nuevo Cliente Potencial en la base de datos.
-     * @param string $nombre
-     * @param string $apellido1
-     * @param string $apellido2 (Opcional, puede ser NULL)
-     * @param string $direccion (Opcional, puede ser NULL)
-     * @param string $email
-     * @param string $fuente (Opcional, puede ser NULL)
-     * @return bool True si la inserción fue exitosa, False en caso contrario.
+     * Inserta un nuevo Cliente Potencial usando PDO Prepared Statements.
+     * @param string $nombre, $apellido1, $apellido2, $direccion, $email, $fuente
+     * @return int|bool El último ID insertado o False si falla.
      */
     public function insertar($nombre, $apellido1, $apellido2, $direccion, $email, $fuente) {
-        // 1. Obtener el objeto de conexión (mysqli)
-        $conn = $this->conexion->getConexion();
+        $conn = $this->conexion->getConexion(); // Objeto PDO
         
-        // 2. Definir la consulta SQL para la tabla CLIENTE_POTENCIAL
-        // Los campos son: Nombre, Apellido1, Apellido2, Direccion, Email, Fuente
         $sql = "INSERT INTO Cliente_Potencial (Nombre, Apellido1, Apellido2, Direccion, Email, Fuente) 
-                 VALUES (?, ?, ?, ?, ?, ?)";
+                  VALUES (?, ?, ?, ?, ?, ?)";
         
         $stmt = $conn->prepare($sql);
         
         if ($stmt === false) {
-            error_log("Error al preparar la consulta de Alta Cliente Potencial: " . $conn->error);
+            error_log("Error PDO al preparar INSERT: " . print_r($conn->errorInfo(), true));
             return false; 
         }
         
-        $stmt->bind_param("ssssss", $nombre, $apellido1, $apellido2, $direccion, $email, $fuente);
+        $parametros = [$nombre, $apellido1, $apellido2, $direccion, $email, $fuente];
+        $res = $stmt->execute($parametros); // Ligar y ejecutar en PDO
         
-        $res = $stmt->execute();
         if ($res) {
-            $ultimo_id = $stmt->insert_id; 
-            $stmt->close();
+            $ultimo_id = $conn->lastInsertId(); // Función de PDO para obtener el último ID
+            $stmt->closeCursor(); 
             return $ultimo_id; 
         } else {
-            error_log("Error al ejecutar la inserción del Cliente Potencial: " . $stmt->error);
-            $stmt->close();
+            error_log("Error PDO al ejecutar INSERT: " . print_r($stmt->errorInfo(), true));
+            $stmt->closeCursor();
             return false;
         }
-        $stmt->close();
-        return $res;
     }
 
-    // ***************** CONSULTAS (C) - Mostrar Todos para las tablas *****************
+    // ***************** CONSULTAS (C) - Mostrar Todos *****************
     /**
      * Obtiene todos los Clientes Potenciales.
-     * @return mysqli_result|bool Objeto mysqli_result con los resultados o False si falla.
+     * @return array|bool Array asociativo con los resultados o False si falla.
      */
     public function obtenerTodos(){
         $conn = $this->conexion->getConexion();
         $sql = "SELECT idCliente_Potencial, Nombre, Apellido1, Apellido2, Direccion, Email, Fuente 
                 FROM Cliente_Potencial";
-        $res = $conn->query($sql);
-        return $res; // Devuelve el objeto mysqli_result
+        
+        // Usamos prepare/execute incluso sin parámetros para consistencia PDO
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+
+        // fetchAll devuelve todas las filas como un array asociativo
+        $resultados = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        $stmt->closeCursor();
+        return $resultados; 
     }
 
-    // ***************** BAJAS (B) *****************
+    // ***************** BAJAS (B) - ELIMINAR *****************
     /**
      * Elimina un Cliente Potencial por su ID.
      * @param int $idClientePotencial
@@ -74,16 +73,18 @@ class ClientePotencialDAO {
     public function eliminar($idClientePotencial){
         $conn = $this->conexion->getConexion();
         $sql = "DELETE FROM Cliente_Potencial WHERE idCliente_Potencial = ?";
+        
         $stmt = $conn->prepare($sql);
         
         if ($stmt === false) {
-             error_log("Error al preparar la consulta de Baja Cliente Potencial: " . $conn->error);
+             error_log("Error PDO al preparar DELETE: " . print_r($conn->errorInfo(), true));
              return false; 
         }
         
-        $stmt->bind_param("i", $idClientePotencial); // i = integer
-        $res = $stmt->execute();
-        $stmt->close();
+        $res = $stmt->execute([$idClientePotencial]); // Ejecución simple con array
+        $stmt->closeCursor();
+        
+        // PDOStatement::execute devuelve true en éxito
         return $res;
     }
 
@@ -91,54 +92,53 @@ class ClientePotencialDAO {
     /**
      * Obtiene un Cliente Potencial por su ID.
      * @param int $idClientePotencial
-     * @return mysqli_result|bool Objeto mysqli_result con el resultado o False si falla.
+     * @return array|bool Array asociativo con el resultado o False si falla/no existe.
      */
     public function obtenerPorId($idClientePotencial) {
         $conn = $this->conexion->getConexion();
         $sql = "SELECT idCliente_Potencial, Nombre, Apellido1, Apellido2, Direccion, Email, Fuente 
-                 FROM Cliente_Potencial 
-                 WHERE idCliente_Potencial = ?"; 
+                  FROM Cliente_Potencial 
+                  WHERE idCliente_Potencial = ?"; 
+        
         $stmt = $conn->prepare($sql);
         
         if ($stmt === false) {
-             error_log("Error al preparar la consulta de Obtener Cliente Potencial: " . $conn->error);
+             error_log("Error PDO al preparar SELECT por ID: " . print_r($conn->errorInfo(), true));
              return false; 
         }
         
-        $stmt->bind_param("i", $idClientePotencial); 
-        $stmt->execute();
-        return $stmt->get_result(); 
+        $stmt->execute([$idClientePotencial]);
+        
+        // fetch devuelve solo la primera fila
+        $resultado = $stmt->fetch(PDO::FETCH_ASSOC);
+        $stmt->closeCursor();
+        
+        return $resultado; // Devuelve un array o false si no encuentra nada
     }
 
     // ***************** CAMBIOS (C) - Actualizar *****************
     /**
      * Actualiza la información de un Cliente Potencial.
-     * @param int $id
-     * @param string $nombre
-     * @param string $apellido1
-     * @param string $apellido2
-     * @param string $direccion
-     * @param string $email
-     * @param string $fuente
      * @return bool True si la actualización fue exitosa, False en caso contrario.
      */
     public function actualizar($id, $nombre, $apellido1, $apellido2, $direccion, $email, $fuente) {
         $conn = $this->conexion->getConexion();
         $sql = "UPDATE Cliente_Potencial 
-                 SET Nombre = ?, Apellido1 = ?, Apellido2 = ?, Direccion = ?, Email = ?, Fuente = ?
-                 WHERE idCliente_Potencial = ?";
+                  SET Nombre = ?, Apellido1 = ?, Apellido2 = ?, Direccion = ?, Email = ?, Fuente = ?
+                  WHERE idCliente_Potencial = ?";
+        
         $stmt = $conn->prepare($sql);
         
         if ($stmt === false) {
-             error_log("Error al preparar la consulta de Actualización Cliente Potencial: " . $conn->error);
+             error_log("Error PDO al preparar UPDATE: " . print_r($conn->errorInfo(), true));
              return false;
         }
         
-        // Vincular parámetros: ssssssi (seis strings y un integer al final para el ID)
-        $stmt->bind_param("ssssssi", $nombre, $apellido1, $apellido2, $direccion, $email, $fuente, $id);
+        // Los parámetros deben ir en el mismo orden que los signos '?' en el SQL
+        $parametros = [$nombre, $apellido1, $apellido2, $direccion, $email, $fuente, $id];
 
-        $res = $stmt->execute();
-        $stmt->close();
+        $res = $stmt->execute($parametros);
+        $stmt->closeCursor();
         
         return $res;
     }
@@ -147,24 +147,31 @@ class ClientePotencialDAO {
     /**
      * Busca Clientes Potenciales por Nombre, Apellido1 o Email.
      * @param string $termino
-     * @return mysqli_result|bool Objeto mysqli_result con los resultados o False si falla.
+     * @return array|bool Array asociativo con los resultados o False si falla.
      */
     public function buscarClientes($termino) {
         $conn = $this->conexion->getConexion();
         $like_term = "%" . $termino . "%";
         $sql = "SELECT idCliente_Potencial, Nombre, Apellido1, Apellido2, Direccion, Email, Fuente 
-                 FROM Cliente_Potencial 
-                 WHERE Nombre LIKE ? OR Apellido1 LIKE ? OR Email LIKE ?";
+                  FROM Cliente_Potencial 
+                  WHERE Nombre LIKE ? OR Apellido1 LIKE ? OR Email LIKE ?";
+        
         $stmt = $conn->prepare($sql);
         
         if ($stmt === false) {
-            error_log("Error al preparar la consulta de Búsqueda de Clientes Potenciales: " . $conn->error);
+            error_log("Error PDO al preparar la Búsqueda: " . print_r($conn->errorInfo(), true));
             return false; 
         }
         
-        $stmt->bind_param("sss", $like_term, $like_term, $like_term); 
-        $stmt->execute();
-        return $stmt->get_result(); 
+        // Tres parámetros LIKE
+        $parametros = [$like_term, $like_term, $like_term];
+        $stmt->execute($parametros);
+
+        // Obtener todos los resultados de la búsqueda
+        $resultados = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $stmt->closeCursor();
+        
+        return $resultados; 
     }
 }
 ?>

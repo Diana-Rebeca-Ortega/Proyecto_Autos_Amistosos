@@ -9,24 +9,23 @@ $p = $_POST['password'] ?? null;
 
 // Si la tabla usa SHA1 (inseguro, pero replicando tu código original)
 $p_cifrado = sha1($p); 
-// Si usas password_hash(), aquí deberías usar password_verify()
 $user_encoded = urlencode($u ?? '');
 
 if (empty($u) || empty($p) ) {
-    // Si la página de login es genérica o solo para empleados, ajusta la URL
     header("location:../../pages/login/loginEmpleados.php?error=campos_vacios&usuario={$user_encoded}");
     exit();
 }
 
-// 2. CONEXIÓN A LA BASE DE DATOS
-// Asumimos que la clase fue corregida (ConexionBDUsuarios)
-$con = new ConexionBDUsuarios();
-$conexion = $con->getConexion();
-
-if (!$conexion) {
+// 2. CONEXIÓN A LA BASE DE DATOS (Asumimos que usa PDO)
+try {
+    $con = new ConexionBDUsuarios(); // Esta clase ahora maneja el die() si falla la conexión
+    $conexion = $con->getConexion(); // Devuelve el objeto PDO
+} catch (Exception $e) {
+    // Esto es un fallback, la clase ya debería manejar el error
     header("location:../../pages/login/loginEmpleados.php?error=db_error&usuario={$user_encoded}");
     exit();
 }
+
 
 // 3. VERIFICACIÓN Y AUTENTICACIÓN SEGURA EN AMBAS TABLAS (Empleados y Clientes)
 $sql = "
@@ -53,39 +52,47 @@ $sql = "
     )
 ";
 
+// 3a. Preparar la consulta
 $stmt = $conexion->prepare($sql);
 
 if ($stmt === false) {
-    error_log("Error al preparar la consulta de login: " . $conexion->error);
+    error_log("Error al preparar la consulta de login: " . print_r($conexion->errorInfo(), true));
     header("location:../../pages/login/loginEmpleados.php?error=db_error&usuario={$user_encoded}");
     exit(); 
 }
 
-// Los parámetros se ligan CUATRO VECES: Usuario/Email, Password, Usuario/Email, Password
-$stmt->bind_param("ssss", $u, $p_cifrado, $u, $p_cifrado);
-$stmt->execute();
-$res = $stmt->get_result();
-$stmt->close(); // Cierra el statement
+// 3b. Ejecutar la consulta pasando el array de parámetros
+// Los signos de interrogación (?) se mapean a los valores en el array
+$parametros = [$u, $p_cifrado, $u, $p_cifrado];
+
+// El método execute() de PDO recibe el array de parámetros directamente
+$stmt->execute($parametros);
 
 // 4. MANEJO DE RESULTADOS
-if ($res->num_rows == 1) {
+// Usamos fetchAll para obtener todas las filas y poder contarlas
+$resultados = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+// 4a. Contar filas (reemplazo de $res->num_rows)
+if (count($resultados) === 1) {
     // ÉXITO: Autenticación completa
-    $usuario_data = $res->fetch_assoc();
+    $usuario_data = $resultados[0]; // Obtenemos la única fila de resultados
+    
+    // ... (El resto del código de la sesión y redirección es idéntico) ...
     
     // Almacenamos datos esenciales en la sesión
     $_SESSION['usuario_autenticado'] = true;
     $_SESSION['nombre_usuario'] = $usuario_data['Nombre'];
     $_SESSION['perfil'] = $usuario_data['Perfil'];
     $_SESSION['idReferencia'] = $usuario_data['ID_Referencia']; 
-    $_SESSION['tipo_usuario'] = $usuario_data['Tipo_Usuario']; // Nuevo: 'empleado' o 'cliente'
+    $_SESSION['tipo_usuario'] = $usuario_data['Tipo_Usuario'];
 
     $perfil_usuario = $usuario_data['Perfil'];
     if ($perfil_usuario === 'vendedor') {
         $_SESSION['idVendedor'] = $usuario_data['ID_Referencia']; 
     }
+    
     // 5. Redirección según el tipo de usuario/perfil
     if ($usuario_data['Tipo_Usuario'] === 'empleado') {
-        // Redirecciones de Empleados
         if ($perfil_usuario === 'administrador') {
             header('Location: ../../pages/Empleado_Administrador/menuPrincipal_EA.html');
         } elseif ($perfil_usuario === 'dueno') {
@@ -94,7 +101,6 @@ if ($res->num_rows == 1) {
             header('location:../../pages/Empleado_Vendedor/menuPrincipal_EV.php'); 
         } 
     } elseif ($usuario_data['Tipo_Usuario'] === 'cliente') {
-        // Redirección para Clientes
         header('location:../../pages/ClientePotencial/catalogo.html'); 
     }
 
