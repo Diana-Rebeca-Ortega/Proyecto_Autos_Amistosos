@@ -42,6 +42,70 @@ public function obtenerDisponibles(): array {
         return []; // Retorna un array vacío en caso de error
     }
 }
-    // Aquí puedes añadir más métodos como obtenerPorId, etc.
+// En AutomovilDAO.php
+
+public function obtenerTodosLosAutomoviles() {
+    // Ajusta la selección de columnas según tu tabla (describe Automovil)
+    $sql = "SELECT idAutomovil, Modelo, Precio_Lista, Color FROM Automovil"; 
+    
+    try {
+        $stmt = $this->conexion->prepare($sql);
+        $stmt->execute();
+        $resultados = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $stmt->closeCursor();
+        return $resultados;
+    } catch (PDOException $e) {
+        error_log("Error al obtener todos los automóviles: " . $e->getMessage());
+        return [];
+    }
+}
+ 
+
+public function obtenerAutomovilPorID(string $idAutomovil) {
+    
+    $sql = "SELECT idAutomovil, Modelo, Precio_Lista, FechaFabricacion, Color, 
+                   Kilometraje_Entrega, Condicion, Tipo_Carroceria, Estado 
+            FROM Automovil 
+            WHERE idAutomovil = ?"; 
+    
+    try {
+        $stmt = $this->conexion->prepare($sql);
+        $stmt->execute([$idAutomovil]);
+        // PDO::FETCH_ASSOC devuelve una única fila como array asociativo.
+        $auto = $stmt->fetch(PDO::FETCH_ASSOC); 
+        $stmt->closeCursor();
+        return $auto; 
+    } catch (PDOException $e) {
+        error_log("Error al obtener automóvil por ID: " . $e->getMessage());
+        return false;
+    }
+}
+public function actualizarAutomovil(array $datosAuto) {
+    $sql = "UPDATE Automovil 
+            SET 
+                Precio_Lista = ?
+            WHERE 
+                idAutomovil = ?";
+    $parametros = [
+        $datosAuto['Precio_Lista'], 
+        $datosAuto['idAutomovil'] 
+    ];
+    
+    try {
+        $stmt = $this->conexion->prepare($sql);
+        $exito = $stmt->execute($parametros);
+       
+        if (!$exito) {
+            $errorInfo = $stmt->errorInfo();
+            error_log("❌ ERROR SQL detallado en UPDATE: " . json_encode($errorInfo));
+            return false;
+        }
+        return true;
+        
+    } catch (PDOException $e) {
+        error_log("❌ Excepción de PDO: " . $e->getMessage());
+        return false;
+    }
+}
 }
 ?>

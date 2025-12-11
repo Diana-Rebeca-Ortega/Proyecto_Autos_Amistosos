@@ -114,7 +114,7 @@ if (isset($_SESSION['alert_message'])) {
                         <tr>
                             <td class="fw-bold">Cambios</td>
                                     <td><a href="../../php/controllers/ABCC_Clientes/formularios/formulario_cambiosCliente.php">Actualizar Cliente</a></td>
-                            <td><a href="#">Modificar detalles de Vehículo</a></td>
+                            <td><a href="../../php/controllers/ABCC_Automovil/formulario_cambiosAutomovil.php">Modificar detalles de Vehículo</a></td>
                             <td></td>
                         </tr>
                         <tr>
