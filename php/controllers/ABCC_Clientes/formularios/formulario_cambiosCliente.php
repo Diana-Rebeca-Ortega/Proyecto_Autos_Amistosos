@@ -1,16 +1,16 @@
 <?php
 session_start();
 
-  if (!isset($_SESSION['usuario_autenticado']) || $_SESSION['usuario_autenticado'] !== true) {
+if (!isset($_SESSION['usuario_autenticado']) || $_SESSION['usuario_autenticado'] !== true) {
     session_unset();
     session_destroy();
-      header("Location: ../../cerrar_sesion.php");
+    header("Location: ../../cerrar_sesion.php");
     exit;
-  }
+}
 include_once('../clienteDAO.php'); 
 
 $cliente_obj = new clienteDAO();
-// El método obtenerTodos() de la clase Cliente devuelve un objeto mysqli_result
+// $datos ahora es un array asociativo de clientes, o un array vacío [] si no hay registros
 $datos = $cliente_obj->obtenerTodos(); 
 
 $contador = 1; 
@@ -35,8 +35,10 @@ $contador = 1;
 
 <div class="container">
     <?php
-        // Usamos num_rows de mysqli_result
-        if($datos->num_rows == 0){
+        // 🚨 CAMBIO CRÍTICO AQUÍ: Usamos count() para contar elementos en el array
+        $num_filas = is_array($datos) ? count($datos) : 0;
+        
+        if($num_filas == 0){
             echo "<div class='alert alert-info' role='alert'>No se encontraron registros de clientes.</div>";
         } else {
             // ---- COMIENZA LA TABLA ----
@@ -54,8 +56,8 @@ $contador = 1;
             echo '</thead>';
             echo '<tbody>';
 
-            // Iteramos sobre los resultados
-            while($fila = $datos->fetch_assoc()){ // Usamos fetch_assoc() de mysqli_result
+            // 🚨 CAMBIO CRÍTICO AQUÍ: Usamos foreach para iterar sobre el array
+            foreach($datos as $fila){
                 printf(
                     "<tr> 
                         <td> %s </td>
@@ -65,14 +67,11 @@ $contador = 1;
                         <td>%s</td>
                         <td>%s</td>
                         <td> 
-                           
-                            <a href=\"./actualizacion_formCliente.php?accion=actualizar&id=%s\" class=\"btn btn-warning btn-sm\"
-                            > Modificar </a> 
+                            <a href=\"./actualizacion_formCliente.php?accion=actualizar&id=%s\" class=\"btn btn-warning btn-sm\"> Modificar </a> 
                         </td>
                     </tr>", 
                     
-                    // ARGUMENTOS DE PRINFTF (8 en total)
-                    // 1. Datos para las celdas de la tabla (6 argumentos)
+                    // ARGUMENTOS DE PRINFTF
                     $contador++,
                     $fila['idCliente'], // ID Cliente
                     $fila['Nombre'],
@@ -80,11 +79,8 @@ $contador = 1;
                     $fila['Telefono'],
                     $fila['Email'],
                     
-                    // 3. ID para el enlace Eliminar (1 argumento)
-                    $fila['idCliente'],
-                    
-                    // 4. Nombre para la alerta de confirmación (1 argumento)
-                    $fila['Nombre'] . ' ' . $fila['Apellido1']
+                    $fila['idCliente'], // ID para el enlace Modificar
+                    $fila['Nombre'] . ' ' . $fila['Apellido1'] // Este argumento se ignorará, ya que solo hay 7 placeholders en el string de formato
                 );
             }
             echo '</tbody>';
