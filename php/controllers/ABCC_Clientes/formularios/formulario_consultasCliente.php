@@ -1,29 +1,32 @@
 <?php
 session_start();
 
-  if (!isset($_SESSION['usuario_autenticado']) || $_SESSION['usuario_autenticado'] !== true) {
+if (!isset($_SESSION['usuario_autenticado']) || $_SESSION['usuario_autenticado'] !== true) {
     session_unset();
     session_destroy();
     header("Location: ../../cerrar_sesion.php");
     exit;
-  }
+}
 include_once('../clienteDAO.php'); 
 
 $cliente_obj = new clienteDAO();
 
 // 1. CAPTURAR EL TÉRMINO DE BÚSQUEDA
-// Captura el valor del campo 'busqueda' si se envió por GET
 $termino_busqueda = $_GET['busqueda'] ?? '';
 
 // 2. DECIDIR QUÉ MÉTODO LLAMAR
 if (!empty($termino_busqueda)) {
     // Si hay un término, llama al nuevo método de búsqueda
+    // Este método debe devolver un ARRAY de clientes
     $datos = $cliente_obj->buscarClientes($termino_busqueda); 
 } else {
-    // Si no hay término, carga todos los clientes (comportamiento original)
+    // Si no hay término, carga todos los clientes
+    // Este método debe devolver un ARRAY de clientes
     $datos = $cliente_obj->obtenerTodos(); 
 }
 
+// 🚨 Nuevo: Contamos las filas con count()
+$num_filas = is_array($datos) ? count($datos) : 0; 
 $contador = 1; 
 ?>
 
@@ -46,7 +49,7 @@ $contador = 1;
     <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="GET" class="mb-4">
         <div class="input-group">
             <input type="text" class="form-control" placeholder="Buscar por Nombre, Apellido o Email" 
-                   name="busqueda" value="<?php echo htmlspecialchars($termino_busqueda); ?>">
+                    name="busqueda" value="<?php echo htmlspecialchars($termino_busqueda); ?>">
             
             <button class="btn btn-primary" type="submit">Buscar</button>
             
@@ -58,8 +61,8 @@ $contador = 1;
     </div>
 <div class="container">
     <?php
-        // Usamos num_rows de mysqli_result
-        if($datos->num_rows == 0){
+        // 🚨 CAMBIO CRÍTICO 1: Usamos la variable $num_filas (contada con count())
+        if($num_filas == 0){
             echo "<div class='alert alert-info' role='alert'>No se encontraron registros de clientes.</div>";
         } else {
             // ---- COMIENZA LA TABLA ----
@@ -71,16 +74,15 @@ $contador = 1;
                 echo '<th scope="col">Nombre</th>';
                 echo '<th scope="col">Primer Apellido</th>';
                 echo '<th scope="col">Segundo Apellido</th>';
-                echo '<th scope="col">Dirección</th>'; // Añadida para más detalles
+                echo '<th scope="col">Dirección</th>'; 
                 echo '<th scope="col">Teléfono</th>';
                 echo '<th scope="col">Email</th>';
-                // La columna ACCIONES se elimina
                 echo ' </tr>';
             echo '</thead>';
             echo '<tbody>';
 
-            // Iteramos sobre los resultados
-            while($fila = $datos->fetch_assoc()){ // Usamos fetch_assoc() de mysqli_result
+            // 🚨 CAMBIO CRÍTICO 2: Usamos foreach para iterar sobre el array de clientes
+            foreach($datos as $fila){
                 printf(
                     "<tr> 
                         <td> %s </td>
@@ -93,7 +95,7 @@ $contador = 1;
                         <td>%s</td>
                     </tr>", 
                     
-                    // ARGUMENTOS DE PRINFTF (8 en total, ahora solo para la vista)
+                    // ARGUMENTOS DE PRINFTF
                     $contador++,
                     $fila['idCliente'], // ID Cliente
                     $fila['Nombre'],
@@ -108,10 +110,7 @@ $contador = 1;
             echo '</table>';
         }
         
-        // Es una buena práctica liberar el resultado
-        if ($datos->num_rows > 0) {
-            $datos->free(); 
-        }
+        // 🚨 Eliminada la línea "$datos->free()" ya que los arrays de PDO no necesitan liberarse.
     ?>
     <div class="text-center mt-4">
         <a href="../../../../pages/Empleado_Vendedor/menuPrincipal_EV.php" class="btn btn-secondary">Volver al Menú Principal</a>
