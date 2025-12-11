@@ -1,63 +1,62 @@
 <?php
 // Asegúrate de que esta ruta sea correcta para incluir la conexión
 include_once(__DIR__.'../../../database/conexion_bdd_autos_amistosos.php'); 
+
 class VistaVentasDAO {
     private $conexion;
 
     public function __construct() {
-        // Inicializa la conexión a la base de datos principal
-        $con = new ConexionBDautosAmistosos();
+        // USO CORRECTO DEL SINGLETON (PDO)
+        $con = ConexionBDautosAmistosos::getInstancia();
         $this->conexion = $con->getConexion();
-
-        if (!$this->conexion) {
-            // Manejo de error si la conexión falla al inicializar el DAO
-            error_log("Error: La conexión a la BD de autos falló en VentasDAO.");
-        }
+        // Si el Singleton lanza excepción, el código se detiene antes de aquí.
     }
 
-    public function listarVentas() {
-        // La consulta simplemente selecciona todo de la VIEW.
+    // Método 1: Listar todas las ventas (Estandarizado a PDO)
+    public function listarVentas(): array {
         $sql = "SELECT * FROM VistaVenta ORDER BY Fecha_Venta DESC";
         
-        $resultado = $this->conexion->query($sql);
+        try {
+            // Usar prepare() incluso para SELECTs simples es buena práctica
+            $stmt = $this->conexion->prepare($sql);
+            $stmt->execute();
+            
+            // PDO: Obtener todos los resultados de una sola vez
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-        if ($resultado) {
-            if ($resultado->num_rows > 0) {
-                $ventas = [];
-                while ($fila = $resultado->fetch_assoc()) {
-                    $ventas[] = $fila;
-                }
-                $resultado->free();
-                return $ventas;
-            } else {
-                // No hay resultados
-                return [];
+        } catch (PDOException $e) {
+            // Manejo de errores de PDO
+            error_log("Error al listar ventas desde VistaVenta: " . $e->getMessage());
+            return [];
+        }
+    }
+
+    // Método 2: Listar ventas de un vendedor específico (CORREGIDO A PDO)
+    public function listarVentasPropias($idVendedor): array {
+       
+       $sql = "SELECT * FROM VistaVentaVendedor WHERE Vendedor_idVendedor = ?";
+        
+        try {
+            $stmt = $this->conexion->prepare($sql);
+            
+            if ($stmt === false) {
+                 error_log("Error preparando la consulta para listarVentasPropias.");
+                 return [];
             }
-        } else {
-            // Error en la ejecución de la consulta
-            error_log("Error al listar ventas desde VistaVenta: " . $this->conexion->error);
-            return false;
+        
+            // CORRECCIÓN 1: Pasar el parámetro directamente a execute() o usar bindParam
+            $stmt->execute([$idVendedor]); 
+            
+            // CORRECCIÓN 2 (Línea 53): En PDO, usamos fetchAll() directamente del statement
+            return $stmt->fetchAll(PDO::FETCH_ASSOC); 
+            
+            // Nota: En PDO, no se usa $stmt->close() ni $stmt->get_result()
+            
+        } catch (PDOException $e) {
+            error_log("Error al listar ventas propias: " . $e->getMessage());
+            return [];
         }
     }
- public function listarVentasPropias($idVendedor) {
-   $sql = "SELECT * FROM VistaVentaVendedor WHERE Vendedor_idVendedor = ?";
-    $stmt = $this->conexion->prepare($sql);
-    if ($stmt === false) {
-        error_log("Error preparando la consulta para listarVentasPropias: " . $this->conexion->error);
-        return false;
-    }
-    $stmt->bind_param("i", $idVendedor);
-    $stmt->execute();
-    $resultado = $stmt->get_result();
-    $stmt->close();
-    return $resultado;
- }
 
-
-    public function cerrarConexion() {
-        if ($this->conexion) {
-            $this->conexion->close();
-        }
-    }
 }
 ?>

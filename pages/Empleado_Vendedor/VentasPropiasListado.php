@@ -2,23 +2,13 @@
 session_start();
 // Incluimos el DAO que contiene la lógica de la base de datos
 include_once(__DIR__.'/../../php/controllers/ABCC_Ventas/VistaVentasDAO.php');
-$idVendedor = $_SESSION['idVendedor'] ?? 0;
-$idVendedorLogueado = $idVendedor;
-$perfilUsuario = $_SESSION['perfil'] ?? 'vendedor';
-
+$idVendedorLogueado = $_SESSION['idVendedor'] ?? 0;
 $ventasDAO = new VistaVentasDAO();
 $listado_ventas = $ventasDAO->listarVentasPropias($idVendedorLogueado);
-$error_consulta = ($listado_ventas === false);
 
-if ($listado_ventas instanceof mysqli_result) {
-    $ventas_array = $listado_ventas->fetch_all(MYSQLI_ASSOC);
-    $sin_resultados = empty($ventas_array);
-    $listado_ventas = $ventas_array; 
-} else {
-    $ventas_array = [];
-    $sin_resultados = true; 
-}
-$ventasDAO->cerrarConexion();
+$error_consulta = ($listado_ventas === false);
+$sin_resultados = empty($listado_ventas);
+
 
 ?>
 <!DOCTYPE html>
