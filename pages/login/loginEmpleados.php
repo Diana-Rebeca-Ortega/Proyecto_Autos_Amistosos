@@ -117,7 +117,7 @@
         $mensaje = '';
         
         if ($error == 'campos_vacios') { 
-            $mensaje = '🚨 Por favor, ingresa tu Usuario y Contraseña.';
+            $mensaje = '🚨 Por favor, asegurate de ingresar tu Usuario, Contraseña y validar el Catpcha .';
         } elseif ($error == 'db_error') { 
             $mensaje = '⚠️ Error de conexión. Inténtalo más tarde.';
         } elseif ($error == 'credenciales_invalidas') { 
