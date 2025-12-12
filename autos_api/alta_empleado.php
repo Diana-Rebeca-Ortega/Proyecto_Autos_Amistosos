@@ -19,7 +19,8 @@ if (isset($_POST['nombre']) && isset($_POST['apellido1']) && isset($_POST['apell
     // 1. Obtener y limpiar los datos de entrada
     $nombre = $conn->real_escape_string($_POST['nombre']);
     $apellido1 = $conn->real_escape_string($_POST['apellido1']);
-    // ... (resto de variables)
+    $apellido2_raw = $_POST['apellido2'];
+    $apellido2 = empty($apellido2_raw) ? NULL : $conn->real_escape_string($apellido2_raw);
     
     $salario_base = floatval($_POST['salario_base']);
     $porcentaje_comision = floatval($_POST['porcentaje_comision']);

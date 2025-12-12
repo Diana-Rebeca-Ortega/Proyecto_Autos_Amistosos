@@ -1,6 +1,12 @@
 <?php
 session_start();
 
+if (!isset($_SESSION['usuario_autenticado']) || $_SESSION['usuario_autenticado'] !== true) {    
+    session_unset();
+    session_destroy();  
+    header("Location: /PROYECTO/cerrar_sesion");
+    exit;
+}
 // 1. Inclusión del DAO (Ajusta la ruta si es necesario)
 include_once('../../controllers/ABCC_Automovil/AutomovilDAO.php'); 
 // La inclusión del ReporteDAO es opcional aquí, pero no hace daño.

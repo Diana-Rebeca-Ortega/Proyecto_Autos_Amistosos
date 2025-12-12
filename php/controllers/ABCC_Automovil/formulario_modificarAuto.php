@@ -1,4 +1,12 @@
 <?php
+session_start();
+
+if (!isset($_SESSION['usuario_autenticado']) || $_SESSION['usuario_autenticado'] !== true) {    
+    session_unset();
+    session_destroy();  
+    header("Location: /PROYECTO/cerrar_sesion");
+    exit;
+}
 // Lógica PHP de la página (la que carga el auto por ID)
 include_once('../../controllers/ABCC_Automovil/AutomovilDAO.php'); 
 include_once('../../database/conexion_bdd_autos_amistosos.php'); 

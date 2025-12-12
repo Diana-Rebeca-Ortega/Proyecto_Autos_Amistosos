@@ -8,7 +8,8 @@ if (!isset($_SESSION['usuario_autenticado']) || $_SESSION['usuario_autenticado']
     // Si la sesión no existe o no está autenticada:
     session_unset();
     session_destroy();
-    header("Location: ../../php/controllers/cerrar_sesion.php");
+    //header("Location: ../../php/controllers/cerrar_sesion.php");
+     header("Location: /PROYECTO/cerrar_sesion");
     exit;
 }
 

@@ -22,8 +22,8 @@ if (isset($_POST['id_vendedor']) && isset($_POST['nombre']) && isset($_POST['ape
     $apellido2 = empty($apellido2_raw) ? NULL : $conn->real_escape_string($apellido2_raw);
     
     $salario_base = floatval($_POST['salario_base']);
-    $porcentaje_comision = floatval($_POST['porcentaje_comision']);
-
+   $porcentaje_comision = floatval($_POST['porcentaje_comision']);
+*/
     // 2. Preparar la consulta SQL para la ACTUALIZACIÓN
     $stmt = $conn->prepare("UPDATE vendedor SET 
                             Nombre = ?, 
@@ -35,7 +35,7 @@ if (isset($_POST['id_vendedor']) && isset($_POST['nombre']) && isset($_POST['ape
     
     // Tipos de parámetros: s=string, d=double, i=integer (para el ID)
     // El orden de los tipos DEBE coincidir con el orden de las variables en bind_param
-    $stmt->bind_param("sssdii", $nombre, $apellido1, $apellido2, $salario_base, $porcentaje_comision, $idVendedor);
+    $stmt->bind_param("sssddi", $nombre, $apellido1, $apellido2, $salario_base, $porcentaje_comision, $idVendedor);
 
     // 3. Ejecutar la consulta
     if ($stmt->execute()) {

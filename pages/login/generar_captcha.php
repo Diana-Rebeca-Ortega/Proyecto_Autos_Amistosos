@@ -1,4 +1,5 @@
 <?php
+//Utilizamos la libreria GD de PHP para generar una imagen con un número aleatorio, que es la función básica de un CAPTCHA simple
 session_start();
 // Esto indica al navegador que el contenido que sigue es una imagen JPEG
 header("Content-type: image/jpeg"); 

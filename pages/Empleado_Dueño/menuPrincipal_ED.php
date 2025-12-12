@@ -8,7 +8,7 @@ session_start();
     // Si la sesión no existe o no está autenticada:
     session_unset();
     session_destroy();
-   header("Location: ../../php/controllers/cerrar_sesion.php");
+  header("Location: /PROYECTO/cerrar_sesion");
     exit;
   }
 ?>

@@ -6,7 +6,7 @@ header("Expires: 0");
   if (!isset($_SESSION['usuario_autenticado']) || $_SESSION['usuario_autenticado'] !== true) {
     session_unset();
     session_destroy();
-   header("Location: ../../cerrar_sesion.php");
+   header("Location: /PROYECTO/cerrar_sesion");
     exit;
   }
 include_once('../clienteDAO.php'); 

@@ -1,5 +1,13 @@
 <?php
 session_start();
+
+if (!isset($_SESSION['usuario_autenticado']) || $_SESSION['usuario_autenticado'] !== true) {
+    // Si la sesión no existe o no está autenticada:
+    session_unset();
+    session_destroy();  
+    header("Location: /PROYECTO/cerrar_sesion");
+    exit;
+}
 // Incluimos el DAO que contiene la lógica de la base de datos
 include_once(__DIR__.'/../../php/controllers/ABCC_Ventas/VistaVentasDAO.php');
 $idVendedorLogueado = $_SESSION['idVendedor'] ?? 0;
