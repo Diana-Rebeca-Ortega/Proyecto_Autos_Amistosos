@@ -4,11 +4,10 @@ session_start();
   if (!isset($_SESSION['usuario_autenticado']) || $_SESSION['usuario_autenticado'] !== true) {
     session_unset();
     session_destroy();
-    header("Location: ../cerrar_sesion.php");
+   header("Location: /PROYECTO/cerrar_sesion");
     exit;
   }
-include_once('../empleado_dao.php'); 
-
+include_once(ROOT_PATH . 'php/controllers/empleado_dao.php');
 
 $vendedorDAO = new EmpleadoDAO();
 echo "<h1>PROCESAMIENTO DE ALTAS DE VENDEDORES</h1>";

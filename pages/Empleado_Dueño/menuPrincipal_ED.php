@@ -37,12 +37,12 @@ session_start();
                Bienvenido <?php echo htmlspecialchars($_SESSION['nombre_usuario'] ?? 'Usuario'); ?>
             </span>
             <ul class="navbar-nav">
-                <li class="nav-item"><a class="nav-link" href="#">Info de vntas y finanzas</a></li>
-                <li class="nav-item"><a class="nav-link" href="./reportesDueño.php">Reportes de Desempeño</a></li>
-                <li class="nav-item"><a class="nav-link" href="#">Configuración</a></li>
-                <li class="nav-item"><a class="nav-link" href="#">Análisis</a></li>
-                 <form action="../../php/controllers/cerrar_sesion.php">
-   <li class="nav-item"><a class="nav-link" href="../../php/controllers/cerrar_sesion.php">Cerrar Sesion</a></li>
+                <li class="nav-item"><a class="nav-link" href="/PROYECTO/finanzas/reportes">Info de ventas y finanzas</a></li>
+                <li class="nav-item"><a class="nav-link" href="/PROYECTO/desempeño/reportes">Reportes de Desempeño</a></li>
+                <li class="nav-item"><a class="nav-link" href="/PROYECTO/configuracion">Configuración</a></li>
+                <li class="nav-item"><a class="nav-link" href="/PROYECTO/analisis">Análisis</a></li>
+                 <form action="/PROYECTO/php/controllers/cerrar_sesion.php">
+   <li class="nav-item"><a class="nav-link" href="/PROYECTO/php/controllers/cerrar_sesion.php">Cerrar Sesion</a></li>
       </form>
                
             </ul>
@@ -68,27 +68,27 @@ session_start();
                     <tbody>
                         <tr>
                             <td class="fw-bold">Altas</td>
-                            <td><a href="../../php/formulario_registrarEmpleado.php">Registrar Empleado</a></td>
-                            <td><a href="#">Registrar Proveedor</a></td>
+                            <td><a href="/PROYECTO/empleados/registrar">Registrar Empleado</a></td>
+                            <td><a href="/PROYECTO/proveedores/registrar">Registrar Proveedor</a></td>
                             <td></td>
                         </tr>
                         <tr>
                             <td class="fw-bold">Bajas</td>
-                            <td><a href="../../php/formulario_dar_baja_empleado.php">Eliminar Empleado</a></td>
-                            <td><a href="#">Eliminar Proveedor</a></td>
+                            <td><a href="/PROYECTO/empleados/eliminar">Eliminar Empleado</a></td>
+                            <td><a href="/PROYECTO/proveedores/eliminar">Eliminar Proveedor</a></td>
                             <td></td>
                         </tr>
                         <tr>
                             <td class="fw-bold">Cambios</td>
-                            <td><a href="../../php/formulario_actualizarEmpleado.php">Actualizar información de Empleado</a></td>
-                            <td><a href="#">Modificar detalles de Proveedor</a></td>
+                            <td><a href="/PROYECTO/empleados/actualizar">Actualizar información de Empleado</a></td>
+                            <td><a href="/PROYECTO/proveedores/actualizar">Modificar detalles de Proveedor</a></td>
                             <td></td>
                         </tr>
                         <tr>
                             <td class="fw-bold">Consultas</td>
-                            <td><a href="../../php/formulario_consultasEmpleado.php">Buscar información Empleado</a></td>
-                            <td><a href="#">Buscar información Proveedor</a></td>
-                            <td><a href="#">Verificar estado de inventario</a></td>
+                            <td><a href="/PROYECTO/empleados/buscar">Buscar información Empleado</a></td>
+                            <td><a href="/PROYECTO/proveedores/buscar">Buscar información Proveedor</a></td>
+                            <td><a href="/PROYECTO/inventario/estado">Verificar estado de inventario</a></td>
                         </tr>
                     </tbody>
                 </table>

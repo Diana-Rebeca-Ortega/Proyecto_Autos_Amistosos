@@ -4,11 +4,10 @@ session_start();
   if (!isset($_SESSION['usuario_autenticado']) || $_SESSION['usuario_autenticado'] !== true) {
     session_unset();
     session_destroy();
-   header("Location: ./controllers/cerrar_sesion.php");
+    header("Location: /PROYECTO/cerrar_sesion");
     exit;
   }
-  
-include('./controllers/empleado_dao.php');
+  require_once(__DIR__ . '/controllers/empleado_dao.php');
 $vendedor_obj = new EmpleadoDAO();
 
 $termino_busqueda = $_GET['busqueda'] ?? '';
@@ -38,7 +37,7 @@ $contador = 1;
 <div class="container">
     <h2 class="mb-4 text-info">🔍 Consulta de Vendedores Registrados</h2>
 
-    <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="GET" class="mb-4">
+    <form action="/PROYECTO/empleados/buscar" method="GET" class="mb-4">
         <div class="input-group">
             <input type="text" class="form-control" placeholder="Buscar por Nombre o Apellido" 
                     name="busqueda" value="<?php echo htmlspecialchars($termino_busqueda); ?>">
@@ -46,7 +45,7 @@ $contador = 1;
             <button class="btn btn-primary" type="submit">Buscar</button>
             
             <?php if (!empty($termino_busqueda)): ?>
-                <a href="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" class="btn btn-secondary">Limpiar</a>
+                <a href="/PROYECTO/empleados/buscar" class="btn btn-secondary">Limpiar</a>
             <?php endif; ?>
         </div>
     </form>
@@ -54,7 +53,7 @@ $contador = 1;
 <div class="container">
     <?php
         // Usamos num_rows de mysqli_result
-        if($datos->num_rows == 0){
+        if($datos->rowCount() == 0){
             // ALERTA ACTUALIZADA
             echo "<div class='alert alert-info' role='alert'>No se encontraron registros de vendedores.</div>";
         } else {
@@ -74,7 +73,7 @@ $contador = 1;
             echo '<tbody>';
 
             // Iteramos sobre los resultados
-            while($fila = $datos->fetch_assoc()){ // Usamos fetch_assoc() de mysqli_result
+            while($fila = $datos->fetch(PDO::FETCH_ASSOC)){ // Usamos fetch_assoc() de mysqli_result
                 printf(
                     "<tr> 
                         <td> %s </td>
@@ -92,20 +91,16 @@ $contador = 1;
                     $fila['Apellido2'],
                     // Formatear Salario y Comisión para la vista (opcional, pero recomendado)
                     number_format($fila['Salario_Base'], 2), // Ejemplo de formato decimal
-                    number_format($fila['Porcentaje_Comisión'], 2) // Ejemplo de formato decimal
+                    number_format($fila['Porcentaje_Comisión'] * 100, 2) . ' %'
                 );
             }
             echo '</tbody>';
             echo '</table>';
         }
-        
-        // Es una buena práctica liberar el resultado
-        if ($datos->num_rows > 0) {
-            $datos->free(); 
-        }
+       
     ?>
     <div class="text-center mt-4">
-        <a href="../pages/Empleado_Vendedor/menuPrincipal_EV.php" class="btn btn-secondary">Volver al Menú Principal</a>
+        <a href="/PROYECTO/vendedor/principal" class="btn btn-secondary">Volver al Menú Principal</a>
     </div>
 </div>
 

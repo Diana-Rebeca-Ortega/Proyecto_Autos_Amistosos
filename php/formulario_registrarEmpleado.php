@@ -4,7 +4,7 @@ session_start();
   if (!isset($_SESSION['usuario_autenticado']) || $_SESSION['usuario_autenticado'] !== true) {
     session_unset();
     session_destroy();
-    header("Location: ./controllers/cerrar_sesion.php");
+    header("Location: /PROYECTO/cerrar_sesion");
     exit;
   }
   ?>
@@ -25,7 +25,7 @@ session_start();
     <h2 class="mb-4 text-success">Registro de Nuevo Vendedor 💰</h2>
     
     <form class="row g-3 needs-validation" 
-    action= "./controllers/ABCC_Empleados/procesar_altas_Empleado.php" method="POST" novalidate>
+    action="/PROYECTO/empleados/procesar/alta" method="POST" novalidate>
 
         <div class="col-md-6">
             <label for="caja_nombre" class="form-label">Nombre</label>

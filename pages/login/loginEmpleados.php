@@ -42,7 +42,7 @@
         /* 2. Estilos del Panel de la Imagen (Izquierda) */
         .image-panel {
             flex: 1.5;
-            background: url('../../images/autorosa.jpg') no-repeat center center;
+            background: url('/PROYECTO/images/autorosa.jpg') no-repeat center center;
             background-size: cover;
             position: relative;
             display: flex; 
@@ -89,11 +89,11 @@
                 flex: 1;
             }
         }
-        /* 💡 CORRECCIÓN 1: ESTILOS DEL CAPTCHA AÑADIDOS */
+      
         .captcha-container {
             display: flex;
             align-items: center;
-            margin-bottom: 20px; /* Separación del botón */
+            margin-bottom: 20px;
             gap: 10px; 
         }
         .captcha-container img {
@@ -147,7 +147,7 @@
             <div class="login-container">
                 <h2 class="login-title">INICIAR SESIÓN</h2>
                 
-                <form action="../../php/controllers/validar_usuario.php" method="POST" novalidate>
+               <form action="/PROYECTO/php/controllers/validar_usuario.php" method="POST" novalidate> 
 
                     <div class="mb-3">
                         <label for="usuario" class="form-label">Usuario o Email</label>
@@ -168,7 +168,7 @@
                         <label class="form-label d-block">Verificación de Seguridad</label>
                         <div class="captcha-container">
                             
-                            <img src="generar_captcha.php" alt="Código de verificación" width="120" height="40">
+                           <img src="/PROYECTO/pages/login/generar_captcha.php" alt="Código de verificación" width="120" height="40"> 
                             
                             <div class="captcha-input-group">
                                 <input type="text" class="form-control" id="captcha_input" name="captcha_input" 

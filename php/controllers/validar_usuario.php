@@ -90,14 +90,14 @@ if (count($resultados) === 1) {
     }
     if ($usuario_data['Tipo_Usuario'] === 'empleado') {
         if ($perfil_usuario === 'administrador') {
-            header('Location: ../../pages/Empleado_Administrador/menuPrincipal_EA.html');
+            header('Location: /PROYECTO/admin/principal');
         } elseif ($perfil_usuario === 'dueno') {
-            header('location:../../pages/Empleado_Dueño/menuPrincipal_ED.php');
+            header('Location: /PROYECTO/dueño/principal');
         } elseif ($perfil_usuario === 'vendedor') {
-            header('location:../../pages/Empleado_Vendedor/menuPrincipal_EV.php'); 
+            header('Location: /PROYECTO/vendedor/principal');
         } 
     } elseif ($usuario_data['Tipo_Usuario'] === 'cliente') {
-        header('location:../../pages/ClientePotencial/catalogo.html'); 
+        header('Location: /PROYECTO/cliente/catalogo');
     }
 
     exit(); 

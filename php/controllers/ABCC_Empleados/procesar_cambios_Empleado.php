@@ -4,27 +4,25 @@ session_start();
   if (!isset($_SESSION['usuario_autenticado']) || $_SESSION['usuario_autenticado'] !== true) {
     session_unset();
     session_destroy();
-    header("Location: ../cerrar_sesion.php");
+    header("Location: /PROYECTO/cerrar_sesion");
     exit;
   }
-include_once('../empleado_dao.php');
+require_once(__DIR__ . '/../../controllers/empleado_dao.php');
 
 // 1. OBTENER EL ID DEL EMPLEADO
 if (!isset($_GET['idVendedor']) || empty($_GET['idVendedor'])) {
     die("Error: No se proporcionó el ID del empleado para editar.");
 }
 
-$idVendedor = $_GET['idVendedor'];
+$idVendedor = $_GET['idVendedor'] ?? die("Error: No se proporcionó el ID del empleado para editar.");
 $empleadoDAO = new EmpleadoDAO();
 
 // Aquí necesitarás un nuevo método en tu DAO: getEmpleadoByID()
 $datos_empleado = $empleadoDAO->getEmpleadoByID($idVendedor); 
-
-if (mysqli_num_rows($datos_empleado) == 0) {
+if ($datos_empleado->rowCount() == 0) {
     die("Error: Empleado no encontrado.");
 }
-
-$empleado = mysqli_fetch_assoc($datos_empleado);
+$empleado = $datos_empleado->fetch(PDO::FETCH_ASSOC);
 $nombre = htmlspecialchars($empleado['Nombre']);
 $apellido1 = htmlspecialchars($empleado['Apellido1']); 
 $apellido2 = htmlspecialchars($empleado['Apellido2']);
@@ -50,7 +48,7 @@ $porcentaje_comision = htmlspecialchars($empleado['Porcentaje_Comisión']);
 <div class="container">
     <h2 class="mb-4 text-warning">Editar Vendedor ID: ...<?php echo $idVendedor ?? 'N/A'; ?></h2>
 
-    <form class="row g-3" action="procesar_actualizacion_Empleado.php" method="POST">
+    <form class="row g-3" action="/PROYECTO/empleados/procesar/cambio" method="POST">
         
        <input type="hidden" name="idVendedor" value="<?php echo $idVendedor ?? ''; ?>">
         
@@ -88,7 +86,7 @@ $porcentaje_comision = htmlspecialchars($empleado['Porcentaje_Comisión']);
 
         <div class="col-12 mt-4">
             <button class="btn btn-warning" type="submit">Guardar Cambios</button>
-            <a href="../formulario_actualizarEmpleado.php" class="btn btn-secondary">Cancelar</a>
+            <a href="/PROYECTO/empleados/actualizar" class="btn btn-secondary">Cancelar</a>
         </div>
     </form>
 </div>
