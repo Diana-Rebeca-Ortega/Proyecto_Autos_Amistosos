@@ -1,25 +1,36 @@
 <?php
 session_start();
 
-  if (!isset($_SESSION['usuario_autenticado']) || $_SESSION['usuario_autenticado'] !== true) {
+if (!isset($_SESSION['usuario_autenticado']) || $_SESSION['usuario_autenticado'] !== true) {
     session_unset();
     session_destroy();
-   header("Location: ./controllers/cerrar_sesion.php");
+    header("Location: ./controllers/cerrar_sesion.php");
     exit;
-  }
-  
+}
+ 
 include('./controllers/empleado_dao.php');
 $vendedor_obj = new EmpleadoDAO();
 
 $termino_busqueda = $_GET['busqueda'] ?? '';
+$datos_array = []; // Inicializamos la variable de array
+$statement = null; // Inicializamos la variable PDOStatement
 
-// DECIDIR QUÉ MÉTODO LLAMAR
+// 1. DECIDIR QUÉ MÉTODO LLAMAR y obtener el PDOStatement
 if (!empty($termino_busqueda)) {
-    $datos = $vendedor_obj->buscarVendedores($termino_busqueda); 
+    // Almacenamos el PDOStatement devuelto por el DAO
+    $statement = $vendedor_obj->buscarVendedores($termino_busqueda); 
 } else {
-    // Carga todos los vendedores
-    $datos = $vendedor_obj->obtenerTodos(); 
+    // Almacenamos el PDOStatement devuelto por el DAO
+    $statement = $vendedor_obj->obtenerTodos(); 
 }
+
+// 2. CORRECCIÓN CLAVE: Extraer todos los resultados del PDOStatement a un ARRAY
+// Hacemos esta conversión solo si el DAO devolvió un objeto PDOStatement válido
+if ($statement instanceof PDOStatement) {
+    $datos_array = $statement->fetchAll(PDO::FETCH_ASSOC);
+}
+// NOTA: Si $statement no es un PDOStatement (ej. es false/null por error), $datos_array será [], y count() funcionará.
+
 $contador = 1; 
 ?>
 
@@ -41,7 +52,7 @@ $contador = 1;
     <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="GET" class="mb-4">
         <div class="input-group">
             <input type="text" class="form-control" placeholder="Buscar por Nombre o Apellido" 
-                    name="busqueda" value="<?php echo htmlspecialchars($termino_busqueda); ?>">
+                     name="busqueda" value="<?php echo htmlspecialchars($termino_busqueda); ?>">
             
             <button class="btn btn-primary" type="submit">Buscar</button>
             
@@ -53,9 +64,9 @@ $contador = 1;
 </div>
 <div class="container">
     <?php
-        // Usamos num_rows de mysqli_result
-        if($datos->num_rows == 0){
-            // ALERTA ACTUALIZADA
+        // 3. ¡SOLUCIÓN! Usamos count() sobre el array extraído ($datos_array)
+        // Esta línea ya NO dará error porque $datos_array es un ARRAY (o está vacío)
+        if(count($datos_array) == 0){ 
             echo "<div class='alert alert-info' role='alert'>No se encontraron registros de vendedores.</div>";
         } else {
             // ---- COMIENZA LA TABLA ----
@@ -63,18 +74,18 @@ $contador = 1;
             echo '<thead>';
                 echo '<tr>';
                 echo '<th scope="col">#</th>';
-                echo '<th scope="col">ID Vendedor</th>'; // CAMBIADO
+                echo '<th scope="col">ID Vendedor</th>';
                 echo '<th scope="col">Nombre</th>';
                 echo '<th scope="col">Primer Apellido</th>';
                 echo '<th scope="col">Segundo Apellido</th>';
-                echo '<th scope="col">Salario Base</th>'; // CAMBIADO
-                echo '<th scope="col">Comisión (%)</th>'; // CAMBIADO
+                echo '<th scope="col">Salario Base</th>';
+                echo '<th scope="col">Comisión (%)</th>';
                 echo ' </tr>';
             echo '</thead>';
             echo '<tbody>';
 
-            // Iteramos sobre los resultados
-            while($fila = $datos->fetch_assoc()){ // Usamos fetch_assoc() de mysqli_result
+            // 4. Iteramos sobre el array extraído ($datos_array) con foreach
+            foreach($datos_array as $fila){ 
                 printf(
                     "<tr> 
                         <td> %s </td>
@@ -86,22 +97,17 @@ $contador = 1;
                         <td>%s</td>
                     </tr>", 
                     $contador++,
-                    $fila['idVendedor'], 
-                    $fila['Nombre'],
-                    $fila['Apellido1'],
-                    $fila['Apellido2'],
-                    // Formatear Salario y Comisión para la vista (opcional, pero recomendado)
-                    number_format($fila['Salario_Base'], 2), // Ejemplo de formato decimal
-                    number_format($fila['Porcentaje_Comisión'], 2) // Ejemplo de formato decimal
+                    htmlspecialchars($fila['idVendedor']), 
+                    htmlspecialchars($fila['Nombre']),
+                    htmlspecialchars($fila['Apellido1']),
+                    htmlspecialchars($fila['Apellido2']),
+                    // Formatear Salario y Comisión
+                    number_format($fila['Salario_Base'], 2), 
+                    number_format($fila['Porcentaje_Comisión'], 2) 
                 );
             }
             echo '</tbody>';
             echo '</table>';
-        }
-        
-        // Es una buena práctica liberar el resultado
-        if ($datos->num_rows > 0) {
-            $datos->free(); 
         }
     ?>
     <div class="text-center mt-4">

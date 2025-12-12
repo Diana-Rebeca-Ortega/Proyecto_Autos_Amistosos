@@ -1,13 +1,13 @@
 <?php
 session_start();
 
-  if (!isset($_SESSION['usuario_autenticado']) || $_SESSION['usuario_autenticado'] !== true) {
+if (!isset($_SESSION['usuario_autenticado']) || $_SESSION['usuario_autenticado'] !== true) {
     session_unset();
     session_destroy();
-   header("Location: ./controllers/cerrar_sesion.php");
+    header("Location: ./controllers/cerrar_sesion.php");
     exit;
-  }
-  ?>
+}
+?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -23,22 +23,26 @@ session_start();
 
 <div class="container">
     <h2 class="mb-4 text-success">Eliminar Vendedor 💰</h2>
-</div>
-
+    
     <?php
         include('./controllers/empleado_dao.php');
         $vendedorDAO = new EmpleadoDAO();
-        $datos = $vendedorDAO->mostrarEmpleado('x');
-       
+        
+        // 1. Ejecutar la consulta para obtener los datos
+        $statement = $vendedorDAO->mostrarEmpleado('x');
+        
+        // 2. Obtener TODAS las filas en un array asociativo usando PDO
+        // El método mostrarEmpleado debe devolver el objeto PDOStatement.
+        $filas = $statement->fetchAll(PDO::FETCH_ASSOC);
 
-        if(mysqli_num_rows($datos)==0){
-            echo "No se encontraron registros";
+        // 3. Verificar si se encontraron registros usando count() en el array
+        if(count($filas) == 0){
+            echo "<p class='alert alert-warning'>No se encontraron registros de vendedores.</p>";
         }else{
-            echo '<table class="table">';
+            echo '<table class="table table-striped table-hover">';
             echo '<thead>';
                 echo '<tr>';
                     echo '<th scope="col">#</th>';
-                    // Encabezados de tabla actualizados
                     echo '<th scope="col">ID Vendedor</th>';
                     echo ' <th scope="col">Nombre</th>';
                     echo '<th scope="col">Apellido 1</th>';
@@ -50,44 +54,41 @@ session_start();
             echo '</thead>';
             echo '<tbody>';
 
-$contador = 1; // Variable para el contador de filas
-while($fila = mysqli_fetch_assoc($datos)){
-    printf(
-        "<tr> 
-            <td> %d </td> 
-            <td>%s</td> 
-            <td>%s</td>
-            <td>%s</td>
-            <td>%s</td>
-            <td>%s</td>
-            <td>%s</td> 
-            <td> 
-                <a href=\"./controllers/ABCC_Empleados/procesar_baja_Empleado.php?idVendedor=%s\" 
-                class=\"btn btn-danger btn-sm\" onclick=\"return confirm('¿Estás seguro de que deseas eliminar a este empleado permanentemente?');\"> Eliminar </a>
-
-            </td>
-        </tr>", 
-        // ARGUMENTOS DE PRINFTF
-        
-        // 1. Contador de filas
-        $contador++,
-        
-        // 2. Datos para las celdas de la tabla (5 argumentos)
-       
-        $fila['idVendedor'],
-        $fila['Nombre'],
-        $fila['Apellido1'],
-        $fila['Apellido2'],
-        $fila['Salario_Base'],
-        $fila['Porcentaje_Comisión'], // Nuevo campo
-        $fila['idVendedor'],
-        $fila['idVendedor'], 
-        $fila['idVendedor'] 
-    );
-}
+            $contador = 1; // Variable para el contador de filas
+            
+            // 4. Recorrer el array de resultados ($filas) con un bucle foreach (PDO style)
+            foreach($filas as $fila){
+                printf(
+                    "<tr> 
+                        <td> %d </td> 
+                        <td>%s</td> 
+                        <td>%s</td>
+                        <td>%s</td>
+                        <td>%s</td>
+                        <td>%.2f</td> <td>%.2f</td> <td> 
+                            <a href=\"./controllers/ABCC_Empleados/procesar_baja_Empleado.php?idVendedor=%s\" 
+                            class=\"btn btn-danger btn-sm\" onclick=\"return confirm('¿Estás seguro de que deseas eliminar a %s? Esta acción es permanente.');\"> Eliminar </a>
+                        </td>
+                    </tr>", 
+                    
+                    // ARGUMENTOS DE PRINFTF
+                    $contador++,
+                    $fila['idVendedor'],
+                    $fila['Nombre'],
+                    $fila['Apellido1'],
+                    $fila['Apellido2'],
+                    $fila['Salario_Base'],
+                    $fila['Porcentaje_Comisión'],
+                    $fila['idVendedor'], // Argumento para el enlace (href)
+                    $fila['Nombre'] // Argumento para el mensaje de confirmación
+                );
+            }
             echo '</tbody>';
             echo '</table>';
         }
     ?>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
