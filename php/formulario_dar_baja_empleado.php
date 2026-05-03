@@ -24,7 +24,6 @@ if (!isset($_SESSION['usuario_autenticado']) || $_SESSION['usuario_autenticado']
 
 <div class="container">
     <h2 class="mb-4 text-success">Eliminar Vendedor 💰</h2>
-
     <?php
         // 1. CORRECCIÓN DE RUTA: Ajustar la ruta relativa. 
         // Si este archivo está en PROYECTO/php/ y el DAO en PROYECTO/php/controllers/

@@ -1,7 +1,7 @@
 <?php
 session_start();
 
-  if (!isset($_SESSION['usuario_autenticado']) || $_SESSION['usuario_autenticado'] !== true) {
+if (!isset($_SESSION['usuario_autenticado']) || $_SESSION['usuario_autenticado'] !== true) {
     session_unset();
     session_destroy();
     header("Location: /PROYECTO/cerrar_sesion");
@@ -11,14 +11,25 @@ session_start();
 $vendedor_obj = new EmpleadoDAO();
 
 $termino_busqueda = $_GET['busqueda'] ?? '';
+$datos_array = []; // Inicializamos la variable de array
+$statement = null; // Inicializamos la variable PDOStatement
 
-// DECIDIR QUÉ MÉTODO LLAMAR
+// 1. DECIDIR QUÉ MÉTODO LLAMAR y obtener el PDOStatement
 if (!empty($termino_busqueda)) {
-    $datos = $vendedor_obj->buscarVendedores($termino_busqueda); 
+    // Almacenamos el PDOStatement devuelto por el DAO
+    $statement = $vendedor_obj->buscarVendedores($termino_busqueda); 
 } else {
-    // Carga todos los vendedores
-    $datos = $vendedor_obj->obtenerTodos(); 
+    // Almacenamos el PDOStatement devuelto por el DAO
+    $statement = $vendedor_obj->obtenerTodos(); 
 }
+
+// 2. CORRECCIÓN CLAVE: Extraer todos los resultados del PDOStatement a un ARRAY
+// Hacemos esta conversión solo si el DAO devolvió un objeto PDOStatement válido
+if ($statement instanceof PDOStatement) {
+    $datos_array = $statement->fetchAll(PDO::FETCH_ASSOC);
+}
+// NOTA: Si $statement no es un PDOStatement (ej. es false/null por error), $datos_array será [], y count() funcionará.
+
 $contador = 1; 
 ?>
 
@@ -40,7 +51,7 @@ $contador = 1;
     <form action="/PROYECTO/empleados/buscar" method="GET" class="mb-4">
         <div class="input-group">
             <input type="text" class="form-control" placeholder="Buscar por Nombre o Apellido" 
-                    name="busqueda" value="<?php echo htmlspecialchars($termino_busqueda); ?>">
+                     name="busqueda" value="<?php echo htmlspecialchars($termino_busqueda); ?>">
             
             <button class="btn btn-primary" type="submit">Buscar</button>
             
@@ -62,12 +73,12 @@ $contador = 1;
             echo '<thead>';
                 echo '<tr>';
                 echo '<th scope="col">#</th>';
-                echo '<th scope="col">ID Vendedor</th>'; // CAMBIADO
+                echo '<th scope="col">ID Vendedor</th>';
                 echo '<th scope="col">Nombre</th>';
                 echo '<th scope="col">Primer Apellido</th>';
                 echo '<th scope="col">Segundo Apellido</th>';
-                echo '<th scope="col">Salario Base</th>'; // CAMBIADO
-                echo '<th scope="col">Comisión (%)</th>'; // CAMBIADO
+                echo '<th scope="col">Salario Base</th>';
+                echo '<th scope="col">Comisión (%)</th>';
                 echo ' </tr>';
             echo '</thead>';
             echo '<tbody>';

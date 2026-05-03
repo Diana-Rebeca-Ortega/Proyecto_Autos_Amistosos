@@ -56,4 +56,8 @@ $stmt = $conn->prepare("SELECT ID_Usuario, Usuario, Perfil FROM usuarios WHERE U
 echo json_encode($response);
 
 // Cerrar la conexión
+<<<<<<< HEAD
 $conn->close();
+=======
+$conn->close();
+>>>>>>> temporal

@@ -17,7 +17,11 @@ if ($conn->connect_error) {
     exit(); // Detiene la ejecución
 }
 // Opcional: Establecer el conjunto de caracteres a UTF-8
+<<<<<<< HEAD
 $conn->set_charset("utf8");
 
 
 
+=======
+$conn->set_charset("utf8");
+>>>>>>> temporal

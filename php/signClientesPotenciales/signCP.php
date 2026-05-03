@@ -5,13 +5,25 @@ $nombre_anterior = isset($_GET['nombre']) ? htmlspecialchars($_GET['nombre']) : 
 $apellido1_anterior = isset($_GET['apellido1']) ? htmlspecialchars($_GET['apellido1']) : '';
 $email_anterior = isset($_GET['email']) ? htmlspecialchars($_GET['email']) : '';
 
+// ----------------------------------------------------
+// 🛑 LÓGICA AGREGADA PARA CAPTURAR Y DECODIFICAR ERRORES
+// ----------------------------------------------------
+$errores = []; // Inicializamos el array de errores
+if (isset($_GET['errores'])) {
+    // Decodificamos el JSON de errores que viene en la URL
+    $errores = json_decode(urldecode($_GET['errores']), true);
+}
+
+
 if (isset($_GET['status'])) {
     $status = $_GET['status'];
     $mensaje = '';
 
-    if ($status == 'campos_vacios') { 
-       $mensaje = '🚨 Por favor, complete el Nombre, Primer Apellido y Email (campos requeridos).';
-        $clase_alerta = 'alert-danger';
+    // Cambiamos 'campos_vacios' a 'errores_de_validacion' para ser más específicos
+    if ($status == 'errores_de_validacion') { 
+       // Se muestra un mensaje genérico, los detalles irán campo por campo
+       $mensaje = '🚨 Por favor, revise los errores en los campos marcados.';
+       $clase_alerta = 'alert-warning';
     } elseif ($status == 'registro_exitoso') { 
         $mensaje = '✅ ¡Registro completado! Un vendedor de Autos Amistosos se pondrá en contacto pronto.';
         $clase_alerta = 'alert-success';
@@ -118,71 +130,115 @@ if (isset($_GET['status'])) {
             <div class="login-container">
                 <h2 class="login-title">REGISTRO DE INTERÉS</h2>
                 
-                <form action="../../php/signClientesPotenciales/procesar_registro_potencial.php" method="POST" >
-<input type="hidden" name="accion" value="insertar">
-                    <div class="mb-3">
-                        <label for="nombre" class="form-label">Nombre</label>
-                        <input type="text" class="form-control" id="nombre" name="nombre" 
-                            autocomplete="given-name" 
-                            value="<?php echo $nombre_anterior; ?>" required> 
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="apellido1" class="form-label">Primer Apellido</label>
-                        <input type="text" class="form-control" id="apellido1" name="apellido1" 
-                            autocomplete="family-name" 
-                            value="<?php echo $apellido1_anterior; ?>" required>
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="apellido2" class="form-label">Segundo Apellido (Opcional)</label>
-                        <input type="text" class="form-control" id="apellido2" name="apellido2" 
-                            autocomplete="additional-name">
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="direccion" class="form-label">Dirección (Opcional)</label>
-                        <input type="text" class="form-control" id="direccion" name="direccion" 
-                            autocomplete="street-address">
-                    </div>
-                    
-<div class="mb-3">
-    <label for="email" class="form-label">Email de Contacto</label>
-    <input type="email" class="form-control" id="email" name="email" 
-        autocomplete="email"
-        value="<?php echo $email_anterior; ?>" required>
+              <form action="../../php/signClientesPotenciales/procesar_registro_potencial.php" method="POST" id="registroForm">
+    <input type="hidden" name="accion" value="insertar">
+    
+   <div class="mb-3">
+    <label for="nombre" class="form-label">Nombre</label>
+    <input type="text" 
+        class="form-control <?php echo isset($errores['nombre']) ? 'is-invalid' : ''; ?>" 
+        id="nombre" name="nombre" 
+        autocomplete="given-name" 
+        value="<?php echo $nombre_anterior; ?>" 
+        required 
+        pattern="[A-Za-zñÑáéíóúÁÉÍÓÚ\s]+" 
+        title="Solo se permiten letras, espacios y acentos."
+        maxlength="50">
+    
+    <?php if (isset($errores['nombre'])): ?>
+        <div class="invalid-feedback">
+            <?php echo $errores['nombre']; ?>
+        </div>
+    <?php else: ?>
+        <div class="invalid-feedback">
+            El nombre es requerido y solo debe contener letras, espacios y acentos.
+        </div>
+    <?php endif; ?>
 </div>
-<div class="mb-3">
-    <label for="password" class="form-label">Contraseña</label>
-    <input type="password" class="form-control" id="password" name="password" 
-        autocomplete="new-password"
-        required minlength="6">
-    <div class="form-text">Mínimo 6 caracteres.</div>
-</div>
-<div class="mb-3">
-    <label for="confirmar_password" class="form-label">Confirmar Contraseña</label>
-    <input type="password" class="form-control" id="confirmar_password" name="confirmar_password" 
-        autocomplete="new-password"
-        required minlength="6">
-</div>
-                    <div class="mb-4">
-                        <label for="fuente" class="form-label">¿Cómo se enteró de nosotros?</label>
-                        <select class="form-select" id="fuente" name="fuente" required>
-                            <option value="">Seleccione una opción</option>
-                            <option value="WEB">Página Web</option>
-                            <option value="REFERIDO">Referido de Cliente</option>
-                            <option value="PUBLICIDAD">Publicidad / Redes Sociales</option>
-                            <option value="FERIA">Feria o Evento</option>
-                        </select>
-                    </div>
 
+    <div class="mb-3">
+        <label for="apellido1" class="form-label">Primer Apellido</label>
+        <input type="text" class="form-control" id="apellido1" name="apellido1" 
+            autocomplete="family-name" 
+            value="<?php echo $apellido1_anterior; ?>" 
+            required
+            pattern="[A-Za-zñÑáéíóúÁÉÍÓÚ\s]+"
+            title="Solo se permiten letras, espacios y acentos."
+            maxlength="50">
+        <div class="invalid-feedback">
+            El primer apellido es requerido y solo debe contener letras, espacios y acentos.
+        </div>
+    </div>
 
+    <div class="mb-3">
+        <label for="apellido2" class="form-label">Segundo Apellido (Opcional)</label>
+        <input type="text" class="form-control" id="apellido2" name="apellido2" 
+            autocomplete="additional-name"
+            pattern="[A-Za-zñÑáéíóúÁÉÍÓÚ\s]*"
+            title="Solo se permiten letras, espacios y acentos.">
+        <div class="invalid-feedback">
+            Solo se permiten letras, espacios y acentos.
+        </div>
+    </div>
 
+    <div class="mb-3">
+        <label for="direccion" class="form-label">Dirección (Opcional)</label>
+        <input type="text" class="form-control" id="direccion" name="direccion" 
+            autocomplete="street-address"
+            maxlength="255">
+    </div>
+    
+    <div class="mb-3">
+        <label for="email" class="form-label">Email de Contacto</label>
+        <input type="email" class="form-control" id="email" name="email" 
+            autocomplete="email"
+            value="<?php echo $email_anterior; ?>" 
+            required
+            maxlength="100">
+        <div class="invalid-feedback">
+            Por favor, ingrese un email válido.
+        </div>
+    </div>
+    
+    <div class="mb-3">
+        <label for="password" class="form-label">Contraseña</label>
+        <input type="password" class="form-control" id="password" name="password" 
+            autocomplete="new-password"
+            required minlength="6" maxlength="50">
+        <div class="form-text">Mínimo 6 caracteres.</div>
+        <div class="invalid-feedback" id="feedback-password">
+            La contraseña es requerida y debe tener al menos 6 caracteres.
+        </div>
+    </div>
+    
+    <div class="mb-3">
+        <label for="confirmar_password" class="form-label">Confirmar Contraseña</label>
+        <input type="password" class="form-control" id="confirmar_password" name="confirmar_password" 
+            autocomplete="new-password"
+            required minlength="6" maxlength="50">
+        <div class="invalid-feedback" id="feedback-confirmar">
+            Las contraseñas no coinciden.
+        </div>
+    </div>
+    
+    <div class="mb-4">
+        <label for="fuente" class="form-label">¿Cómo se enteró de nosotros?</label>
+        <select class="form-select" id="fuente" name="fuente" required>
+            <option value="">Seleccione una opción</option>
+            <option value="WEB">Página Web</option>
+            <option value="REFERIDO">Referido de Cliente</option>
+            <option value="PUBLICIDAD">Publicidad / Redes Sociales</option>
+            <option value="FERIA">Feria o Evento</option>
+        </select>
+        <div class="invalid-feedback">
+            Debe seleccionar una opción.
+        </div>
+    </div>
 
-                    <div class="d-grid">
-                        <button type="submit" class="btn btn-success btn-lg" id="registrar">Registrarme</button>
-                    </div>
-                </form>
+    <div class="d-grid">
+        <button type="submit" class="btn btn-success btn-lg" id="registrar">Registrarme</button>
+    </div>
+</form>
             </div>
         </div>
     </div>

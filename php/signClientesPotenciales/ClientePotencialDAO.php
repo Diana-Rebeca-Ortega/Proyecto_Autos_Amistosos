@@ -2,176 +2,158 @@
 // Incluimos la clase de conexión que ahora usa PDO
 include_once(__DIR__ . '/../database/conexion_bdd_autos_amistosos.php'); 
 
+/**
+ * Clase de Acceso a Datos (DAO) para la tabla Cliente_Potencial.
+ * Utiliza el Patrón Singleton a través de ConexionBDautosAmistosos para obtener la conexión PDO.
+ */
 class ClientePotencialDAO {
+    
+    /** @var PDO $conexion Objeto de conexión PDO real. */
     private $conexion;
 
+    /**
+     * Constructor. Obtiene la única instancia de la conexión PDO (Singleton).
+     * @throws Exception Si la conexión a la BD falla.
+     */
     public function __construct(){
-        // Crea una instancia de la clase que gestiona la conexión PDO
-        $this->conexion = new ConexionBDautosAmistosos();
+        try {
+            // CORRECCIÓN CLAVE: Usar el método estático getInstancia() para obtener el Singleton
+            $instancia_singleton = ConexionBDautosAmistosos::getInstancia();
+            
+            // Obtenemos el objeto PDO real
+            $this->conexion = $instancia_singleton->getConexion(); 
+            
+            if ($this->conexion === null) {
+                throw new Exception("Error interno: La conexión PDO obtenida es nula.");
+            }
+            
+        } catch (Exception $e) {
+            // Loguear el error y relanzarlo
+            error_log("Fallo al instanciar ClientePotencialDAO. Detalle: " . $e->getMessage());
+            throw new Exception("Error al inicializar el acceso a la base de datos para Clientes Potenciales.");
+        }
     }
 
     // ***************** ALTAS (A) - INSERTAR *****************
     /**
      * Inserta un nuevo Cliente Potencial usando PDO Prepared Statements.
-     * @param string $nombre, $apellido1, $apellido2, $direccion, $email, $fuente
-     * @return int|bool El último ID insertado o False si falla.
+     * @return int|bool El último ID insertado (int) o False si falla.
      */
     public function insertar($nombre, $apellido1, $apellido2, $direccion, $email, $fuente) {
-        $conn = $this->conexion->getConexion(); // Objeto PDO
-        
+        // Ahora usamos directamente $this->conexion, que ya es el objeto PDO
         $sql = "INSERT INTO Cliente_Potencial (Nombre, Apellido1, Apellido2, Direccion, Email, Fuente) 
-                  VALUES (?, ?, ?, ?, ?, ?)";
+                 VALUES (?, ?, ?, ?, ?, ?)";
         
-        $stmt = $conn->prepare($sql);
-        
-        if ($stmt === false) {
-            error_log("Error PDO al preparar INSERT: " . print_r($conn->errorInfo(), true));
-            return false; 
-        }
-        
-        $parametros = [$nombre, $apellido1, $apellido2, $direccion, $email, $fuente];
-        $res = $stmt->execute($parametros); // Ligar y ejecutar en PDO
-        
-        if ($res) {
-            $ultimo_id = $conn->lastInsertId(); // Función de PDO para obtener el último ID
-            $stmt->closeCursor(); 
-            return $ultimo_id; 
-        } else {
-            error_log("Error PDO al ejecutar INSERT: " . print_r($stmt->errorInfo(), true));
-            $stmt->closeCursor();
+        try {
+            $stmt = $this->conexion->prepare($sql);
+            
+            $parametros = [$nombre, $apellido1, $apellido2, $direccion, $email, $fuente];
+            $res = $stmt->execute($parametros); 
+            
+            if ($res) {
+                // PDO::lastInsertId() debe ser llamado directamente sobre el objeto PDO
+                return $this->conexion->lastInsertId(); 
+            } else {
+                error_log("Error PDO al ejecutar INSERT: " . print_r($stmt->errorInfo(), true));
+                return false;
+            }
+        } catch (PDOException $e) {
+            // Capturamos cualquier error de PDO directamente
+            error_log("Excepción PDO al insertar Cliente Potencial: " . $e->getMessage());
             return false;
         }
     }
 
     // ***************** CONSULTAS (C) - Mostrar Todos *****************
-    /**
-     * Obtiene todos los Clientes Potenciales.
-     * @return array|bool Array asociativo con los resultados o False si falla.
-     */
     public function obtenerTodos(){
-        $conn = $this->conexion->getConexion();
         $sql = "SELECT idCliente_Potencial, Nombre, Apellido1, Apellido2, Direccion, Email, Fuente 
                 FROM Cliente_Potencial";
         
-        // Usamos prepare/execute incluso sin parámetros para consistencia PDO
-        $stmt = $conn->prepare($sql);
-        $stmt->execute();
+        try {
+            $stmt = $this->conexion->prepare($sql);
+            $stmt->execute();
 
-        // fetchAll devuelve todas las filas como un array asociativo
-        $resultados = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-        $stmt->closeCursor();
-        return $resultados; 
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+            
+        } catch (PDOException $e) {
+             error_log("Excepción PDO al obtener Clientes Potenciales: " . $e->getMessage());
+             return false;
+        }
     }
 
     // ***************** BAJAS (B) - ELIMINAR *****************
-    /**
-     * Elimina un Cliente Potencial por su ID.
-     * @param int $idClientePotencial
-     * @return bool True si la eliminación fue exitosa, False en caso contrario.
-     */
     public function eliminar($idClientePotencial){
-        $conn = $this->conexion->getConexion();
         $sql = "DELETE FROM Cliente_Potencial WHERE idCliente_Potencial = ?";
         
-        $stmt = $conn->prepare($sql);
-        
-        if ($stmt === false) {
-             error_log("Error PDO al preparar DELETE: " . print_r($conn->errorInfo(), true));
-             return false; 
+        try {
+            $stmt = $this->conexion->prepare($sql);
+            $stmt->execute([$idClientePotencial]);
+            
+            // Retorna true si se eliminó al menos una fila
+            return $stmt->rowCount() > 0;
+            
+        } catch (PDOException $e) {
+             error_log("Excepción PDO al eliminar Cliente Potencial: " . $e->getMessage());
+             return false;
         }
-        
-        $res = $stmt->execute([$idClientePotencial]); // Ejecución simple con array
-        $stmt->closeCursor();
-        
-        // PDOStatement::execute devuelve true en éxito
-        return $res;
     }
 
     // ***************** CONSULTAS (C) - Obtener por ID *****************
-    /**
-     * Obtiene un Cliente Potencial por su ID.
-     * @param int $idClientePotencial
-     * @return array|bool Array asociativo con el resultado o False si falla/no existe.
-     */
     public function obtenerPorId($idClientePotencial) {
-        $conn = $this->conexion->getConexion();
         $sql = "SELECT idCliente_Potencial, Nombre, Apellido1, Apellido2, Direccion, Email, Fuente 
                   FROM Cliente_Potencial 
                   WHERE idCliente_Potencial = ?"; 
         
-        $stmt = $conn->prepare($sql);
-        
-        if ($stmt === false) {
-             error_log("Error PDO al preparar SELECT por ID: " . print_r($conn->errorInfo(), true));
-             return false; 
+        try {
+            $stmt = $this->conexion->prepare($sql);
+            $stmt->execute([$idClientePotencial]);
+            
+            return $stmt->fetch(PDO::FETCH_ASSOC);
+            
+        } catch (PDOException $e) {
+             error_log("Excepción PDO al obtener Cliente Potencial por ID: " . $e->getMessage());
+             return false;
         }
-        
-        $stmt->execute([$idClientePotencial]);
-        
-        // fetch devuelve solo la primera fila
-        $resultado = $stmt->fetch(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
-        
-        return $resultado; // Devuelve un array o false si no encuentra nada
     }
 
     // ***************** CAMBIOS (C) - Actualizar *****************
-    /**
-     * Actualiza la información de un Cliente Potencial.
-     * @return bool True si la actualización fue exitosa, False en caso contrario.
-     */
     public function actualizar($id, $nombre, $apellido1, $apellido2, $direccion, $email, $fuente) {
-        $conn = $this->conexion->getConexion();
         $sql = "UPDATE Cliente_Potencial 
                   SET Nombre = ?, Apellido1 = ?, Apellido2 = ?, Direccion = ?, Email = ?, Fuente = ?
                   WHERE idCliente_Potencial = ?";
         
-        $stmt = $conn->prepare($sql);
-        
-        if ($stmt === false) {
-             error_log("Error PDO al preparar UPDATE: " . print_r($conn->errorInfo(), true));
+        try {
+            $stmt = $this->conexion->prepare($sql);
+            $parametros = [$nombre, $apellido1, $apellido2, $direccion, $email, $fuente, $id];
+            $stmt->execute($parametros);
+            
+            // Retorna true si se actualizó al menos una fila
+            return $stmt->rowCount() > 0;
+            
+        } catch (PDOException $e) {
+             error_log("Excepción PDO al actualizar Cliente Potencial: " . $e->getMessage());
              return false;
         }
-        
-        // Los parámetros deben ir en el mismo orden que los signos '?' en el SQL
-        $parametros = [$nombre, $apellido1, $apellido2, $direccion, $email, $fuente, $id];
-
-        $res = $stmt->execute($parametros);
-        $stmt->closeCursor();
-        
-        return $res;
     }
 
     // ***************** CONSULTAS (C) - Búsqueda *****************
-    /**
-     * Busca Clientes Potenciales por Nombre, Apellido1 o Email.
-     * @param string $termino
-     * @return array|bool Array asociativo con los resultados o False si falla.
-     */
     public function buscarClientes($termino) {
-        $conn = $this->conexion->getConexion();
         $like_term = "%" . $termino . "%";
         $sql = "SELECT idCliente_Potencial, Nombre, Apellido1, Apellido2, Direccion, Email, Fuente 
                   FROM Cliente_Potencial 
                   WHERE Nombre LIKE ? OR Apellido1 LIKE ? OR Email LIKE ?";
         
-        $stmt = $conn->prepare($sql);
-        
-        if ($stmt === false) {
-            error_log("Error PDO al preparar la Búsqueda: " . print_r($conn->errorInfo(), true));
-            return false; 
-        }
-        
-        // Tres parámetros LIKE
-        $parametros = [$like_term, $like_term, $like_term];
-        $stmt->execute($parametros);
+        try {
+            $stmt = $this->conexion->prepare($sql);
+            $parametros = [$like_term, $like_term, $like_term];
+            $stmt->execute($parametros);
 
-        // Obtener todos los resultados de la búsqueda
-        $resultados = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
-        
-        return $resultados; 
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+            
+        } catch (PDOException $e) {
+             error_log("Excepción PDO al buscar Clientes Potenciales: " . $e->getMessage());
+             return false;
+        }
     }
 }
 ?>

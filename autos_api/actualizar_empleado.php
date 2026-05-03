@@ -23,7 +23,11 @@ if (isset($_POST['id_vendedor']) && isset($_POST['nombre']) && isset($_POST['ape
     
     $salario_base = floatval($_POST['salario_base']);
    $porcentaje_comision = floatval($_POST['porcentaje_comision']);
+<<<<<<< HEAD
 */
+=======
+
+>>>>>>> temporal
     // 2. Preparar la consulta SQL para la ACTUALIZACIÓN
     $stmt = $conn->prepare("UPDATE vendedor SET 
                             Nombre = ?, 

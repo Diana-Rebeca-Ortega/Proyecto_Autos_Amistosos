@@ -1,13 +1,13 @@
 <?php
 session_start();
 
-  if (!isset($_SESSION['usuario_autenticado']) || $_SESSION['usuario_autenticado'] !== true) {
+if (!isset($_SESSION['usuario_autenticado']) || $_SESSION['usuario_autenticado'] !== true) {
     session_unset();
     session_destroy();
     header("Location: /PROYECTO/cerrar_sesion");
     exit;
-  }
-  ?>
+}
+?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -16,7 +16,6 @@ session_start();
     <title>Edición de Vendedores</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        /* Aumentamos el ancho para acomodar las nuevas columnas */
         .container { max-width: 900px; margin-top: 50px; }
     </style>
 </head>
@@ -24,16 +23,18 @@ session_start();
 
 <div class="container">
     <h2 class="mb-4 text-success">Editar Vendedor 💰</h2>
-</div>
 
     <?php
         // 📢 CAMBIO 3: Incluir el nuevo DAO
        require_once('controllers/empleado_dao.php');
         
-        // 📢 CAMBIO 4: Instanciar la nueva clase y llamar al nuevo método
         $vendedorDAO = new EmpleadoDAO();
-        $datos = $vendedorDAO->mostrarEmpleado('x'); // Llama a mostrarVendedor()
-        //var_dump($datos);
+        
+        // Ejecutar la consulta para obtener el PDOStatement
+        $statement = $vendedorDAO->mostrarEmpleado('x'); 
+        
+        // 1. **CORRECCIÓN PDO:** Obtener todas las filas en un array asociativo
+        $filas = $statement->fetchAll(PDO::FETCH_ASSOC);
 
         if($datos->rowCount() == 0){
             echo "<p class='alert alert-warning'>No se encontraron registros.</p>";
@@ -76,5 +77,8 @@ while($fila = $datos->fetch(PDO::FETCH_ASSOC)){
             echo '</table>';
         }
     ?>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

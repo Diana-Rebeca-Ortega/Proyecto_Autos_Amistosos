@@ -3,6 +3,7 @@ require_once(__DIR__ . '/../database/conexion_bdd_autos_amistosos.php');
 class EmpleadoDAO{
     private $conexion;
 
+    // El constructor usa el Singleton para obtener la única instancia de conexión PDO
     public function __construct(){
        $this->conexion = ConexionBDautosAmistosos::getInstancia();
     }
