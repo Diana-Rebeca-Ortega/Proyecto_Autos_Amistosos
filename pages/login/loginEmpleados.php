@@ -111,7 +111,7 @@
             <div class="login-container">
                 <h2 class="login-title">INICIAR SESIÓN</h2>
                 
-                <form action="../../php/controllers/validar_usuario.php" method="POST" novalidate>
+                <form action="/PROYECTO/php/controllers/validar_usuario.php" method="POST">
 
                     <div class="mb-3">
                         <label for="usuario" class="form-label">Usuario o Email</label>

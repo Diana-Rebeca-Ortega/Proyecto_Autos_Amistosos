@@ -5,9 +5,9 @@
         
         private $conexion;
         private $host = "localhost";
-        private $puerto = "3308"; 
-        private $usuario = "root";
-        private $password = "";
+        private $puerto = "3306"; 
+        private $usuario = "dianita";
+        private $password = "dianita";
         private $bd = "BD_Usuarios_AutosAmistosos_2025";
         
         // 2. Constructor PRIVADO: Solo se puede llamar desde dentro de la clase
@@ -18,10 +18,10 @@
                 $this->conexion = new PDO($dsn, $this->usuario, $this->password);
                 $this->conexion->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-            } catch (PDOException $e) {
-                // Es mejor lanzar una excepción para que el controlador la maneje
-                throw new Exception("Error en la conexión a la BD de USUARIOS: " . $e->getMessage());
-            }
+            }  catch (PDOException $e) {
+    // Esto detendrá la ejecución y te dirá exactamente qué pasó
+    die("Fallo de conexión detallado: " . $e->getMessage());
+}
         }
         
         // 3. Método Estático PÚBLICO: El punto de acceso global

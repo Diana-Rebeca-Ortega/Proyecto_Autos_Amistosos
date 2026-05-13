@@ -6,7 +6,7 @@ class ConexionBDautosAmistosos {
     
     private $conexion;
     private $host = "localhost";
-    private $puerto = "3308";
+    private $puerto = "3306";
     private $usuario = "dianita";
     private $password = "dianita";
     private $bd = "autos_amistosos"; 

@@ -18,7 +18,6 @@ switch ($pagina) {
         
     case 'login':
         // Carga la página de login (que está en pages/login/loginEmpleados.php)
-        // Puedes cambiar el nombre del archivo si es necesario.
         $vista_path = 'pages/login/loginEmpleados.php'; 
         break;
         
