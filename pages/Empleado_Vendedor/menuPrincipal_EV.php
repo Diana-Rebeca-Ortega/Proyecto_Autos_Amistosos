@@ -8,9 +8,7 @@ session_start();
     // Si la sesión no existe o no está autenticada:
     session_unset();
     session_destroy();
-   //header("Location: ../../php/controllers/cerrar_sesion.php");
-   header("Location: /PROYECTO/cerrar_sesion");
-
+   header("Location: ../../php/controllers/cerrar_sesion.php");
     exit;
   }
 ?>
@@ -70,7 +68,7 @@ if (isset($_SESSION['alert_message'])) {
                 <ul class="dropdown-menu" aria-labelledby="ventasDropdown">
                     <li><a class="dropdown-item" href="./registrar_venta.php">Registrar Nueva Venta</a></li>
                     <li><hr class="dropdown-divider"></li> 
-                    <li><a class="dropdown-item" href="./VentasPropiasListado.php">Consultar Ventas</a></li>
+                    <li><a class="dropdown-item" href="#">Consultar Ventas</a></li>
                     <li><a class="dropdown-item" href="#">Historial de Comisiones</a></li>
                 </ul>
             </li>
@@ -116,7 +114,7 @@ if (isset($_SESSION['alert_message'])) {
                         <tr>
                             <td class="fw-bold">Cambios</td>
                                     <td><a href="../../php/controllers/ABCC_Clientes/formularios/formulario_cambiosCliente.php">Actualizar Cliente</a></td>
-                            <td><a href="../../php/controllers/ABCC_Automovil/formulario_cambiosAutomovil.php">Modificar detalles de Vehículo</a></td>
+                            <td><a href="#">Modificar detalles de Vehículo</a></td>
                             <td></td>
                         </tr>
                         <tr>

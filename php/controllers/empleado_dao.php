@@ -1,76 +1,101 @@
 <?php
-require_once(__DIR__ . '/../database/conexion_bdd_autos_amistosos.php');
+include_once(__DIR__ . '../../database/conexion_bdd_autos_amistosos.php');
+
 class EmpleadoDAO{
     private $conexion;
 
-    // El constructor usa el Singleton para obtener la única instancia de conexión PDO
     public function __construct(){
-       $this->conexion = ConexionBDautosAmistosos::getInstancia();
+        $this->conexion = new ConexionBDautosAmistosos ();
     }
     //METODOS ABCC (CRUD)
     //*****************ALTAS***************** */
- public function agregarEmpleado($nombre, $apellido1, $apellido2, $salario_base, $porcentaje_comision) { 
-    $conn = $this->conexion->getConexion(); 
-    $sql = "INSERT INTO Vendedor (Nombre, Apellido1, Apellido2, Salario_Base, Porcentaje_Comisión) 
-            VALUES (?, ?, ?, ?, ?)";
+ public function agregarEmpleado($nombre, $apellido1, $apellido2, $salario_base, $porcentaje_comision) {   
+    // 1. Obtener el objeto de conexión
+    $conn = $this->conexion->getConexion();
+    // 2. Definir la consulta SQL para la tabla EMPLEADOS
+   $sql = "INSERT INTO Vendedor (Nombre, Apellido1, Apellido2, Salario_Base, Porcentaje_Comisión) 
+        VALUES (?, ?, ?, ?, ?)";
+    // 3. Preparar la sentencia
     $stmt = $conn->prepare($sql);
-    $res = $stmt->execute([
-        $nombre, 
-        $apellido1, 
-        $apellido2, 
-        $salario_base, 
-        $porcentaje_comision
-    ]);
+
+    // Si la preparación falla, retorna falso
+    if ($stmt === false) {
+        // En un entorno de producción, registrar el error.
+        error_log("Error al preparar la consulta: " . $conn->error);
+        return false; 
+    }
+    // 4. Vincular los parámetros y especificar los tipos (s=string, i=integer)
+    // ssst: tres strings (nombre, primer apellido, segundo apellido) y un integer (ID_Puesto)
+    $stmt->bind_param('sssdd', $nombre, $apellido1, $apellido2, $salario_base, $porcentaje_comision);
+    // 5. Ejecutar la sentencia
+    $res = $stmt->execute();
+    // 6. Cerrar la sentencia
+    $stmt->close();
     return $res;
 }
-public function mostrarEmpleado($filtro){
-    $conn = $this->conexion->getConexion();
-    $sql = "SELECT idVendedor, Nombre, Apellido1, Apellido2, Salario_Base, Porcentaje_Comisión
-            FROM Vendedor";            
-    $stmt = $conn->query($sql);
-    return $stmt; 
-}
-public function buscarVendedores($termino_busqueda) {
-    $conn = $this->conexion->getConexion();
-    $sql = "SELECT idVendedor, Nombre, Apellido1, Apellido2, Salario_Base, Porcentaje_Comisión
-            FROM Vendedor 
-            WHERE Nombre LIKE ? OR Apellido1 LIKE ? OR Apellido2 LIKE ?";
-    $param_like = "%" . $termino_busqueda . "%";
-    $stmt = $conn->prepare($sql);
-    $stmt->execute([$param_like, $param_like, $param_like]);    
-    return $stmt; 
-}
 
-public function eliminarEmpleado($id_vendedor){    
-    $conn = $this->conexion->getConexion();
-    $sql = "DELETE FROM Vendedor WHERE idVendedor = ?";
-    $stmt = $conn->prepare($sql);
-    $res = $stmt->execute([$id_vendedor]);
-    return $res; 
+  public function mostrarEmpleado($filtro){
+            //$sql = "SELECT * FROM alumnos";
+           $sql = "SELECT idVendedor, Nombre, Apellido1, Apellido2, Salario_Base, Porcentaje_Comisión
+            FROM Vendedor";
+            return mysqli_query($this->conexion->getConexion(), $sql);
+        }
+
+public function eliminarEmpleado($id_vendedor){
+    $sql = "DELETE FROM Vendedor WHERE idVendedor ='$id_vendedor'";
+    return mysqli_query($this ->conexion->getConexion(), $sql);
 }
 
 public function getEmpleadoByID($id_vendedor) {
     $conn = $this->conexion->getConexion();
-    $sql = "SELECT idVendedor, Nombre, Apellido1, Apellido2, Salario_Base, Porcentaje_Comisión 
-            FROM Vendedor WHERE idVendedor = ?";    
+    
+ $sql = "SELECT idVendedor, Nombre, Apellido1, Apellido2, Salario_Base, Porcentaje_Comisión 
+            FROM Vendedor 
+            WHERE idVendedor = ?";
+
     $stmt = $conn->prepare($sql);
-    $stmt->execute([$id_vendedor]);
-    return $stmt; 
+
+    // Bind: 'i' porque ID_Empleado es un entero
+    $stmt->bind_param("i",$id_vendedor); 
+
+    $stmt->execute();
+    
+    // Devolvemos el resultado para que el script de edición lo use
+    return $stmt->get_result(); 
 }
+
+
+// En EmpleadoDAO.php
+
 public function actualizarEmpleado($id, $nombre, $primerAp, $segundoAp, $salarioBase, $porcentajeComision) {
     $conn = $this->conexion->getConexion();
+    
+    // Consulta SQL: 5 SETs + 1 WHERE = 6 marcadores de posición
     $sql = "UPDATE Vendedor
-            SET Nombre = ?, Apellido1 = ?, Apellido2 = ?, Salario_Base = ?, Porcentaje_Comisión = ?
-            WHERE idVendedor = ?";    
+          SET Nombre = ?, Apellido1 = ?, Apellido2 = ?, Salario_Base = ?, Porcentaje_Comisión = ?
+          WHERE idVendedor = ?";
+
     $stmt = $conn->prepare($sql);
-    $res = $stmt->execute([
+
+    if ($stmt === false) {
+        error_log("Error al preparar la consulta de actualización: " . $conn->error);
+        return false;
+    }
+
+    // Vincular parámetros: 3 strings, 2 decimals/doubles, 1 integer (ID)
+    $stmt->bind_param("sssddi", 
         $nombre, 
         $primerAp, 
         $segundoAp, 
-        $salarioBase, 
-        $porcentajeComision, 
-        $id 
-    ]);
+        $salarioBase, // Dato Salario Base (double)
+        $porcentajeComision, // Dato Porcentaje Comisión (double)
+        $id // Dato ID Vendedor (integer)
+    );
+
+    $res = $stmt->execute();
+
+    $stmt->close();
+    
     return $res;
 }
 
@@ -79,6 +104,33 @@ public function obtenerTodos(){
     $sql = "SELECT idVendedor, Nombre, Apellido1, Apellido2, Salario_Base, Porcentaje_Comisión FROM Vendedor";
     $res = $conn->query($sql);
     return $res;
+}
+
+// Método en tu clase vendedorDAO
+public function buscarVendedores($termino) {
+    // 1. Obtener la conexión
+    $conn = $this->conexion->getConexion();
+    // 2. Preparar el término de búsqueda para LIKE
+    $like_term = "%" . $termino . "%";
+    // 3. Consulta SQL ACTUALIZADA para la tabla Vendedor
+    $sql = "SELECT idVendedor, Nombre, Apellido1, Apellido2, Salario_Base, Porcentaje_Comisión 
+            FROM Vendedor 
+            WHERE Nombre LIKE ? OR Apellido1 LIKE ? OR Apellido2 LIKE ?"; // Búsqueda en Nombre y los dos Apellidos
+            
+    $stmt = $conn->prepare($sql);
+    
+    if ($stmt === false) {
+        error_log("Error al preparar la consulta de Búsqueda de Vendedor: " . $conn->error);
+        return false; 
+    }
+    
+    // El número de 's' debe coincidir con el número de ? en el WHERE (3 en este caso)
+    $stmt->bind_param("sss", $like_term, $like_term, $like_term); 
+    
+    $stmt->execute();
+    
+    // Devolver el resultado (mysqli_result)
+    return $stmt->get_result(); 
 }
 }
 ?>

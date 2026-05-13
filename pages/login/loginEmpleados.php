@@ -9,57 +9,37 @@
     
     <style>
         /* 1. Estilos del Contenedor Principal (Pantalla Completa) */
-      
-.captcha-container {
-    display: flex; /* Permite alinear ítems horizontalmente */
-    align-items: center; /* ESTO ES LO CLAVE: Alinea verticalmente los hijos (imagen y input) */
-    gap: 10px; /* Espacio entre la imagen y el campo de texto */
-    margin-bottom: 20px;
-}
-.captcha-container img {
-    /* Establece la altura definida de la imagen */
-    height: 40px; 
-    border: 1px solid #ccc;
-    border-radius: 4px;
-}
-.captcha-input-group {
-    /* Asegura que el campo de texto ocupe el espacio restante */
-    flex-grow: 1; 
-}
-/* Asegura que el input dentro del grupo tenga la misma altura y estilo que los otros inputs */
-.captcha-input-group input {
-    height: 38px; /* Ajusta la altura si es necesario para coincidir con los demás inputs de Bootstrap */
-}
         html, body {
             height: 100%;
             margin: 0;
             font-family: 'Arial', sans-serif;
         }
         .main-login-wrapper {
-            display: flex;
-            height: 100vh;
+            display: flex; /* Habilita el diseño de dos columnas */
+            height: 100vh; /* Ocupa el 100% de la altura de la vista */
         }
         /* 2. Estilos del Panel de la Imagen (Izquierda) */
         .image-panel {
-            flex: 1.5;
-            background: url('/PROYECTO/images/autorosa.jpg') no-repeat center center;
+            flex: 1.5; /* Ocupa más espacio que el panel del formulario (ej. 60%) */
+            background: url('../../images/autorosa.jpg') no-repeat center center;
+            /* **IMPORTANTE:** Cambia 'https://via.placeholder/...' por la URL o ruta local de tu propia imagen. */
             background-size: cover;
             position: relative;
             display: flex; 
         }
         /* 3. Estilos del Panel del Formulario (Derecha) */
         .form-panel {
-            flex: 1;
+            flex: 1; /* Ocupa menos espacio que el panel de la imagen (ej. 40%) */
             display: flex;
             justify-content: center;
             align-items: center;
-            background-color: #e0f7fa;
+            background-color: #e0f7fa; /* Un color suave para el fondo del formulario, similar al ejemplo */
         }
         .login-container {
             width: 100%;
-            max-width: 380px;
+            max-width: 380px; /* Ancho máximo para el formulario */
             padding: 40px;
-            background-color: white;
+            background-color: white; /* El formulario en sí tiene fondo blanco */
             border-radius: 10px;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
         }
@@ -68,63 +48,47 @@
             font-family: 'Montserrat', sans-serif;
             font-size: 2rem;
             font-weight: 700;
-            color: #1f3a5f;
+            color: #1f3a5f; /* Un color oscuro para el título */
             margin-bottom: 25px;
             text-align: center;
         }
         
         /* Estilo para el botón */
         .btn-primary {
-            background-color: #007bff;
+            background-color: #007bff; /* Color azul, puedes usar el color de tu marca */
             border-color: #007bff;
         }
 
         /* 4. Media Queries para Móviles */
         @media (max-width: 992px) {
             .image-panel {
-                display: none;
+                display: none; /* Oculta la imagen en dispositivos pequeños */
             }
             .form-panel {
                 width: 100%;
                 flex: 1;
             }
         }
-      
-        .captcha-container {
-            display: flex;
-            align-items: center;
-            margin-bottom: 20px;
-            gap: 10px; 
-        }
-        .captcha-container img {
-            border: 1px solid #ccc;
-            border-radius: 4px;
-        }
-        .captcha-input-group {
-            flex-grow: 1;
-        }
     </style>
 </head>
 <body>
     <?php
-    // 💡 CORRECCIÓN 2: INICIAR SESIÓN OBLIGATORIO
-    session_start();
-
+    // ... (Tu lógica PHP para capturar variables y errores)
     $usuario_anterior = isset($_GET['usuario']) ? htmlspecialchars($_GET['usuario']) : '';
 
     if (isset($_GET['error'])) {
         $error = $_GET['error'];
         $mensaje = '';
-        
-        if ($error == 'campos_vacios') { 
-            $mensaje = '🚨 Por favor, asegurate de ingresar tu Usuario, Contraseña y validar el Catpcha .';
+        // ... (lógica PHP para los mensajes de error)
+       if ($error == 'campos_vacios') { 
+            $mensaje = '🚨 Por favor, ingresa tu Usuario y Contraseña.';
         } elseif ($error == 'db_error') { 
             $mensaje = '⚠️ Error de conexión. Inténtalo más tarde.';
         } elseif ($error == 'credenciales_invalidas') { 
+            // NUEVO: Mensaje genérico, seguro y consistente.
             $mensaje = '❌ Usuario o Contraseña incorrectos. Verifica tus datos.';
-        } elseif ($error == 'captcha_invalido') { // 💡 CORRECCIÓN 3: MANEJO DEL NUEVO ERROR
-            $mensaje = '🚫 La verificación de seguridad es incorrecta. Inténtalo de nuevo.';
         } else {
+            // Manejo de cualquier otro error inesperado
             $mensaje = '⚠️ Error desconocido. Inténtalo de nuevo.';
         }
 
@@ -147,7 +111,7 @@
             <div class="login-container">
                 <h2 class="login-title">INICIAR SESIÓN</h2>
                 
-               <form action="/PROYECTO/php/controllers/validar_usuario.php" method="POST" novalidate> 
+                <form action="../../php/controllers/validar_usuario.php" method="POST" novalidate>
 
                     <div class="mb-3">
                         <label for="usuario" class="form-label">Usuario o Email</label>
@@ -156,27 +120,12 @@
                                value="<?php echo $usuario_anterior; ?>" > 
                         <div class="invalid-feedback">Ingresa tu usuario.</div>
                     </div>
-                    
                     <div class="mb-4">
                         <label for="password" class="form-label">Contraseña</label>
                         <input type="password" class="form-control" id="password" name="password" 
                                autocomplete="current-password">
                         <div class="invalid-feedback">Ingresa tu contraseña.</div>
                     </div>
-                    
-                    <div class="mb-4">
-                        <label class="form-label d-block">Verificación de Seguridad</label>
-                        <div class="captcha-container">
-                            
-                           <img src="/PROYECTO/pages/login/generar_captcha.php" alt="Código de verificación" width="120" height="40"> 
-                            
-                            <div class="captcha-input-group">
-                                <input type="text" class="form-control" id="captcha_input" name="captcha_input" 
-                                       placeholder="Escribe el número" required style="width: 100%;">
-                            </div>
-                        </div>
-                    </div>
-                    
                     <div class="d-grid">
                         <button type="submit" class="btn btn-primary btn-lg" id="entrar">Entrar al Sistema</button>
                     </div>

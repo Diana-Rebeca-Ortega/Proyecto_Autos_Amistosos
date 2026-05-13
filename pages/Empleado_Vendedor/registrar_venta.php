@@ -4,32 +4,23 @@ ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 session_start();
 
-if (!isset($_SESSION['usuario_autenticado']) || $_SESSION['usuario_autenticado'] !== true) {
+  if (!isset($_SESSION['usuario_autenticado']) || $_SESSION['usuario_autenticado'] !== true) {
     // Si la sesión no existe o no está autenticada:
     session_unset();
     session_destroy();
-    //header("Location: ../../php/controllers/cerrar_sesion.php");
-     header("Location: /PROYECTO/cerrar_sesion");
+   header("Location: ../../php/controllers/cerrar_sesion.php");
     exit;
-}
+  }
 
 require_once '../../php/controllers/ABCC_Clientes/clienteDAO.php';
 $clienteDAO = new ClienteDAO();
-// Resultado: Array asociativo de clientes (PDO)
-$clientesResult = $clienteDAO->obtenerTodos(); 
-
+$clientesResult = $clienteDAO->obtenerTodos();
 require_once '../../php/controllers/ABCC_Automovil/automovilDAO.php';
 $automovilDAO = new AutomovilDAO();
-// Resultado: Array asociativo de autos disponibles (PDO)
-$autosResult = $automovilDAO->obtenerDisponibles(); 
-
-require_once '../../php/controllers/ABCC_Garantia/GarantiaDAO.php';
-$garantiaDAO = new GarantiaDAO();
-// Resultado: Array asociativo de garantías (PDO)
-$garantiasArray = $garantiaDAO->obtenerTodasGarantias();
+$autosResult = $automovilDAO->obtenerTodos();
 
 $id_vendedor_logueado = $_SESSION['idVendedor'] ?? 0;
-// echo "$id_vendedor_logueado"; // Descomenta solo para depuración
+echo "$id_vendedor_logueado";
 ?>
 
 <!DOCTYPE html>
@@ -73,7 +64,6 @@ $id_vendedor_logueado = $_SESSION['idVendedor'] ?? 0;
         </ul>
     </div>
 </nav>
-
 <div class="container venta-form-container">
     <h2 class="mb-4 text-info">✍️ Registro de Nueva Venta</h2>
     <form action="../../php/controllers/ABCC_Ventas/procesar_venta.php" method="POST"> 
@@ -89,46 +79,42 @@ $id_vendedor_logueado = $_SESSION['idVendedor'] ?? 0;
                         <select id="id_cliente" name="Cliente_idCliente" class="form-select" required>
                             <option value="">-- Seleccionar Cliente --</option>
                             <?php
-                                // Lógica corregida: usar foreach para iterar sobre el ARRAY (PDO)
-                                if (!empty($clientesResult)) {
-                                    foreach ($clientesResult as $cliente) { 
-                                        $nombreCompleto = $cliente["Nombre"] . " " . $cliente["Apellido1"] . (
-                                            !empty($cliente["Apellido2"]) ? " " . $cliente["Apellido2"] : ""
-                                        );
-                                        echo '<option value="' . htmlspecialchars($cliente["idCliente"]) . '">' 
-                                            . htmlspecialchars($nombreCompleto) . ' (ID: ' . htmlspecialchars($cliente["idCliente"]) . ')' 
-                                            . '</option>';
-                                    }
-                                } else {
-                                    echo '<option value="" disabled>No se encontraron clientes</option>';
-                                }
-                            ?>
-                        </select>
+        if ($clientesResult && $clientesResult->num_rows > 0) {
+            while($cliente = $clientesResult->fetch_assoc()) {
+                $nombreCompleto = $cliente["Nombre"] . " " . $cliente["Apellido1"] . (
+                    !empty($cliente["Apellido2"]) ? " " . $cliente["Apellido2"] : ""
+                );
+                echo '<option value="' . $cliente["idCliente"] . '">' 
+                     . $nombreCompleto . ' (ID: ' . $cliente["idCliente"] . ')' 
+                     . '</option>';
+            }
+        } else {
+            echo '<option value="" disabled>No se encontraron clientes</option>';
+        }
+        ?>
+         </select>
                     </div>
                     <div class="col-md-6">
                         <label for="id_automovil" class="form-label">Automóvil:</label>
                         <select id="id_automovil" name="idAutomovil" class="form-select" required>
                             <option value="">-- Seleccionar Vehículo --</option>
-                            <?php
-                                // Lógica corregida: usar foreach para iterar sobre el ARRAY (PDO)
-                                if (!empty($autosResult)) {
-                                    foreach ($autosResult as $automovil) {
-                                        $kilometrajeActual = $automovil["Kilometraje_Entrega"];
-                                        $descripcionAutomovil = 
-                                            htmlspecialchars($automovil["Modelo"]) . " - " . 
-                                            htmlspecialchars($automovil["Tipo_Carroceria"]) . 
-                                            " | $" . number_format($automovil["Precio_Lista"], 2) . 
-                                            " | VIN: " . htmlspecialchars($automovil["idAutomovil"]);
-                                        $descripcionAutomovil .= " | KM: " . number_format($kilometrajeActual);
-                                        echo '<option value="' . htmlspecialchars($automovil["idAutomovil"]) . '" data-km="' . htmlspecialchars($kilometrajeActual) . '">' 
-                                            . $descripcionAutomovil 
-                                            . '</option>';
-                                    }
-                                } else {
-                                    echo '<option value="" disabled>No se encontraron automóviles disponibles</option>';
-                                }
-                            ?>
-                        </select>
+          <?php
+    if ($autosResult && $autosResult->num_rows > 0) {
+        while($automovil = $autosResult->fetch_assoc()) { 
+            $descripcionAutomovil = 
+                $automovil["Modelo"] . " - " . 
+                $automovil["Tipo_Vehiculo"] . 
+                " | $" . number_format($automovil["Precio_Lista"], 2) . 
+                " | VIN: " . $automovil["idAutomovil"];
+            echo '<option value="' . $automovil["idAutomovil"] . '">' 
+                 . $descripcionAutomovil 
+                 . '</option>';
+        }
+    } else {
+        echo '<option value="" disabled>No se encontraron automóviles disponibles</option>';
+    }
+?>
+                            </select>
                     </div>
                     <div class="col-md-4">
                         <label for="precio_final" class="form-label">Precio Final ($):</label>
@@ -142,7 +128,7 @@ $id_vendedor_logueado = $_SESSION['idVendedor'] ?? 0;
                         <label for="costo_licencia" class="form-label">Costo de Licencia ($):</label>
                         <input type="number" id="costo_licencia" name="Costo_Licencia" step="0.01" min="0" class="form-control" value="0.00" required>
                     </div>
-                    <input type="hidden" id="kilometraje_entrega_hidden" name="Kilometraje_Entrega" value="0">
+                    
                     <input type="hidden" name="Vendedor_idVendedor" value="<?php echo $id_vendedor_logueado; ?>">
                 </div>
             </div>
@@ -158,21 +144,9 @@ $id_vendedor_logueado = $_SESSION['idVendedor'] ?? 0;
                         <label for="id_garantia" class="form-label">Garantía Aplicada:</label>
                         <select id="id_garantia" name="idGarantia" class="form-select">
                             <option value="" selected>Ninguna (NULL)</option>
-                            <?php
-                                // Lógica corregida: usar foreach para iterar sobre el ARRAY (PDO)
-                                if (!empty($garantiasArray)) {
-                                    foreach ($garantiasArray as $garantia) {
-                                        $costoFormateado = '$' . number_format($garantia['Costo'], 2);
-                                        $etiqueta = htmlspecialchars($garantia['Nombre_Garantia']) . 
-                                            ' | ' . $costoFormateado . 
-                                            ' (ID: ' . htmlspecialchars($garantia['idGarantia']) . ')';
-                                        echo '<option value="' . htmlspecialchars($garantia['idGarantia']) . '">' 
-                                            . $etiqueta 
-                                            . '</option>';
-                                    }
-                                }
-                            ?>
-                        </select>
+                            <option value="1">Garantía Extendida 1 Año (ID: 1)</option>
+                            <option value="2">Garantía Básica 3 Meses (ID: 2)</option>
+                            </select>
                     </div>
                     
                     <div class="col-md-6">
@@ -191,28 +165,7 @@ $id_vendedor_logueado = $_SESSION['idVendedor'] ?? 0;
         
     </form>
 </div>
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const selectAutomovil = document.getElementById('id_automovil');
-        const hiddenKilometraje = document.getElementById('kilometraje_entrega_hidden');
 
-        selectAutomovil.addEventListener('change', function() {
-            // Obtiene la opción seleccionada (el elemento <option>)
-            const selectedOption = this.options[this.selectedIndex];
-            
-            // Obtiene el valor del atributo data-km, o 0 si no existe
-            const kilometraje = selectedOption.getAttribute('data-km') || 0;
-            
-            // Actualiza el campo oculto que se enviará en el POST
-            hiddenKilometraje.value = kilometraje;
-            
-            console.log('Kilometraje actualizado a:', kilometraje);
-        });
-        
-        // Ejecutar al cargar por si hay una opción preseleccionada (aunque no parece ser el caso aquí)
-        selectAutomovil.dispatchEvent(new Event('change')); 
-    });
-</script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
