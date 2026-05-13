@@ -8,7 +8,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     
     // 2. Definir las rutas de redirección
     $rutas = [
-        'dueno'  => '/PROYECTO/dueño/principal',     
+        'dueno'  => '/PROYECTO/dueno/principal',     
     'administrador' => '/PROYECTO/admin/principal',    
     'vendedor' => '/PROYECTO/vendedor/principal'
     ];

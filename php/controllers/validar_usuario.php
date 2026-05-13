@@ -8,7 +8,8 @@ $captcha_ingresado = $_POST['captcha_input'] ?? null;
 
 // NOTA IMPORTANTE: sha1() es obsoleto y NO se recomienda. 
 // Para un proyecto final, es mucho mejor usar password_hash() y password_verify().
-$p_cifrado = sha1($p); 
+//$p_cifrado = sha1($p); 
+$p_cifrado = $p;
 $user_encoded = urlencode($u ?? '');
 
 // 1. Validar campos vacíos
@@ -39,38 +40,28 @@ try {
     exit();
 }
 
-// Lógica de Consulta (Perfecta con UNION ALL y PDO)
+// Lógica de Consulta corregida para que coincida con tu tabla real
 $sql = "
-    (
-        SELECT 
-            u.ID_Usuario, 
-            u.Nombre, 
-            u.Perfil, 
-            u.ID_Usuario AS ID_Referencia, 
-            'empleado' AS Tipo_Usuario
-        FROM usuarios u
-        WHERE u.Usuario = ? AND u.Password = ?
-    )
-    UNION ALL
-    (
-        SELECT 
-            uc.idUsuario AS ID_Usuario, 
-            uc.Email AS Nombre,
-            'cliente' AS Perfil, 
-            uc.idCliente_Potencial AS ID_Referencia, 
-            'cliente' AS Tipo_Usuario
-        FROM usuario_cliente uc
-        WHERE uc.Email = ? AND uc.Password = ?
-    )
+    SELECT 
+        u.idUsuario AS ID_Usuario, 
+        u.nombre_completo AS Nombre, 
+        u.rol AS Perfil, 
+        u.idUsuario AS ID_Referencia, 
+        'empleado' AS Tipo_Usuario
+    FROM usuarios u
+    WHERE u.usuario_o_email = ? AND u.password = ?
 ";
+
 $stmt = $conexion->prepare($sql);
 
 if ($stmt === false) {
-    error_log("Error al preparar la consulta de login: " . print_r($conexion->errorInfo(), true));
+    error_log("Error al preparar la consulta: " . print_r($conexion->errorInfo(), true));
     header("location:../../pages/login/loginEmpleados.php?error=db_error&usuario={$user_encoded}");
     exit(); 
 }
-$parametros = [$u, $p_cifrado, $u, $p_cifrado];
+
+// IMPORTANTE: Solo pasamos 2 parámetros porque solo hay 2 '?' en el SQL de arriba
+$parametros = [$u, $p_cifrado]; 
 $stmt->execute($parametros);
 
 $resultados = $stmt->fetchAll(PDO::FETCH_ASSOC);

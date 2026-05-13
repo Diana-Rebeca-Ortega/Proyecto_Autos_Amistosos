@@ -5,9 +5,9 @@
         
         private $conexion;
         private $host = "localhost";
-        private $puerto = "3306"; 
-        private $usuario = "dianita";
-        private $password = "dianita";
+        private $puerto = "3308"; 
+        private $usuario = "root";
+        private $password = "";
         private $bd = "BD_Usuarios_AutosAmistosos_2025";
         
         // 2. Constructor PRIVADO: Solo se puede llamar desde dentro de la clase

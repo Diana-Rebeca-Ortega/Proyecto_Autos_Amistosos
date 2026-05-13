@@ -6,10 +6,10 @@ class ConexionBDautosAmistosos {
     
     private $conexion;
     private $host = "localhost";
-    private $puerto = "3306";
+    private $puerto = "3308";
     private $usuario = "dianita";
     private $password = "dianita";
-    private $bd = "autos_amistosos"; // Nombre de tu BD principal
+    private $bd = "autos_amistosos"; 
     
     // 2. Constructor PRIVADO: Solo accesible desde dentro de la clase
     private function __construct() { 
