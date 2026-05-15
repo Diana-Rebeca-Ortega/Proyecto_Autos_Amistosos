@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Lista de Vendedores</title>
+    <link rel="stylesheet" href="/css/estilos.css"> </head>
+<body>
+    <h1>Panel de Vendedores - Autos Amistosos</h1>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Apellido</th>
+                <th>Salario</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% vendedores.forEach(v => { %>
+                <tr>
+                    <td><%= v.idVendedor %></td>
+                    <td><%= v.Nombre %></td>
+                    <td><%= v.Apellido1 %></td>
+                    <td>$<%= v.Salario_Base %></td>
+                </tr>
+            <% }) %>
+        </tbody>
+    </table>
+</body>
+</html>

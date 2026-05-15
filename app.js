@@ -1,8 +1,13 @@
 const express = require('express');
 const session = require('express-session');
+const path = require('path');
 require('dotenv').config();//sirve para cargar variables de entorno
 
 const app = express();
+// 1. CONFIGURACIONES (Motores y Middlewares)
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'src/views'));
+
 // Configuración de Sesiones
 app.use(session({
     secret: 'clave_secreta_autos_amistosos',
