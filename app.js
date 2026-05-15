@@ -22,6 +22,7 @@ app.use(session({
 // Para poder leer datos de formularios (POST)
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+app.use(express.static(path.join(__dirname, 'public')));
 
 //RUTAS
 app.use('/', require('./src/routes/empleadoRoutes'));
