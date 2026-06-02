@@ -128,14 +128,19 @@
           }
       });
 
+
+
       // 2. Disparador del Mensaje de Éxito de SweetAlert
+      ¡Operación Exitosa! ¡Vendedor registrado exitosamente!
       <% if (locals.alertAlert) { %>
           Swal.fire({
+
               icon: 'success',
               title: '¡Operación Exitosa!',
               text: '<%= alertAlert %>',
               confirmButtonColor: '#28a745',
               timer: 3500
+              
           });
       <% } %>
   });
