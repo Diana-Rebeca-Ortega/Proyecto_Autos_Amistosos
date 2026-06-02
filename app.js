@@ -2,8 +2,8 @@ const express = require('express');
 const session = require('express-session');
 const path = require('path');
 require('dotenv').config();//sirve para cargar variables de entorno
-
 const app = express();
+
 // 1. CONFIGURACIONES (Motores y Middlewares)
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'src/views'));
@@ -12,7 +12,7 @@ app.set('views', path.join(__dirname, 'src/views'));
 app.use(session({
     secret: 'clave_secreta_autos_amistosos',
     resave: false,
-    saveUninitialized: false,
+    saveUninitialized: true,
     cookie: {
         //Terminación de sesión por tiempo 10 min de espera antes de caducarse
         maxAge: 600000,
@@ -23,7 +23,11 @@ app.use(session({
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
-
+app.use((req, res, next) => {
+    res.locals.alertAlert = req.session.successMessage || null;
+    req.session.successMessage = null; // Limpia el mensaje después de cargarlo una vez
+    next();
+});
 //RUTAS
 app.use('/', require('./src/routes/empleadoRoutes'));
 app.get('/', (req, res) => {
