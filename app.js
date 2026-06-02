@@ -29,6 +29,12 @@ app.use((req, res, next) => {
     next();
 });
 //RUTAS
+app.get('/', (req, res) => {
+    res.render('index');
+});
+app.get('/login', (req, res) => {
+    res.render('login'); // Esto buscará un archivo 'src/views/login.ejs'
+});
 app.use('/', require('./src/routes/empleadoRoutes'));
 app.get('/', (req, res) => {
     res.send('<h1>Bienvenido a Autos Amistosos</h1><p>Sesiones configuradas.</p>');
