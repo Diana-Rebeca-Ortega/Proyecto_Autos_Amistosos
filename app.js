@@ -33,7 +33,7 @@ app.get('/', (req, res) => {
     res.render('index');
 });
 app.get('/login', (req, res) => {
-    res.render('login'); // Esto buscará un archivo 'src/views/login.ejs'
+    res.render('login');
 });
 app.use('/', require('./src/routes/empleadoRoutes'));
 app.get('/', (req, res) => {
