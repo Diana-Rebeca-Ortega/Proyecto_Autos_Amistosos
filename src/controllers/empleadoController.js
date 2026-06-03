@@ -1,5 +1,4 @@
 const db = require('../models/db');
-
 const empleadoController = {
     listarEmpleados: async (req, res) => {
         try {
@@ -33,8 +32,22 @@ const empleadoController = {
             console.error(error);
             res.status(500).send('Error crítico al dar de alta al vendedor');
         }
+    },
 
+    verDetalle: async (req, res) => {
+        try {
+            const id = req.params.idVendedor;
+            const [rows] = await db.query('SELECT * FROM vendedor WHERE idVendedor = ?', [id]);
+            
+            if (rows.length === 0) {
+                return res.status(404).send('Vendedor no encontrado');
+            }
+            res.render('Vistas_Vendedores/detalleVendedor', { vendedor: rows[0] });
+        } catch (error) {
+            console.error(error);
+            res.status(500).send('Error al obtener el detalle');
+        }
     }
-}
+};
 
 module.exports = empleadoController;

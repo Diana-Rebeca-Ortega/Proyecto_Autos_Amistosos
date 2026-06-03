@@ -85,8 +85,7 @@
                             <td><%= vendedor.Apellido1 %></td>
                             <td>$<%= vendedor.Salario_Base %></td>
                             <td>
-                <a href="/vendedores/detalle/<%= vendedor.id %>" class="btn btn-sm btn-info">Detalle</a>
-                
+                <a href="/empleados/detalle/<%= vendedor.idVendedor %>" class="btn btn-sm btn-info">Detalle</a>
                 <a href="/vendedores/editar/<%= vendedor.id %>" class="btn btn-sm btn-warning">Editar</a>
                 
                 <form action="/vendedores/eliminar/<%= vendedor.id %>" method="POST" style="display:inline;">

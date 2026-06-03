@@ -35,10 +35,7 @@ app.get('/', (req, res) => {
 app.get('/login', (req, res) => {
     res.render('login');
 });
-app.use('/', require('./src/routes/empleadoRoutes'));
-app.get('/', (req, res) => {
-    res.send('<h1>Bienvenido a Autos Amistosos</h1><p>Sesiones configuradas.</p>');
-});
+app.use('/empleados', require('./src/routes/empleadoRoutes'));
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {

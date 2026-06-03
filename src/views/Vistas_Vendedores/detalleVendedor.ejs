@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="/css/stilos.css" rel="stylesheet"/>
+</head>
+<body>
+    <div class="container mt-5">
+        
+    <h2>Detalle del Vendedor</h2>
+    <div class="card">
+        <div class="card-body">
+            <p><strong>ID:</strong> <%= vendedor.idVendedor %></p>
+            <p><strong>Nombre:</strong> <%= vendedor.Nombre %></p>
+            <p><strong>Apellido:</strong> <%= vendedor.Apellido1 %> <%= vendedor.Apellido2 %></p>
+            <p><strong>Salario Base:</strong> $<%= vendedor.Salario_Base %></p>
+            <hr>
+            <a href="/empleados" class="btn btn-secondary">Regresar al Listado</a>
+        </div>
+    </div>
+</div>
+</body>
+</html>
