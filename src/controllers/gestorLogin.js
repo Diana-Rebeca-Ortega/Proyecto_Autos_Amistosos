@@ -31,9 +31,9 @@ const gestorLogin = {
                 case 'administrador':
                     return res.redirect('/empleados');
                 case 'dueno':
-                    return res.redirect('/dueno_reportes');
+                    return res.redirect('/dueno');
                 case 'vendedor':
-                    return res.redirect('/venta_autos');
+                    return res.redirect('/vendedor');
                 default:
                     return res.send('Perfil no reconocido');
             }
