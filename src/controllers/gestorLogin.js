@@ -1,5 +1,5 @@
 const db = require('../models/db');
-const bcrypt = require('bcrypt');
+const crypto = require('crypto'); 
 
 const gestorLogin = {
     // 1. Mostrar la página de login
@@ -10,21 +10,20 @@ const gestorLogin = {
     // 2. Procesar el login
     validarUsuario: async (req, res) => {
         const { user, pass } = req.body;
+        
         try {
-            // Buscamos al usuario por su nombre de usuario (en tu tabla unificada)
             const [rows] = await db.query('SELECT * FROM usuarios WHERE Usuario = ?', [user]);
-
             if (rows.length === 0) {
                 return res.send('Usuario no encontrado');
             }
-
             const usuarioDB = rows[0];
-
-            // Comparamos el password con bcrypt (¡es más seguro!)
-            const esValida = await bcrypt.compare(pass, usuarioDB.Password);
-
-            if (esValida) {
-                // Guardamos al usuario en la sesión para que la app lo "recuerde"
+            // Determinamos el algoritmo según la longitud del hash guardado (40=SHA1, 64=SHA256)
+            const algoritmo = usuarioDB.Password.length === 64 ? 'sha256' : 'sha1';
+            // Calculamos el hash de la contraseña ingresada
+            const hashIngresado = crypto.createHash(algoritmo).update(pass).digest('hex');
+            // Comparamos los hashes
+            if (hashIngresado === usuarioDB.Password) {
+                // Guardamos al usuario en la sesión
                 req.session.usuario = usuarioDB;
                 return res.redirect('/empleados');
             } else {
