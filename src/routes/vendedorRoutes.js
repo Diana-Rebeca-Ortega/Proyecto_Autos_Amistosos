@@ -1,9 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const vendedorController = require('../controllers/vendedorController');
 
-// Ruta para el vendedor (Donde entrará Ana)
-router.get('/vendedor', (req, res) => {
-    res.send('<h1>Bienvenido Panel de Vendedor (Ana) - Próximamente</h1>');
-});
-
+router.get('/venta_autos', vendedorController.mostrarVentas);
 module.exports = router;

@@ -1,3 +1,5 @@
+<%- include('../cabecera') %>
+
 <section class="content-header">
     <div class="container-fluid">
         <h1 class="m-0 text-dark">Panel de Vendedores - Autos Amistosos</h1>
@@ -35,7 +37,7 @@
                                 <td>$<%= vendedor.Salario_Base %></td>
                                 <td>
                                     <a href="/empleados/detalle/<%= vendedor.idVendedor %>" class="btn btn-sm btn-info">Detalle</a>
-                                    <a href="/empleados/editar/<%= vendedor.idVendedor %>" class="btn btn-warning">Editar</a>
+                                    <a href="/empleados/editar/<%= vendedor.idVendedor %>" class="btn btn-sm btn-warning">Editar</a>
                                     <form action="/empleados/eliminar/<%= vendedor.idVendedor %>" method="POST" style="display:inline;">
                                         <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('¿Estás seguro?')">Eliminar</button>
                                     </form>
@@ -52,12 +54,16 @@
 
 <%- include('formAltaVendedor') %>
 
+<%- include('../pie') %>
+
 <script>
     $(document).ready(function() {
-        $('#tabla-vendedores').DataTable({
-            "responsive": true,
-            "language": { "url": "https://cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json" }
-        });
+        if (!$.fn.DataTable.isDataTable('#tabla-vendedores')) {
+            $('#tabla-vendedores').DataTable({
+                "responsive": true,
+                "language": { "url": "https://cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json" }
+            });
+        }
 
         <% if (locals.alertAlert) { %>
             Swal.fire({ icon: 'success', title: '¡Operación Exitosa!', text: '<%= alertAlert %>', timer: 3500 });
