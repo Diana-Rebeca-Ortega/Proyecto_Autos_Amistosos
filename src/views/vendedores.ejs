@@ -141,7 +141,7 @@
               "url": "https://cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json"
           }
       });
-      //sweet alert 
+      //sweet alert
 <% if (locals.alertAlert) { %>
         Swal.fire({
             icon: 'success',
@@ -153,5 +153,14 @@
     <% } %>
 });
 </script>
+<% if (locals.errorMessage) { %>
+    <script>
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: '<%= errorMessage %>'
+        });
+    </script>
+<% } %>
 </body>
 </html>

@@ -16,9 +16,16 @@ const empleadoController = {
         try {
             const { Nombre, Apellido1, Apellido2, Salario_Base, Porcentaje_Comision } = req.body;
 
-            // Principio de seguridad: Consultas preparadas usando placeholders (?) evitan SQL Injection de raíz
+        // --- VALIDACIÓN DE BACKEND ---
+        const salario = parseFloat(Salario_Base);
+        if (isNaN(salario) || salario <= 0) {
+            req.session.errorMessage = "El salario debe ser un número mayor a 0.";
+            return res.redirect('/empleados');
+        }
+        // -----------------------------
+
             const querySQL = `
-                INSERT INTO vendedor (Nombre, Apellido1, Apellido2, Salario_Base, Porcentaje_Comision) 
+                INSERT INTO vendedor (Nombre, Apellido1, Apellido2, Salario_Base, Porcentaje_Comision)
                 VALUES (?, ?, ?, ?, ?)
             `;
 
