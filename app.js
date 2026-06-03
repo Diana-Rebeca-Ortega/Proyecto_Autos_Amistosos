@@ -24,8 +24,9 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use((req, res, next) => {
+    console.log("Mensaje en sesión:", req.session.successMessage);
     res.locals.alertAlert = req.session.successMessage || null;
-    req.session.successMessage = null; // Limpia el mensaje después de cargarlo una vez
+    req.session.successMessage = null; 
     next();
 });
 //RUTAS

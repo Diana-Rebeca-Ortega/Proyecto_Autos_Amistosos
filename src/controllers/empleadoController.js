@@ -76,6 +76,19 @@ actualizarEmpleado: async (req, res) => {
         console.error(error);
         res.status(500).send('Error al actualizar');
     }
+},
+
+eliminarEmpleado: async (req, res) => {
+    try {
+        const { idVendedor } = req.params;
+        await db.query('DELETE FROM vendedor WHERE idVendedor = ?', [idVendedor]);
+        
+        req.session.successMessage = "¡Vendedor eliminado correctamente!";
+        res.redirect('/empleados');
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Error al eliminar al vendedor');
+    }
 }
 
 };

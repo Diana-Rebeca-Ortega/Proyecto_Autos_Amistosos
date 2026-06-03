@@ -11,7 +11,7 @@ router.post('/crear', empleadoController.crearEmpleado);// 2. Ruta para procesar
 router.get('/detalle/:idVendedor', empleadoController.verDetalle);// 3. Ruta para ver el detalle de un vendedor específico
 router.get('/editar/:idVendedor', empleadoController.editarFormulario);// 4  Ruta para mostrar el formulario de edición
 router.post('/editar/:idVendedor', empleadoController.actualizarEmpleado);//5 Ruta para guardar los cambios
-
+router.post('/eliminar/:idVendedor', empleadoController.eliminarEmpleado);
 
 
 module.exports = router;

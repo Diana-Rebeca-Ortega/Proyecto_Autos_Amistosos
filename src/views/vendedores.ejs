@@ -11,6 +11,9 @@
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap4.min.css">
 </head>
 <body class="hold-transition sidebar-mini layout-fixed">
+  <script>
+    console.log("¿Existe alerta?:", "<%= typeof alertAlert !== 'undefined' ? alertAlert : 'No existe' %>");
+</script>
 <div class="wrapper">
 
   <nav class="main-header navbar navbar-expand navbar-white navbar-light">
@@ -88,9 +91,11 @@
                 <a href="/empleados/detalle/<%= vendedor.idVendedor %>" class="btn btn-sm btn-info">Detalle</a>
                 <a href="/empleados/editar/<%= vendedor.idVendedor %>" class="btn btn-warning">Editar</a>
                 
-                <form action="/vendedores/eliminar/<%= vendedor.id %>" method="POST" style="display:inline;">
-                    <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('¿Estás seguro?')">Eliminar</button>
-                </form>
+                <form action="/empleados/eliminar/<%= vendedor.idVendedor %>" method="POST" style="display:inline;">
+        <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('¿Estás seguro de eliminar este vendedor?')">
+            Eliminar
+        </button>
+    </form>
             </td>
                         </tr>
                         <% }) %>
@@ -136,23 +141,16 @@
               "url": "https://cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json"
           }
       });
-
-
-
-      // 2. Disparador del Mensaje de Éxito de SweetAlert
-      ¡Operación Exitosa! ¡Vendedor registrado exitosamente!
-      <% if (locals.alertAlert) { %>
-          Swal.fire({
-
-              icon: 'success',
-              title: '¡Operación Exitosa!',
-              text: '<%= alertAlert %>',
-              confirmButtonColor: '#28a745',
-              timer: 3500
-
-          });
-      <% } %>
-  });
+<% if (locals.alertAlert) { %>
+        Swal.fire({
+            icon: 'success',
+            title: '¡Operación Exitosa!',
+            text: '<%= alertAlert %>',
+            confirmButtonColor: '#28a745',
+            timer: 3500
+        });
+    <% } %>
+});
 </script>
 </body>
 </html>
