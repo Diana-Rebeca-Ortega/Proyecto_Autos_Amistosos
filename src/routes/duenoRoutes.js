@@ -5,5 +5,4 @@ const router = express.Router();
 router.get('/dueno', (req, res) => {
     res.send('<h1>Bienvenido Panel de Dueño - Próximamente</h1>');
 });
-
 module.exports = router;

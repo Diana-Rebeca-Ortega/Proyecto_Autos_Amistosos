@@ -2,5 +2,5 @@ const express = require('express');
 const router = express.Router();
 const vendedorController = require('../controllers/vendedorController');
 
-router.get('/venta_autos', vendedorController.mostrarVentas);
+router.get('/vendedor_autos', vendedorController.mostrarVentas);
 module.exports = router;

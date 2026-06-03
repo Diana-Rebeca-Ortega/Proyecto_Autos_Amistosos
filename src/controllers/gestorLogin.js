@@ -29,7 +29,7 @@ const gestorLogin = {
 
             switch (usuarioDB.Perfil) {
                 case 'administrador':
-                    return res.redirect('/empleados');
+                    return res.redirect('/administrador');
                 case 'dueno':
                     return res.redirect('/dueno');
                 case 'vendedor':

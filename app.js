@@ -38,7 +38,7 @@ app.use((req, res, next) => {
 
 // 5. ENRUTAMIENTO 
 const authRoutes     = require('./src/routes/authRoutes');
-const empleadoRoutes = require('./src/routes/empleadoRoutes');
+const administradorRoutes = require('./src/routes/administradorRoutes');
 const duenoRoutes    = require('./src/routes/duenoRoutes');
 const vendedorRoutes = require('./src/routes/vendedorRoutes');
 
@@ -47,7 +47,7 @@ app.get('/', (req, res) => res.render('index'));
 
 // Módulos de rutas del sistema
 app.use('/auth', authRoutes);
-app.use('/', empleadoRoutes); 
+app.use('/', administradorRoutes);
 app.use('/', duenoRoutes);
 app.use('/', vendedorRoutes);
 
