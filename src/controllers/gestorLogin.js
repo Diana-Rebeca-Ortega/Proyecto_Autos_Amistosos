@@ -9,11 +9,10 @@ const gestorLogin = {
 
     // 2. Procesar el login
     validarUsuario: async (req, res) => {
-        const { usuario, password } = req.body;
-
+        const { user, pass } = req.body;
         try {
             // Buscamos al usuario por su nombre de usuario (en tu tabla unificada)
-            const [rows] = await db.query('SELECT * FROM usuarios WHERE Usuario = ?', [usuario]);
+            const [rows] = await db.query('SELECT * FROM usuarios WHERE Usuario = ?', [user]);
 
             if (rows.length === 0) {
                 return res.send('Usuario no encontrado');
@@ -22,7 +21,7 @@ const gestorLogin = {
             const usuarioDB = rows[0];
 
             // Comparamos el password con bcrypt (¡es más seguro!)
-            const esValida = await bcrypt.compare(password, usuarioDB.Password);
+            const esValida = await bcrypt.compare(pass, usuarioDB.Password);
 
             if (esValida) {
                 // Guardamos al usuario en la sesión para que la app lo "recuerde"
