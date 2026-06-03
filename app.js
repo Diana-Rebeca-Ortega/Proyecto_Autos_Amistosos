@@ -5,6 +5,9 @@ const gestorLogin = require('./src/controllers/gestorLogin');
 require('dotenv').config();//sirve para cargar variables de entorno
 const app = express();
 const authRoutes = require('./src/routes/authRoutes');
+const empleadoRoutes = require('./src/routes/empleadoRoutes');
+const duenoRoutes = require('./src/routes/duenoRoutes');
+const vendedorRoutes = require('./src/routes/vendedorRoutes');
 
 // 1. CONFIGURACIONES (Motores y Middlewares)
 app.set('view engine', 'ejs');
@@ -21,6 +24,11 @@ app.use(session({
         secure: false
     }
 }));
+app.use((req, res, next) => {
+    // Esto hace que la variable 'usuario' esté disponible en TODAS las vistas automáticamente
+    res.locals.usuario = req.session.usuario || null;
+    next();
+});
 // Para poder leer datos de formularios (POST)
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
@@ -36,10 +44,9 @@ app.use((req, res, next) => {
 app.get('/', (req, res) => {
     res.render('index');
 });
-app.get('/login', (req, res) => {
-    res.render('login');
-});
-app.use('/empleados', require('./src/routes/empleadoRoutes'));
+app.use('/', empleadoRoutes);
+//app.use('/', duenoRoutes);
+//app.use('/', vendedorRoutes);
 
 app.use('/auth', authRoutes);
 

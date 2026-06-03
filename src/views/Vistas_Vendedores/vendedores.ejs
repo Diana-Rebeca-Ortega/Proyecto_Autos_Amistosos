@@ -1,0 +1,69 @@
+<section class="content-header">
+    <div class="container-fluid">
+        <h1 class="m-0 text-dark">Panel de Vendedores - Autos Amistosos</h1>
+    </div>
+</section>
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="card card-primary card-outline">
+            <div class="card-header">
+                <h3 class="card-title">Listado de Empleados Activos</h3>
+            </div>
+            <div class="card-body">
+                <button type="button" class="btn btn-success mb-3" data-toggle="modal" data-target="#modalAltaVendedor">
+                    <i class="fas fa-user-plus"></i> Registrar Nuevo Vendedor
+                </button>
+
+                <table id="tabla-vendedores" class="table table-bordered table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nombre</th>
+                            <th>Apellido</th>
+                            <th>Salario</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% if (locals.vendedores) { %>
+                            <% vendedores.forEach(vendedor => { %>
+                            <tr>
+                                <td><%= vendedor.idVendedor %></td>
+                                <td><%= vendedor.Nombre %></td>
+                                <td><%= vendedor.Apellido1 %></td>
+                                <td>$<%= vendedor.Salario_Base %></td>
+                                <td>
+                                    <a href="/empleados/detalle/<%= vendedor.idVendedor %>" class="btn btn-sm btn-info">Detalle</a>
+                                    <a href="/empleados/editar/<%= vendedor.idVendedor %>" class="btn btn-warning">Editar</a>
+                                    <form action="/empleados/eliminar/<%= vendedor.idVendedor %>" method="POST" style="display:inline;">
+                                        <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('¿Estás seguro?')">Eliminar</button>
+                                    </form>
+                                </td>
+                            </tr>
+                            <% }) %>
+                        <% } %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</section>
+
+<%- include('formAltaVendedor') %>
+
+<script>
+    $(document).ready(function() {
+        $('#tabla-vendedores').DataTable({
+            "responsive": true,
+            "language": { "url": "https://cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json" }
+        });
+
+        <% if (locals.alertAlert) { %>
+            Swal.fire({ icon: 'success', title: '¡Operación Exitosa!', text: '<%= alertAlert %>', timer: 3500 });
+        <% } %>
+        <% if (locals.errorMessage) { %>
+            Swal.fire({ icon: 'error', title: 'Oops...', text: '<%= errorMessage %>' });
+        <% } %>
+    });
+</script>
