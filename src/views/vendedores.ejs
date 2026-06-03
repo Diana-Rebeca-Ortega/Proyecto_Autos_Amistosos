@@ -73,6 +73,7 @@
                         <th>Nombre</th>
                         <th>Apellido</th>
                         <th>Salario</th>
+                        <th>Acciones</th> </tr>
                     </tr>
                 </thead>
                 <tbody>
@@ -83,6 +84,15 @@
                             <td><%= vendedor.Nombre %></td>
                             <td><%= vendedor.Apellido1 %></td>
                             <td>$<%= vendedor.Salario_Base %></td>
+                            <td>
+                <a href="/vendedores/detalle/<%= vendedor.id %>" class="btn btn-sm btn-info">Detalle</a>
+                
+                <a href="/vendedores/editar/<%= vendedor.id %>" class="btn btn-sm btn-warning">Editar</a>
+                
+                <form action="/vendedores/eliminar/<%= vendedor.id %>" method="POST" style="display:inline;">
+                    <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('¿Estás seguro?')">Eliminar</button>
+                </form>
+            </td>
                         </tr>
                         <% }) %>
                     <% } else if (locals.empleados) { %>
@@ -140,7 +150,7 @@
               text: '<%= alertAlert %>',
               confirmButtonColor: '#28a745',
               timer: 3500
-              
+
           });
       <% } %>
   });
