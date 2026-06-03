@@ -38,6 +38,10 @@ app.get('/login', (req, res) => {
 });
 app.use('/empleados', require('./src/routes/empleadoRoutes'));
 
+app.use((req, res, next) => {
+    res.status(404).render('404');
+});
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`Servidor listo en http://localhost:${PORT}`);
