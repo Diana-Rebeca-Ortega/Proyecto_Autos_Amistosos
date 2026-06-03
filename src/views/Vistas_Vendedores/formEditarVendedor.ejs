@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Editar Vendedor</title>
+     <link href="/css/stilos.css" rel="stylesheet"/>
+    </head>
+<body>
+
+    
+
+    <form action="/empleados/editar/<%= vendedor.idVendedor %>" method="POST">
+        
+       <div class="container mt-4">
+    <div class="card">
+        <div class="card-header bg-warning text-dark">
+            <h4 class="mb-0">Editar Vendedor</h4>
+        </div>
+        <div class="card-body">
+            <form action="/empleados/editar/<%= vendedor.idVendedor %>" method="POST">
+                
+                <div class="row">
+                    <div class="col-md-12 mb-3">
+                        <label class="form-label">Nombre(s):</label>
+                        <input type="text" name="Nombre" class="form-control" value="<%= vendedor.Nombre %>" required>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Primer Apellido:</label>
+                        <input type="text" name="Apellido1" class="form-control" value="<%= vendedor.Apellido1 %>" required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Segundo Apellido:</label>
+                        <input type="text" name="Apellido2" class="form-control" value="<%= vendedor.Apellido2 || '' %>">
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Salario Base:</label>
+                        <input type="number" step="0.01" name="Salario_Base" class="form-control" value="<%= vendedor.Salario_Base %>" required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Porcentaje de Comisión (0 a 1):</label>
+                        <input type="number" step="0.0001" name="Porcentaje_Comision" class="form-control" value="<%= vendedor.Porcentaje_Comision %>" required>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-end">
+                    <a href="/empleados" class="btn btn-secondary me-2">Cancelar</a>
+                    <button type="submit" class="btn btn-warning">Guardar Cambios</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+        <br>
+    </form>
+
+</body>
+</html>

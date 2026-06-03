@@ -47,7 +47,37 @@ const empleadoController = {
             console.error(error);
             res.status(500).send('Error al obtener el detalle');
         }
+    },
+editarFormulario: async (req, res) => {
+    try {
+        const { idVendedor } = req.params;
+        const [rows] = await db.query('SELECT * FROM vendedor WHERE idVendedor = ?', [idVendedor]);
+        
+        if (rows.length === 0) return res.status(404).send('Vendedor no encontrado');
+        // Renderizas la vista de formulario pasando los datos del vendedor
+        res.render('Vistas_Vendedores/formEditarVendedor', { vendedor: rows[0] });
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Error al cargar el formulario');
     }
+},
+
+actualizarEmpleado: async (req, res) => {
+    try {
+        const { idVendedor } = req.params;
+        const { Nombre, Apellido1, Apellido2, Salario_Base, Porcentaje_Comision } = req.body;
+        
+        const sql = `UPDATE vendedor SET Nombre = ?, Apellido1 = ?, Apellido2 = ?, Salario_Base = ?, Porcentaje_Comision = ? WHERE idVendedor = ?`;
+        await db.query(sql, [Nombre, Apellido1, Apellido2, Salario_Base, Porcentaje_Comision, idVendedor]);
+        
+        req.session.successMessage = "¡Vendedor actualizado!";
+        res.redirect('/empleados');
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Error al actualizar');
+    }
+}
+
 };
 
 module.exports = empleadoController;
