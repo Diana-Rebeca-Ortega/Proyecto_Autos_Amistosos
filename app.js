@@ -1,8 +1,10 @@
 const express = require('express');
 const session = require('express-session');
 const path = require('path');
+const gestorLogin = require('./src/controllers/gestorLogin');
 require('dotenv').config();//sirve para cargar variables de entorno
 const app = express();
+const authRoutes = require('./src/routes/authRoutes');
 
 // 1. CONFIGURACIONES (Motores y Middlewares)
 app.set('view engine', 'ejs');
@@ -38,6 +40,8 @@ app.get('/login', (req, res) => {
     res.render('login');
 });
 app.use('/empleados', require('./src/routes/empleadoRoutes'));
+
+app.use('/auth', authRoutes);
 
 app.use((req, res, next) => {
     res.status(404).render('404');
