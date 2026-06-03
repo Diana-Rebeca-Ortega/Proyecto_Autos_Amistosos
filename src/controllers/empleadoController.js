@@ -59,7 +59,7 @@ editarFormulario: async (req, res) => {
     try {
         const { idVendedor } = req.params;
         const [rows] = await db.query('SELECT * FROM vendedor WHERE idVendedor = ?', [idVendedor]);
-        
+                
         if (rows.length === 0) return res.status(404).send('Vendedor no encontrado');
         // Renderizas la vista de formulario pasando los datos del vendedor
         res.render('Vistas_Vendedores/formEditarVendedor', { vendedor: rows[0] });
@@ -73,7 +73,13 @@ actualizarEmpleado: async (req, res) => {
     try {
         const { idVendedor } = req.params;
         const { Nombre, Apellido1, Apellido2, Salario_Base, Porcentaje_Comision } = req.body;
-        
+        // --- VALIDACIÓN DE BACKEND ---
+        const salario = parseFloat(Salario_Base);
+        if (isNaN(salario) || salario <= 0) {
+            req.session.errorMessage = "El salario debe ser un número mayor a 0.";
+            return res.redirect('/empleados');
+        }
+        // -----------------------------
         const sql = `UPDATE vendedor SET Nombre = ?, Apellido1 = ?, Apellido2 = ?, Salario_Base = ?, Porcentaje_Comision = ? WHERE idVendedor = ?`;
         await db.query(sql, [Nombre, Apellido1, Apellido2, Salario_Base, Porcentaje_Comision, idVendedor]);
         
