@@ -48,24 +48,36 @@ const vendedorController = {
         }
     },
 listarVentas: async (req, res) => {
-        try {
-            const [ventas] = await db.query(`SELECT v.idVenta, v.Fecha_Venta, v.Precio_Final, c.Nombre as Cliente, ven.Nombre as Vendedor 
-                                             FROM Venta v
-                                             JOIN Cliente c ON v.Cliente_idCliente = c.idCliente
-                                             JOIN Vendedor ven ON v.Vendedor_idVendedor = ven.idVendedor`);
-          
-            const [clientes] = await db.query('SELECT idCliente, Nombre FROM Cliente');
-            
-            res.render('Vistas_Vendedores/listaVentas', { ventas, clientes, usuario: req.session.usuario });
-        } catch (error) {
-            console.error(error);
-            res.status(500).send('Error al cargar ventas');
-        }
-    },
-   // En tu controller
+    try {
+        const sql = `
+    SELECT v.idVenta, 
+           DATE_FORMAT(v.Fecha_Venta, '%d/%m/%Y') AS Fecha_Venta, 
+           v.Precio_Final, 
+           v.Impuesto_Venta, 
+           c.Nombre AS Cliente, 
+           a.Modelo AS Automovil
+    FROM Venta v
+    JOIN Cliente c ON v.Cliente_idCliente = c.idCliente
+    JOIN automovil a ON v.idAutomovil = a.idAutomovil
+`;
+        const [ventas] = await db.query(sql);
+        const [clientes] = await db.query('SELECT idCliente, Nombre FROM Cliente');
+        const [autos] = await db.query('SELECT idAutomovil, Modelo, Color FROM automovil WHERE Estado = "DISPONIBLE"');
+        
+        res.render('Vistas_Vendedores/listaVentas', {
+            ventas,
+            clientes,
+            autos,
+            usuario: req.session.usuario
+        });
+    } catch (error) {
+        console.error("DETALLE DEL ERROR:", error);
+        res.status(500).send('Error al cargar ventas: ' + error.message);
+    }
+},
+   
 mostrarFormularioVenta: async (req, res) => {
     try {
-        // Necesitamos traer las ventas de nuevo si el formulario vive en la misma página
         const sql = `SELECT v.idVenta, v.Fecha_Venta, v.Precio_Final, c.Nombre as Cliente, ven.Nombre as Vendedor
                 FROM Venta v
                  JOIN Cliente c ON v.Cliente_idCliente = c.idCliente
@@ -80,21 +92,33 @@ mostrarFormularioVenta: async (req, res) => {
         res.status(500).send('Error al cargar la página');
     }
 },
-editarVentaForm: async (req, res) => { // <-- Copia esto exactamente
+editarVentaForm: async (req, res) => {
     // ...
 },
 registrarVenta: async (req, res) => {
-    const { cliente_id, idAutomovil, precio_final, fecha_venta } = req.body;
+    console.log("CONTENIDO DE LA SESIÓN EN EL MOMENTO DE LA VENTA:", req.session.usuario);
+    const { 
+        Fecha_Venta, 
+        Precio_Final, 
+        Impuesto_Venta, 
+        Costo_Licencia, 
+        Cliente_idCliente, 
+        idAutomovil 
+    } = req.body;
     
-    const idVendedor = req.session.usuario.idVendedor; 
-
+   const idVendedor = req.session.usuario.Vendedor_idVendedor;
     try {
-        
-        const sql = `INSERT INTO Venta 
+        const sql = `INSERT INTO Venta
                      (Fecha_Venta, Precio_Final, Impuesto_Venta, Costo_Licencia, Vendedor_idVendedor, Cliente_idCliente, idAutomovil) 
-                     VALUES (?, ?, 0, 0, ?, ?, ?)`;
-        
-        await db.query(sql, [fecha_venta, precio_final, idVendedor, cliente_id, idAutomovil]);
+                     VALUES (?, ?, ?, ?, 3, ?, ?)`;
+       await db.query(sql, [
+            Fecha_Venta,     
+            Precio_Final,     
+            Impuesto_Venta,     
+            Costo_Licencia,     
+            Cliente_idCliente,  
+            idAutomovil        
+        ]);
 
         req.session.successMessage = "¡Venta registrada exitosamente!";
         res.redirect('/vendedor/ventas');

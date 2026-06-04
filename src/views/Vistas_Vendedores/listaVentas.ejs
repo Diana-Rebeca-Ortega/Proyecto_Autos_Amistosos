@@ -12,39 +12,41 @@
                 </div>
             </div>
             <div class="card-body">
-                <table id="tabla-ventas" class="table table-bordered table-striped">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Fecha</th>
-                            <th>Cliente</th>
-                            <th>Vendedor</th>
-                            <th>Precio Final</th>
-                            <th>Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <% ventas.forEach(venta => { %>
-                        <tr>
-                            <td><%= venta.idVenta %></td>
-                            <td><%= new Date(venta.Fecha_Venta).toLocaleDateString() %></td>
-                            <td><%= venta.Cliente %></td>
-                            <td><%= venta.Vendedor %></td>
-                            <td>$<%= parseFloat(venta.Precio_Final).toFixed(2) %></td>
-                            <td>
-                                <a href="/vendedor/ventas/editar/<%= venta.idVenta %>" class="btn btn-warning btn-sm">
-                                    <i class="fas fa-edit"></i>
-                                </a>
-                                <form action="/vendedor/ventas/eliminar/<%= venta.idVenta %>" method="POST" style="display:inline;">
-                                    <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('¿Eliminar esta venta?')">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </form>
-                            </td>
-                        </tr>
-                        <% }) %>
-                    </tbody>
-                </table>
+                
+               <table id="tabla-ventas" class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>F. Venta</th>
+            <th>Cliente</th>
+            <th>Impuesto</th>
+            <th>Automóvil</th>
+            <th>Precio Final</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        <% ventas.forEach(venta => { %>
+            <tr>
+                <td><%= venta.idVenta %></td>
+                <td><%= venta.Fecha_Venta %></td>
+                <td><%= venta.Cliente %></td>
+                <td>$<%= venta.Impuesto_Venta %></td> 
+                <td><%= venta.Automovil %></td>      
+                <td>$<%= venta.Precio_Final %></td>
+                <td>
+                    <a href="/vendedor/ventas/editar/<%= venta.idVenta %>" class="btn btn-warning btn-sm">
+                        <i class="fas fa-edit"></i>
+                    </a>
+                    <form action="/vendedor/ventas/eliminar/<%= venta.idVenta %>" method="POST" style="display:inline;">
+                        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('¿Eliminar esta venta?')">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </form>
+                </td>
+            </tr>
+        <% }) %> </tbody>
+</table>
             </div>
         </div>
     </div>
