@@ -12,5 +12,4 @@ router.get('/administrador/editar/:idVendedor', administradorController.editarFo
 router.post('/administrador/editar/:idVendedor', administradorController.actualizarEmpleado);//5 Ruta para guardar los cambios
 router.post('/administrador/eliminar/:idVendedor', administradorController.eliminarEmpleado);
 
-
 module.exports = router;
