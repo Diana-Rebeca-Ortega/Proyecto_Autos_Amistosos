@@ -10,7 +10,7 @@
     <div class="container-fluid">
         <div class="card card-primary card-outline">
             <div class="card-header">
-                <h3 class="card-title">Listado de Empleados Activos</h3>
+                <h3 class="card-title">Listado de Vendedores de autos Activos</h3>
             </div>
             <div class="card-body">
                 <button type="button" class="btn btn-success mb-3" data-toggle="modal" data-target="#modalAltaVendedor">
@@ -36,9 +36,9 @@
                                 <td><%= vendedor.Apellido1 %></td>
                                 <td>$<%= vendedor.Salario_Base %></td>
                                 <td>
-                                    <a href="/empleados/detalle/<%= vendedor.idVendedor %>" class="btn btn-sm btn-info">Detalle</a>
-                                    <a href="/empleados/editar/<%= vendedor.idVendedor %>" class="btn btn-sm btn-warning">Editar</a>
-                                    <form action="/empleados/eliminar/<%= vendedor.idVendedor %>" method="POST" style="display:inline;">
+                                    <a href="/administrador/detalle/<%= vendedor.idVendedor %>" class="btn btn-sm btn-info">Detalle</a>
+                                    <a href="/administrador/editar/<%= vendedor.idVendedor %>" class="btn btn-sm btn-warning">Editar</a>
+                                    <form action="/administrador/eliminar/<%= vendedor.idVendedor %>" method="POST" style="display:inline;">
                                         <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('¿Estás seguro?')">Eliminar</button>
                                     </form>
                                 </td>
