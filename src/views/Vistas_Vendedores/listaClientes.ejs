@@ -2,14 +2,12 @@
 
 <section class="content">
     <div class="container-fluid">
-        <div class="card card-primary card-outline">
-          
-            <div class="card-header">
+     <div class="card-header">
     <h3 class="card-title">Listado de Clientes</h3>
     <div class="card-tools">
-        <a href="/vendedor/clientes/crear" class="btn btn-success btn-sm">
+        <button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target="#modalAltaCliente">
             <i class="fas fa-plus"></i> Nuevo Cliente
-        </a>
+        </button>
     </div>
 </div>
             <div class="card-body">
@@ -49,6 +47,8 @@
         </div>
     </div>
 </section>
+
+<%- include('formAltaCliente') %>
 
 <%- include('../pie') %>
 
