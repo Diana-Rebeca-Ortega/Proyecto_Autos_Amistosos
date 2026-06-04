@@ -47,6 +47,44 @@ const vendedorController = {
             res.redirect('/vendedor/clientes');
         }
     },
+    eliminarCliente: async (req, res) => {
+    const id = req.params.id;
+    try {
+        await db.query('DELETE FROM Cliente WHERE idCliente = ?', [id]);
+        res.redirect('/vendedor/clientes?alertAlert=Cliente eliminado exitosamente');
+    } catch (error) {
+        console.error(error);
+        res.redirect('/vendedor/clientes?errorMessage=Error al eliminar el cliente');
+    }
+},mostrarFormularioEditar: async (req, res) => {
+    const id = req.params.id;
+    try {
+        const [rows] = await db.query('SELECT * FROM Cliente WHERE idCliente = ?', [id]);
+        if (rows.length === 0) return res.send('Cliente no encontrado');
+        
+        res.render('Vistas_Vendedores/formEditarCliente', { 
+            cliente: rows[0], 
+            usuario: req.session.usuario 
+        });
+    } catch (error) {
+        res.status(500).send('Error al cargar formulario');
+    }
+},
+actualizarCliente: async (req, res) => {
+    const id = req.params.id;
+    const { Nombre, Apellido1, Apellido2, Email } = req.body;
+    
+    try {
+        await db.query(
+            'UPDATE Cliente SET Nombre = ?, Apellido1 = ?, Apellido2 = ?, Email = ? WHERE idCliente = ?',
+            [Nombre, Apellido1, Apellido2, Email, id]
+        );
+        res.redirect('/vendedor/clientes?alertAlert=Cliente actualizado correctamente');
+    } catch (error) {
+        console.error(error);
+        res.redirect('/vendedor/clientes?errorMessage=Error al actualizar el cliente');
+    }
+},
 listarVentas: async (req, res) => {
     try {
         const sql = `

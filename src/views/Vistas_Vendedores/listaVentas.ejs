@@ -22,7 +22,7 @@
             <th>Impuesto</th>
             <th>Automóvil</th>
             <th>Precio Final</th>
-            <th>Acciones</th>
+          
         </tr>
     </thead>
     <tbody>
@@ -34,15 +34,7 @@
                 <td>$<%= venta.Impuesto_Venta %></td> 
                 <td><%= venta.Automovil %></td>      
                 <td>$<%= venta.Precio_Final %></td>
-                <td>
-                    <a href="/vendedor/ventas/editar/<%= venta.idVenta %>" class="btn btn-warning btn-sm">
-                        <i class="fas fa-edit"></i>
-                    </a>
-                    <form action="/vendedor/ventas/eliminar/<%= venta.idVenta %>" method="POST" style="display:inline;">
-                        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('¿Eliminar esta venta?')">
-                            <i class="fas fa-trash"></i>
-                        </button>
-                    </form>
+               
                 </td>
             </tr>
         <% }) %> </tbody>
