@@ -1,7 +1,7 @@
 const express = require('express');
 const session = require('express-session');
 const path = require('path');
-require('dotenv').config(); // Cargar variables de entorno
+require('dotenv').config();
 
 const app = express();
 
@@ -36,7 +36,7 @@ app.use((req, res, next) => {
     next();
 });
 
-// 5. ENRUTAMIENTO 
+// 5. ENRUTAMIENTO
 const authRoutes     = require('./src/routes/authRoutes');
 const administradorRoutes = require('./src/routes/administradorRoutes');
 const duenoRoutes    = require('./src/routes/duenoRoutes');
@@ -51,7 +51,7 @@ app.use('/', administradorRoutes);
 app.use('/', duenoRoutes);
 app.use('/', vendedorRoutes);
 
-// 6. MANEJO DE ERROR 404 
+// 6. MANEJO DE ERROR 404
 app.use((req, res, next) => {
     res.status(404).render('404');
 });

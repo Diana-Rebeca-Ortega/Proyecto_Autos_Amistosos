@@ -46,7 +46,17 @@ const gestorLogin = {
         console.error(error);
         res.status(500).send('Error en el sistema');
     }
-}
+},
+cerrarSesion: (req, res) => {
+        req.session.destroy((err) => {
+            if (err) {
+                console.error("Error al destruir sesión:", err);
+                return res.redirect('/' + (req.session.usuario ? req.session.usuario.Perfil : ''));
+            }
+            res.clearCookie('connect.sid');
+            res.redirect('/'); // Redirige al login
+        });
+    }
 };
 
 module.exports = gestorLogin;
