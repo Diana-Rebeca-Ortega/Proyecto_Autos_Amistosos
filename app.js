@@ -1,6 +1,7 @@
 const express = require('express');
 const session = require('express-session');
 const path = require('path');
+const auth = require('./src/middleware/auth');
 require('dotenv').config();
 
 const app = express();

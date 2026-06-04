@@ -1,0 +1,62 @@
+<%- include('../cabecera') %>
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="card card-primary card-outline">
+          
+            <div class="card-header">
+    <h3 class="card-title">Listado de Clientes</h3>
+    <div class="card-tools">
+        <a href="/vendedor/clientes/crear" class="btn btn-success btn-sm">
+            <i class="fas fa-plus"></i> Nuevo Cliente
+        </a>
+    </div>
+</div>
+            <div class="card-body">
+                <table id="tabla-clientes" class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nombre</th>
+                            <th>Apellidos</th>
+                            <th>Email</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% clientes.forEach(cliente => { %>
+                        <tr>
+                            <td><%= cliente.idCliente %></td>
+                            <td><%= cliente.Nombre %></td>
+                            <td><%= cliente.Apellido1 %> <%= cliente.Apellido2 %></td>
+                            <td><%= cliente.Email %></td>
+                            <td>
+    <a href="/vendedor/clientes/editar/<%= cliente.idCliente %>" class="btn btn-warning btn-sm">
+        <i class="fas fa-edit"></i>
+    </a>
+    <form action="/vendedor/clientes/eliminar/<%= cliente.idCliente %>" method="POST" style="display:inline;">
+        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('¿Estás seguro?')">
+            <i class="fas fa-trash"></i>
+        </button>
+    </form>
+</td>
+                            
+                        </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</section>
+
+<%- include('../pie') %>
+
+<script>
+    $(document).ready(function() {
+        $('#tabla-clientes').DataTable({
+            "responsive": true,
+            "language": { "url": "https://cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json" }
+        });
+    });
+</script>

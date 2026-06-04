@@ -1,24 +1,15 @@
-<aside class="main-sidebar sidebar-dark-primary elevation-4">
-    <a href="#" class="brand-link">
-      <span class="brand-text font-weight-light">ÁREA DE VENTAS</span>
-    </a>
-    
-    <div class="sidebar">
-      <div class="user-panel mt-3 pb-3 mb-3 d-flex">
-        <div class="info">
-          <a href="#" class="d-block text-white">Bienvenida, <%= usuario.Nombre %></a>
-        </div>
-      </div>
+<li class="nav-header text-uppercase">Operaciones</li>
 
-      <nav class="mt-2">
-        <ul class="nav nav-pills nav-sidebar flex-column">
-          <li class="nav-item">
-            <a href="/ventas/registrar" class="nav-link">
-              <i class="nav-icon fas fa-car"></i>
-              <p>Venta de autos</p>
-            </a>
-          </li>
-          </ul>
-      </nav>
-    </div>
-</aside>
+<li class="nav-item">
+    <a href="/ventas/registrar" class="nav-link">
+        <i class="nav-icon fas fa-cash-register"></i>
+        <p>Registrar Venta</p>
+    </a>
+</li>
+
+<li class="nav-item">
+    <a href="/clientes" class="nav-link">
+        <i class="nav-icon fas fa-users"></i>
+        <p>Gestión de Clientes</p>
+    </a>
+</li>
