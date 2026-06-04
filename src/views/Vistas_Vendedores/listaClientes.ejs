@@ -60,3 +60,22 @@
         });
     });
 </script>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    $(document).ready(function() {
+        if (!$.fn.DataTable.isDataTable('#tabla-vendedores')) {
+            $('#tabla-vendedores').DataTable({
+                "responsive": true,
+                "language": { "url": "https://cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json" }
+            });
+        }
+
+        <% if (locals.alertAlert) { %>
+            Swal.fire({ icon: 'success', title: '¡Operación Exitosa!', text: '<%= alertAlert %>', timer: 3500 });
+        <% } %>
+        <% if (locals.errorMessage) { %>
+            Swal.fire({ icon: 'error', title: 'Oops...', text: '<%= errorMessage %>' });
+        <% } %>
+    });
+</script>

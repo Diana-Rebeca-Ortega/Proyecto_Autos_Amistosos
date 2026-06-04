@@ -1,0 +1,80 @@
+<%- include('../cabecera') %>
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="card card-primary card-outline">
+            <div class="card-header">
+                <h3 class="card-title">Listado de Ventas Realizadas</h3>
+                <div class="card-tools">
+                    <button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target="#modalAltaVenta">
+    <i class="fas fa-plus"></i> Nueva Venta
+</button>
+                </div>
+            </div>
+            <div class="card-body">
+                <table id="tabla-ventas" class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Fecha</th>
+                            <th>Cliente</th>
+                            <th>Vendedor</th>
+                            <th>Precio Final</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% ventas.forEach(venta => { %>
+                        <tr>
+                            <td><%= venta.idVenta %></td>
+                            <td><%= new Date(venta.Fecha_Venta).toLocaleDateString() %></td>
+                            <td><%= venta.Cliente %></td>
+                            <td><%= venta.Vendedor %></td>
+                            <td>$<%= parseFloat(venta.Precio_Final).toFixed(2) %></td>
+                            <td>
+                                <a href="/vendedor/ventas/editar/<%= venta.idVenta %>" class="btn btn-warning btn-sm">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <form action="/vendedor/ventas/eliminar/<%= venta.idVenta %>" method="POST" style="display:inline;">
+                                    <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('¿Eliminar esta venta?')">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</section>
+<%- include('formAltaVenta') %>
+<%- include('../pie') %>
+
+<script>
+    $(document).ready(function() {
+        $('#tabla-ventas').DataTable({
+            "responsive": true,
+            "language": { "url": "https://cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json" }
+        });
+    });
+</script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    $(document).ready(function() {
+        if (!$.fn.DataTable.isDataTable('#tabla-vendedores')) {
+            $('#tabla-vendedores').DataTable({
+                "responsive": true,
+                "language": { "url": "https://cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json" }
+            });
+        }
+
+        <% if (locals.alertAlert) { %>
+            Swal.fire({ icon: 'success', title: '¡Operación Exitosa!', text: '<%= alertAlert %>', timer: 3500 });
+        <% } %>
+        <% if (locals.errorMessage) { %>
+            Swal.fire({ icon: 'error', title: 'Oops...', text: '<%= errorMessage %>' });
+        <% } %>
+    });
+</script>
