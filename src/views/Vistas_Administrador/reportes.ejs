@@ -1,4 +1,5 @@
 <%- include('../cabecera') %>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <div class="content-wrapper">
     <section class="content-header">
@@ -14,6 +15,20 @@
     <section class="content">
         <div class="container-fluid">
             <div class="card card-outline card-primary shadow-sm">
+                <div class="row mb-3 p-3">
+                    <div class="col-12">
+                        <button class="btn btn-info" onclick="toggleGrafica()">
+                            <i class="fas fa-chart-bar"></i> Ver/Ocultar Gráfica
+                        </button>
+                    </div>
+                </div>
+
+                <div id="contenedorGrafica" class="card mb-4" style="display:none; height: 350px;">
+                    <div class="card-body" style="height: 100%;">
+                        <canvas id="miGrafica"></canvas>
+                    </div>
+                </div>
+
                 <div class="card-header">
                     <h3 class="card-title"><i class="fas fa-calendar-alt"></i> Seleccionar Periodo</h3>
                 </div>
@@ -55,7 +70,7 @@
                                 <tr>
                                     <td class="align-middle"><%= new Date(r.dia).toISOString().split('T')[0] %></td>
                                     <td class="align-middle font-weight-bold text-success">
-                                        $<%= Number(r.total).toLocaleString('es-MX', {minimumFractionDigits: 2}) %>
+                                        <%= r.total_ventas %> venta(s)
                                     </td>
                                 </tr>
                             <% }) %>
@@ -78,5 +93,38 @@
         <% if (locals.errorMessage) { %>
             Swal.fire({ icon: 'error', title: 'Oops...', text: '<%= errorMessage %>' });
         <% } %>
+    });
+
+    function toggleGrafica() {
+        const div = document.getElementById('contenedorGrafica');
+        div.style.display = (div.style.display === 'none') ? 'block' : 'none';
+        if (div.style.display === 'block') window.dispatchEvent(new Event('resize'));
+    }
+
+    // Inicialización de la gráfica
+    document.addEventListener("DOMContentLoaded", function() {
+        const datosReporte = <%- JSON.stringify(reporte) %>;
+        const etiquetas = datosReporte.map(r => new Date(r.dia).toISOString().split('T')[0]);
+        const totales = datosReporte.map(r => r.total_ventas);
+
+        const ctx = document.getElementById('miGrafica').getContext('2d');
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: etiquetas,
+                datasets: [{
+                    label: 'Cantidad de Ventas',
+                    data: totales,
+                    backgroundColor: 'rgba(52, 144, 220, 0.6)',
+                    borderColor: 'rgba(52, 144, 220, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: { y: { beginAtZero: true } }
+            }
+        });
     });
 </script>

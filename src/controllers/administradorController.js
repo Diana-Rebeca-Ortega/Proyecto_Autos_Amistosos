@@ -113,12 +113,16 @@ reportePeriodo: async (req, res) => {
         const fInicio = fechaInicio || '2026-01-01';
         const fFin = fechaFin || '2026-12-31';
 
-        const query = `
-            SELECT DATE(Fecha_Venta) as dia, SUM(Precio_Final) as total 
-            FROM venta 
-            WHERE Fecha_Venta BETWEEN ? AND ? 
-            GROUP BY DATE(Fecha_Venta) 
-            ORDER BY dia ASC`;
+      
+const query = `
+    SELECT 
+        DATE(Fecha_Venta) as dia, 
+        COUNT(*) as total_ventas 
+    FROM venta 
+    WHERE Fecha_Venta BETWEEN ? AND ? 
+    GROUP BY DATE(Fecha_Venta) 
+    ORDER BY dia ASC`;
+
 
         const [resultados] = await db.query(query, [fInicio, fFin]);
         
