@@ -104,7 +104,36 @@ const administradorController = {
             console.error(error);
             res.status(500).send('Error al eliminar al vendedor de los registros');
         }
+    },
+
+reportePeriodo: async (req, res) => {
+    try {
+        const { fechaInicio, fechaFin } = req.query;
+
+        const fInicio = fechaInicio || '2026-01-01';
+        const fFin = fechaFin || '2026-12-31';
+
+        const query = `
+            SELECT DATE(Fecha_Venta) as dia, SUM(Precio_Final) as total 
+            FROM venta 
+            WHERE Fecha_Venta BETWEEN ? AND ? 
+            GROUP BY DATE(Fecha_Venta) 
+            ORDER BY dia ASC`;
+
+        const [resultados] = await db.query(query, [fInicio, fFin]);
+        
+        res.render('Vistas_Administrador/reportes', {
+            reporte: resultados,
+            fechaInicio: fInicio,
+            fechaFin: fFin,
+            usuario: req.session.usuario
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Error al generar el reporte');
     }
+}
 };
+
 
 module.exports = administradorController;

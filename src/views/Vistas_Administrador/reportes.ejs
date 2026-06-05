@@ -1,0 +1,82 @@
+<%- include('../cabecera') %>
+
+<div class="content-wrapper">
+    <section class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1><i class="fas fa-chart-line text-primary"></i> Reporte de Ventas</h1>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="content">
+        <div class="container-fluid">
+            <div class="card card-outline card-primary shadow-sm">
+                <div class="card-header">
+                    <h3 class="card-title"><i class="fas fa-calendar-alt"></i> Seleccionar Periodo</h3>
+                </div>
+                <div class="card-body">
+                    <form action="/administrador/reportes" method="GET">
+                        <div class="row align-items-end">
+                            <div class="col-md-4">
+                                <label class="font-weight-bold text-muted">Fecha Inicio</label>
+                                <input type="date" name="fechaInicio" class="form-control" value="<%= fechaInicio %>" required>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="font-weight-bold text-muted">Fecha Fin</label>
+                                <input type="date" name="fechaFin" class="form-control" value="<%= fechaFin %>" required>
+                            </div>
+                            <div class="col-md-2">
+                                <button type="submit" class="btn btn-primary btn-block">
+                                    <i class="fas fa-search"></i> Filtrar
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="card shadow-sm">
+                <div class="card-header bg-light">
+                    <h3 class="card-title"><i class="fas fa-table"></i> Resultados de Ventas</h3>
+                </div>
+                <div class="card-body p-0">
+                    <table class="table table-hover table-striped mb-0">
+                        <thead class="bg-primary text-white">
+                            <tr>
+                                <th><i class="fas fa-calendar-day"></i> Fecha</th>
+                                <th><i class="fas fa-dollar-sign"></i> Total Ventas</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% reporte.forEach(r => { %>
+                                <tr>
+                                    <td class="align-middle"><%= new Date(r.dia).toISOString().split('T')[0] %></td>
+                                    <td class="align-middle font-weight-bold text-success">
+                                        $<%= Number(r.total).toLocaleString('es-MX', {minimumFractionDigits: 2}) %>
+                                    </td>
+                                </tr>
+                            <% }) %>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<%- include('../pie') %>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    $(document).ready(function() {
+        <% if (locals.alertAlert) { %>
+            Swal.fire({ icon: 'success', title: '¡Operación Exitosa!', text: '<%= alertAlert %>', timer: 3500 });
+        <% } %>
+        <% if (locals.errorMessage) { %>
+            Swal.fire({ icon: 'error', title: 'Oops...', text: '<%= errorMessage %>' });
+        <% } %>
+    });
+</script>
