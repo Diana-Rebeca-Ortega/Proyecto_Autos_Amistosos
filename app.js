@@ -42,6 +42,7 @@ const authRoutes     = require('./src/routes/authRoutes');
 const administradorRoutes = require('./src/routes/administradorRoutes');
 const duenoRoutes    = require('./src/routes/duenoRoutes');
 const vendedorRoutes = require('./src/routes/vendedorRoutes');
+const authSignInRoutes    = require('./src/routes/authSignInRoutes');
 
 // Rutas base
 app.get('/', (req, res) => res.render('index'));
@@ -51,6 +52,7 @@ app.use('/auth', authRoutes);
 app.use('/', administradorRoutes);
 app.use('/', duenoRoutes);
 app.use('/', vendedorRoutes);
+app.use('/authSign', authSignInRoutes );
 
 // 6. MANEJO DE ERROR 404
 app.use((req, res, next) => {

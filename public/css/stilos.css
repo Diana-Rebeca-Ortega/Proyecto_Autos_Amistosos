@@ -94,7 +94,26 @@
     scroll-behavior: smooth;
   }
 }
+/* Ejemplo rápido para mejorar el aspecto */
+.container {
+    max-width: 400px;
+    margin: 50px auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
 
+.form-group {
+    margin-bottom: 15px;
+}
+
+input {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    box-sizing: border-box; /* Importante para que el padding no rompa el diseño */
+}
 body {
   margin: 0;
   font-family: var(--bs-body-font-family);
