@@ -59,10 +59,10 @@ favoritos: async (req, res) => {
             [idUsuario, idAutomovil]
         );
         
-        res.send('Auto añadido a favoritos');
+        return res.json({ success: true, message: '¡Auto añadido a favoritos con éxito!' });
     } catch (error) {
         console.error("Error al guardar:", error);
-        res.status(500).send('Error al gestionar favoritos');
+        return res.json({ success: false, message: 'Hubo un error al procesar tu solicitud.' });
     }
 }, 
 

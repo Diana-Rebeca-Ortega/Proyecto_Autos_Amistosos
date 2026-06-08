@@ -16,19 +16,47 @@
                 
                 <hr>
                 
-                <button class="btn btn-success btn-lg">
-                    <i class="fas fa-shopping-cart"></i> Realizar Compra
-                </button>
-          <form action="/cliente/favoritos/accion" method="POST">
+                
+ <form id="formFavoritos">
     <input type="hidden" name="idAutomovil" value="<%= auto.idAutomovil %>">
-    <button type="submit" class="btn btn-outline-danger btn-lg">
+    <button type="button" onclick="agregarFavorito()" class="btn btn-outline-danger btn-lg">
         <i class="fas fa-heart"></i> Añadir a Favoritos
-        </button>
+    </button>
 </form>
+
+
                 <a href="/cliente/explorar_autos" class="btn btn-secondary btn-lg">Volver</a>
             </div>
         </div>
     </div>
 </section>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    async function agregarFavorito() {
+        const form = document.getElementById('formFavoritos');
+        const formData = new FormData(form);
+        
+        const response = await fetch('/cliente/favoritos/accion', {
+            method: 'POST',
+            body: new URLSearchParams(formData)
+        });
+        
+        const data = await response.json();
 
+        if (data.success) {
+            Swal.fire({
+                icon: 'success',
+                title: '¡Excelente!',
+                text: data.message,
+                confirmButtonColor: '#3085d6'
+            });
+        } else {
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: data.message
+            });
+        }
+    }
+</script>
 <%- include('../pie') %>
