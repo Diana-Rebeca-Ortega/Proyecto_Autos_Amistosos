@@ -4,5 +4,5 @@ const auth = require('../middleware/auth');
 const clienteController = require('../controllers/clienteController');
 //clientes
 router.get('/cliente', auth, clienteController.mostrarCarros);
-
+router.get('/cliente/explorar_autos', auth, clienteController.explorarAutos);
 module.exports = router;
