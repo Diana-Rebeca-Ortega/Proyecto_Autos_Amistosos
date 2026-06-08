@@ -6,7 +6,7 @@ const clienteController = {
             // Consulta a la tabla 'automovil' filtrando los disponibles
             const [carros] = await db.query("SELECT * FROM automovil WHERE Estado = 'DISPONIBLE'");
 
-            res.render('Vistas_Vendedores/panel_vendedorAuto', {
+            res.render('Vistas_Cliente/panel_cliente', {
                 usuario: req.session.usuario,
                 listaCarros: carros
             });
