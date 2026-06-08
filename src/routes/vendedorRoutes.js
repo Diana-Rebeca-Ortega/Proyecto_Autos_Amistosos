@@ -20,13 +20,7 @@ router.get('/vendedor/ventas', auth, vendedorController.listarVentas);
 router.post('/vendedor/ventas/crear', auth, vendedorController.registrarVenta);
 
 
-
-console.log("DEBUG: editarVentaForm es:", typeof vendedorController.editarVentaForm);
 router.get('/vendedor/ventas/editar/:id', auth, vendedorController.editarVentaForm);
-
-console.log("DEBUG: actualizarVenta es:", typeof vendedorController.actualizarVenta);
 router.post('/vendedor/ventas/editar/:id', auth, vendedorController.actualizarVenta);
-
-console.log("DEBUG: eliminarVenta es:", typeof vendedorController.eliminarVenta);
 router.post('/vendedor/ventas/eliminar/:id', auth, vendedorController.eliminarVenta);
 module.exports = router;

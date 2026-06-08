@@ -215,5 +215,5 @@ actualizarVenta: async (req, res) => {
         }
     }
 };
-console.log("DEBUG: Keys en vendedorController:", Object.keys(vendedorController));
+//console.log("DEBUG: Keys en vendedorController:", Object.keys(vendedorController));
 module.exports = vendedorController;
