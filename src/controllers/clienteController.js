@@ -43,6 +43,47 @@ verDetalle: async (req, res) => {
         console.error(error);
         res.status(500).send('Error al cargar detalle');
     }
+},
+favoritos: async (req, res) => {
+    try {
+        let idAutomovil = req.body.idAutomovil.toString().trim();
+        while (idAutomovil.length < 17) {
+            idAutomovil += ' ';
+        }
+        const idUsuario = req.session.usuario.ID_Usuario;
+
+        console.log("Insertando:", { idUsuario, idAutomovil });
+
+        const [resultado] = await db.query(
+            "INSERT INTO Favoritos (id_usuario, id_automovil) VALUES (?, ?)", 
+            [idUsuario, idAutomovil]
+        );
+        
+        res.send('Auto añadido a favoritos');
+    } catch (error) {
+        console.error("Error al guardar:", error);
+        res.status(500).send('Error al gestionar favoritos');
+    }
+}, 
+
+mostrarFavoritos: async (req, res) => {
+    try {
+        const idUsuario = req.session.usuario.ID_Usuario;
+        
+        // Hacemos un JOIN para traer la info del auto según los favoritos del usuario
+        const [favoritos] = await db.query(`
+            SELECT a.* FROM automovil a
+            JOIN Favoritos f ON a.idAutomovil = f.id_automovil
+            WHERE f.id_usuario = ?`, [idUsuario]);
+
+        res.render('Vistas_Cliente/favoritos', {
+            usuario: req.session.usuario,
+            listaFavoritos: favoritos
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Error al cargar favoritos');
+    }
 }
 
 };

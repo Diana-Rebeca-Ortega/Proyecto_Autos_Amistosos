@@ -19,9 +19,12 @@
                 <button class="btn btn-success btn-lg">
                     <i class="fas fa-shopping-cart"></i> Realizar Compra
                 </button>
-                <button class="btn btn-outline-danger btn-lg">
-                    <i class="fas fa-heart"></i> Añadir a Favoritos
-                </button>
+          <form action="/cliente/favoritos/accion" method="POST">
+    <input type="hidden" name="idAutomovil" value="<%= auto.idAutomovil %>">
+    <button type="submit" class="btn btn-outline-danger btn-lg">
+        <i class="fas fa-heart"></i> Añadir a Favoritos
+        </button>
+</form>
                 <a href="/cliente/explorar_autos" class="btn btn-secondary btn-lg">Volver</a>
             </div>
         </div>
