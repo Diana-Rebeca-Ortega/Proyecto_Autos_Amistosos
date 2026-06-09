@@ -30,14 +30,23 @@ explorarAutos: async (req, res) => {
 verDetalle: async (req, res) => {
     try {
         const { id } = req.params;
-        // Buscamos el auto por su idAutomovil
+        const idUsuario = req.session.usuario.ID_Usuario;
+
+        // 1. Buscamos el auto
         const [rows] = await db.query("SELECT * FROM automovil WHERE idAutomovil = ?", [id]);
-        
         if (rows.length === 0) return res.status(404).send('Auto no encontrado');
-        
+
+        // 2. Verificamos si este usuario tiene este auto en favoritos
+        const [favoritos] = await db.query(
+            "SELECT * FROM Favoritos WHERE id_usuario = ? AND id_automovil = ?", 
+            [idUsuario, id]
+        );
+
+        // 3. Renderizamos pasando el estado 'esFavorito' (true/false)
         res.render('Vistas_Cliente/detalle_auto', {
             usuario: req.session.usuario,
-            auto: rows[0] 
+            auto: rows[0],
+            esFavorito: favoritos.length > 0 // true si existe en favoritos
         });
     } catch (error) {
         console.error(error);
@@ -47,24 +56,36 @@ verDetalle: async (req, res) => {
 favoritos: async (req, res) => {
     try {
         let idAutomovil = req.body.idAutomovil.toString().trim();
-        while (idAutomovil.length < 17) {
-            idAutomovil += ' ';
-        }
         const idUsuario = req.session.usuario.ID_Usuario;
 
-        console.log("Insertando:", { idUsuario, idAutomovil });
-
-        const [resultado] = await db.query(
-            "INSERT INTO Favoritos (id_usuario, id_automovil) VALUES (?, ?)", 
+        // 1. Buscamos primero en la tabla usando el ID recortado (trim)
+        // Usamos trim() aquí para asegurar que los espacios extra del CHAR(17) no rompan la búsqueda
+        const [existe] = await db.query(
+            "SELECT * FROM Favoritos WHERE id_usuario = ? AND id_automovil = ?", 
             [idUsuario, idAutomovil]
         );
-        
-        return res.json({ success: true, message: '¡Auto añadido a favoritos con éxito!' });
+
+        console.log("Resultado de búsqueda:", existe);
+
+        if (existe && existe.length > 0) {
+            // Si ya existe, DELETE
+            await db.query("DELETE FROM Favoritos WHERE id_usuario = ? AND id_automovil = ?", 
+            [idUsuario, idAutomovil]);
+            
+            return res.json({ success: true, accion: 'eliminado' });
+        } else {
+            // Si NO existe, INSERT
+            // Importante: inserta el ID limpio, MySQL se encarga de rellenar con espacios si es CHAR(17)
+            await db.query("INSERT INTO Favoritos (id_usuario, id_automovil) VALUES (?, ?)", 
+            [idUsuario, idAutomovil]);
+            
+            return res.json({ success: true, accion: 'agregado' });
+        }
     } catch (error) {
-        console.error("Error al guardar:", error);
-        return res.json({ success: false, message: 'Hubo un error al procesar tu solicitud.' });
+        console.error("Error al gestionar favorito:", error);
+        return res.json({ success: false, message: 'Error interno.' });
     }
-}, 
+},
 
 mostrarFavoritos: async (req, res) => {
     try {

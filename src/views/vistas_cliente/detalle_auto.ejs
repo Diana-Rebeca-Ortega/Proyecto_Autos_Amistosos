@@ -16,11 +16,13 @@
                 
                 <hr>
                 
-                
- <form id="formFavoritos">
+<i id="iconoFavorito"  <%= esFavorito ? 'text-danger' : 'text-primary' %>"></i>
+
+<form id="formFavoritos">
     <input type="hidden" name="idAutomovil" value="<%= auto.idAutomovil %>">
-    <button type="button" onclick="agregarFavorito()" class="btn btn-outline-danger btn-lg">
-        <i class="fas fa-heart"></i> Añadir a Favoritos
+    <button type="button" onclick="toggleFavorito()" class="btn btn-outline-danger btn-lg">
+        <i class="fas fa-heart"></i> 
+        <span id="textoBoton"><%= esFavorito ? 'Eliminar de Favoritos' : 'Añadir a Favoritos' %></span>
     </button>
 </form>
 
@@ -32,6 +34,31 @@
 </section>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
+    async function toggleFavorito() {
+    const form = document.getElementById('formFavoritos');
+    const formData = new FormData(form);
+    
+    const response = await fetch('/cliente/favoritos/accion', {
+        method: 'POST',
+        body: new URLSearchParams(formData)
+    });
+    
+    const data = await response.json();
+    const icono = document.getElementById('iconoFavorito');
+    const texto = document.getElementById('textoBoton');
+
+    if (data.success) {
+        if (data.accion === 'agregado') {
+            icono.classList.remove('text-primary');
+            icono.classList.add('text-danger');
+            texto.innerText = 'Eliminar de Favoritos';
+        } else {
+            icono.classList.remove('text-danger');
+            icono.classList.add('text-primary');
+            texto.innerText = 'Añadir a Favoritos';
+        }
+    }
+}
     async function agregarFavorito() {
         const form = document.getElementById('formFavoritos');
         const formData = new FormData(form);
