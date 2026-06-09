@@ -1,15 +1,23 @@
-<li class="nav-header text-uppercase">Operaciones</li>
-
-<li class="nav-item">
-    <a href="/vendedor/ventas" class="nav-link">
-        <i class="nav-icon fas fa-cash-register"></i>
-        <p>Registrar Venta</p>
+<li class="nav-item has-treeview">
+    <a href="#" class="nav-link">
+        <i class="nav-icon fas fa-cogs text-warning"></i>
+        <p>
+            Operaciones
+            <i class="right fas fa-angle-left"></i>
+        </p>
     </a>
-</li>
-
-<li class="nav-item">
-    <a href="/clientes" class="nav-link">
-        <i class="nav-icon fas fa-users"></i>
-        <p>Gestión de Clientes</p>
-    </a>
+    <ul class="nav nav-treeview" style="display: none;">
+        <li class="nav-item">
+            <a href="/vendedor/ventas" class="nav-link">
+                <i class="fas fa-cash-register nav-icon text-info"></i>
+                <p>Registrar Venta</p>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="/clientes" class="nav-link">
+                <i class="fas fa-users nav-icon text-info"></i>
+                <p>Gestión de Clientes</p>
+            </a>
+        </li>
+    </ul>
 </li>

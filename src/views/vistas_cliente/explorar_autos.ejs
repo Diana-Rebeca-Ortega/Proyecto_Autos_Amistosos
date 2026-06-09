@@ -1,35 +1,51 @@
 <%- include('../cabecera') %>
 
-<section class="content-header">
-    <h1>Explorar Automóviles</h1>
-</section>
-
-<section class="content">
+<section id="app" class="content">
     <div class="container-fluid">
+        <div class="mb-4">
+            <input type="text" v-model="busqueda" class="form-control" placeholder="Buscar por modelo...">
+        </div>
+
         <div class="row">
-            <% listaCarros.forEach(carro => { %>
-                <div class="col-lg-3 col-md-4 col-sm-6">
-                    <div class="card card-primary card-outline shadow-sm">
-                        <div class="card-body text-center">
-                            <i class="fas fa-car fa-4x mb-3 text-primary"></i>
-                            
-                            <h5 class="card-title w-100 font-weight-bold"><%= carro.Modelo %></h5>
-                            <p class="card-text mt-2">
-                                <strong>Precio:</strong> $<%= carro.Precio_Lista %><br>
-                                <strong>Color:</strong> <%= carro.Color %><br>
-                                <span class="badge badge-success"><%= carro.Condicion %></span>
-                            </p>
-                            <button class="btn btn-primary btn-block">
-                                <a href="/cliente/detalle/<%= carro.idAutomovil %>" class="btn btn-primary btn-block">
-    <i class="fas fa-info-circle"></i> Ver Detalles
-</a>
-                            </button>
-                        </div>
+            <div v-for="carro in autosFiltrados" :key="carro.idAutomovil" class="col-lg-3 col-md-4 col-sm-6">
+                <div class="card card-primary card-outline shadow-sm">
+                    <div class="card-body text-center">
+                        <i class="fas fa-car fa-4x mb-3 text-primary"></i>
+                        <h5 class="card-title w-100 font-weight-bold">{{ carro.Modelo }}</h5>
+                        <p class="card-text mt-2">
+                            <strong>Precio:</strong> ${{ carro.Precio_Lista }}<br>
+                            <strong>Color:</strong> {{ carro.Color }}<br>
+                            <span class="badge badge-success">{{ carro.Condicion }}</span>
+                        </p>
+                        <a :href="'/cliente/detalle/' + carro.idAutomovil" class="btn btn-primary btn-block">
+                            <i class="fas fa-info-circle"></i> Ver Detalles
+                        </a>
                     </div>
                 </div>
-            <% }) %>
+            </div>
         </div>
     </div>
 </section>
+
+<script>
+    const { createApp } = Vue;
+
+    createApp({
+        data() {
+            return {
+                busqueda: '',
+                listaCarros: <%- JSON.stringify(listaCarros) %> 
+            }
+        },
+        computed: {
+            
+            autosFiltrados() {
+                return this.listaCarros.filter(carro => 
+                    carro.Modelo.toLowerCase().includes(this.busqueda.toLowerCase())
+                );
+            }
+        }
+    }).mount('#app');
+</script>
 
 <%- include('../pie') %>

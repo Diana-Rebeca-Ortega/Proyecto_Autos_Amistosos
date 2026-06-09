@@ -12,3 +12,16 @@ button:disabled { background-color: #ccc; }
 .error { background: #f8d7da; color: #721c24; }
 .link-footer { text-align: center; margin-top: 1rem; font-size: 0.9rem; }
 .link-footer a { color: #007bff; text-decoration: none; }
+
+.sidebar-dark-purple {
+    background-color: #2d1b4e !important; 
+}
+
+.sidebar-dark-purple .nav-link.active {
+    background-color: #5d3a9b !important; 
+    color: #ffffff !important;
+}
+
+.sidebar-dark-purple .nav-link {
+    color: #c2c7d0;
+}

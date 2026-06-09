@@ -7,26 +7,36 @@
       <nav class="mt-2">
         <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
         
-        <li class="nav-item">
-            <a href="/cliente" class="nav-link">
-            <i class="nav-icon fas fa-car"></i>
-            <p>Listar autos</p>
+        <li class="nav-item has-treeview">
+            <a href="#" class="nav-link">
+                <i class="nav-icon fas fa-car"></i>
+                <p>
+                    Catálogo de Autos
+                    <i class="right fas fa-angle-left"></i>
+                </p>
             </a>
-        </li>
-        <li class="nav-item">
-            <a href="/cliente/explorar_autos" class="nav-link">
-            <i class="nav-icon fas fa-car"></i>
-            <p>Explorar autos</p>
-            </a>
+            <ul class="nav nav-treeview">
+                <li class="nav-item">
+                    <a href="/cliente" class="nav-link">
+                        <i class="far fa-circle nav-icon text-info"></i>
+                        <p>Listar autos</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/cliente/explorar_autos" class="nav-link">
+                        <i class="far fa-circle nav-icon text-info"></i>
+                        <p>Explorar autos</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/cliente/favoritos" class="nav-link">
+                        <i class="far fa-heart nav-icon text-danger"></i>
+                        <p>Favoritos</p>
+                    </a>
+                </li>
+            </ul>
         </li>
 
-         <li class="nav-item">
-            <a href="/cliente/favoritos" class="nav-link">
-            <i class="nav-icon fas fa-car"></i>
-            <p>Favoritos</p>
-            </a>
-        </li>
-        
         </ul>
       </nav>
     </div>

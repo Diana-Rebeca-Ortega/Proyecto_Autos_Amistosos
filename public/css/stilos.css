@@ -107,12 +107,22 @@
 .form-group {
     margin-bottom: 15px;
 }
+.sidebar-dark-purple {
+    background-color: #2d1b4e !important;
+}
+.sidebar-dark-purple .nav-link.active {
+    background-color: #5d3a9b !important; 
+    color: #ffffff !important;
+}
 
+.sidebar-dark-purple .nav-link {
+    color: #c2c7d0;
+}
 input {
     width: 100%;
     padding: 10px;
     margin-top: 5px;
-    box-sizing: border-box; /* Importante para que el padding no rompa el diseño */
+    box-sizing: border-box;
 }
 body {
   margin: 0;

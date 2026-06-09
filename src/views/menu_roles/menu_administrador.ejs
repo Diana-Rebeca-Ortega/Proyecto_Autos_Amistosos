@@ -1,4 +1,5 @@
-<aside class="main-sidebar sidebar-dark-primary elevation-4">
+
+<aside class="main-sidebar sidebar-dark-purple elevation-4">
     <a href="/empleados" class="brand-link">
       <span class="brand-text font-weight-light">Panel Admin</span>
     </a>
@@ -6,25 +7,27 @@
     <div class="sidebar">
       <nav class="mt-2">
         <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
-          
+          <% sidebarClass = 'sidebar-dark-purple' %>
+
           <li class="nav-item">
             <a href="/administrador" class="nav-link">
-              <i class="nav-icon fas fa-users"></i>
+              <i class="nav-icon fas fa-users text-primary"></i>
               <p>Gestionar Vendedores</p>
             </a>
           </li>
           
           <li class="nav-item">
             <a href="/administrador/reportes" class="nav-link">
-              <i class="nav-icon fas fa-chart-line"></i>
+              <i class="nav-icon fas fa-chart-line text-success"></i>
               <p>Reportes del Sistema</p>
             </a>
           </li>
 
+          <li class="nav-header text-uppercase text-muted small">Configuración</li>
           <li class="nav-item">
             <a href="/configuracion" class="nav-link">
-              <i class="nav-icon fas fa-cog"></i>
-              <p>Configuración</p>
+              <i class="nav-icon fas fa-cog text-warning"></i>
+              <p>Ajustes Generales</p>
             </a>
           </li>
           
