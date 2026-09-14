@@ -1,0 +1,60 @@
+<%- include('../cabecera') %>
+
+<section class="content-header">
+    <div class="container-fluid">
+        <h1 class="m-0 text-dark">Panel de Cliente</h1>
+    </div>
+</section>
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="card card-primary card-outline">
+            <div class="card-header">
+                <h3 class="card-title">Catálogo de Autos Disponibles</h3>
+            </div>
+            <div class="card-body">
+                <table id="tabla-autos" class="table table-bordered table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th>Modelo</th>
+                            <th>Precio</th>
+                            <th>Color</th>
+                            <th>Condición</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% if (locals.listaCarros) { %>
+                            <% listaCarros.forEach(carro => { %>
+                            <tr>
+                                <td><%= carro.Modelo %></td>
+                                <td>$<%= carro.Precio_Lista %></td>
+                                <td><%= carro.Color %></td>
+                                <td><%= carro.Condicion %></td>
+                                <td>
+                                    <button class="btn btn-sm btn-info">Ver Detalles</button>
+                                </td>
+                            </tr>
+                            <% }) %>
+                        <% } %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</section>
+
+<%- include('../pie') %>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    $(document).ready(function() {
+        // Inicializar DataTables con el ID correcto
+        if (!$.fn.DataTable.isDataTable('#tabla-autos')) {
+            $('#tabla-autos').DataTable({
+                "responsive": true,
+                "language": { "url": "https://cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json" }
+            });
+        }
+    });
+</script>

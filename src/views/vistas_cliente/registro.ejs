@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Registro | Autos Amistosos</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/auth.css">
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+</head>
+<body>
+
+<div id="app" class="card">
+    <h2>{{ paso === 1 ? 'Datos Personales' : 'Seguridad' }}</h2>
+    
+    <form @submit.prevent="registrarUsuario">
+        <div v-if="paso === 1">
+            <div class="form-group"><label>Nombre</label><input v-model="form.Nombre" type="text" required></div>
+            <div class="form-group"><label>Primer Apellido</label><input v-model="form.Apellido1" type="text" required></div>
+            <div class="form-group"><label>Segundo Apellido</label><input v-model="form.Apellido2" type="text"></div>
+            <div class="form-group"><label>Dirección</label><input v-model="form.Direccion" type="text" required></div>
+            <div class="form-group"><label>Teléfono</label><input v-model="form.Telefono" type="tel" required></div>
+            <div class="form-group"><label>Email</label><input v-model="form.Email" type="email" required></div>
+            <button type="button" @click="validarPaso1">Continuar</button>
+        </div>
+
+        <div v-if="paso === 2">
+            <div class="form-group"><label>Contraseña</label><input v-model="form.password" type="password" required></div>
+            <div class="form-group"><label>Repetir Contraseña</label><input v-model="form.confirmarPassword" type="password" required></div>
+            
+            <button type="submit" :disabled="cargando">
+                {{ cargando ? 'Registrando...' : 'Finalizar Registro' }}
+            </button>
+            <button type="button" @click="paso = 1" style="background-color: #6c757d; margin-top: 10px;">Atrás</button>
+        </div>
+    </form>
+
+    <p v-if="mensaje" :class="['mensaje', tipoMensaje]">
+        {{ mensaje }}
+    </p>
+    
+    <div class="link-footer" v-if="paso === 1">
+        ¿Ya tienes cuenta? <a href="/auth/login">Inicia sesión</a>
+    </div>
+</div>
+
+<script>
+    const { createApp } = Vue;
+
+    createApp({
+        data() {
+            return {
+                paso: 1,
+                form: { 
+                    Nombre: '', Apellido1: '', Apellido2: '', 
+                    Direccion: '', Telefono: '', Email: '',
+                    password: '', confirmarPassword: '' 
+                },
+                mensaje: '',
+                tipoMensaje: '',
+                cargando: false
+            }
+        },
+        methods: {
+            validarPaso1() {
+        const camposRequeridos = ['Nombre', 'Apellido1', 'Direccion', 'Telefono', 'Email'];
+        
+        const incompleto = camposRequeridos.some(campo => this.form[campo].trim() === '');
+        
+        if (incompleto) {
+            this.mensaje = "Por favor, completa todos los campos obligatorios.";
+            this.tipoMensaje = "error";
+            return false;
+        }
+        
+        this.mensaje = "";
+        this.paso = 2;
+        return true;
+    },
+            async registrarUsuario() {
+                // Validación básica de contraseñas
+                if (this.form.password !== this.form.confirmarPassword) {
+                    this.mensaje = "Las contraseñas no coinciden";
+                    this.tipoMensaje = "error";
+                    return;
+                }
+
+                this.cargando = true;
+                try {
+                    const response = await fetch('/authSign/registro', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(this.form)
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (response.ok) {
+                        this.mensaje = "¡Registro exitoso!";
+                        this.tipoMensaje = "exito";
+                        setTimeout(() => window.location.href = '/auth/login', 2000);
+                    } else {
+                        throw new Error(data.message || 'Error al registrar');
+                    }
+                } catch (err) {
+                    this.mensaje = err.message;
+                    this.tipoMensaje = "error";
+                } finally {
+                    this.cargando = false;
+                }
+            }
+        }
+    }).mount('#app');
+</script>
+
+</body>
+</html>

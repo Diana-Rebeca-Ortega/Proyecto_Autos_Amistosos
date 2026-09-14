@@ -1,0 +1,17 @@
+# 1. Activa el motor de reescritura
+RewriteEngine On
+
+# 2. Establece la base de la URL.
+RewriteBase /PROYECTO/
+
+# 3. REGLAS DE PREVENCIÓN (STOP THE LOOP!)
+# NO reescribir si el archivo solicitado existe físicamente
+RewriteCond %{REQUEST_FILENAME} !-f
+# NO reescribir si el directorio solicitado existe físicamente
+RewriteCond %{REQUEST_FILENAME} !-d
+# NO reescribir si la URL ya es index.php (esto previene la recursión)
+RewriteCond %{REQUEST_URI} !index\.php
+
+# 4. REGLA DE REDIRECCIÓN
+# Cualquier cosa que haya pasado el filtro anterior, reescribirla a index.php
+RewriteRule ^(.*)$ index.php?url=$1 [L,QSA]

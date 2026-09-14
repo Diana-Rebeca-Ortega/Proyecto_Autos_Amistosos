@@ -1,0 +1,45 @@
+<%- include('../cabecera') %>
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="card card-warning">
+            <div class="card-header">
+                <h3 class="card-title">Editar Venta #<%= venta.idVenta %></h3>
+            </div>
+            <form action="/vendedor/ventas/editar/<%= venta.idVenta %>" method="POST">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6 form-group">
+                            <label>Cliente</label>
+                            <select name="cliente_id" class="form-control" required>
+                                <% clientes.forEach(c => { %>
+                                    <option value="<%= c.idCliente %>" <%= c.idCliente == venta.Cliente_idCliente ? 'selected' : '' %>>
+                                        <%= c.Nombre %>
+                                    </option>
+                                <% }) %>
+                            </select>
+                        </div>
+                        <div class="col-md-6 form-group">
+                            <label>Fecha de Venta</label>
+                            <input type="date" name="fecha_venta" class="form-control" 
+                                   value="<%= new Date(venta.Fecha_Venta).toISOString().split('T')[0] %>" required>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 form-group">
+                            <label>Precio Final</label>
+                            <input type="number" step="0.01" name="precio_final" class="form-control" 
+                                   value="<%= venta.Precio_Final %>" required>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <a href="/vendedor/ventas" class="btn btn-secondary">Cancelar</a>
+                    <button type="submit" class="btn btn-warning">Actualizar Venta</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+
+<%- include('../pie') %>
