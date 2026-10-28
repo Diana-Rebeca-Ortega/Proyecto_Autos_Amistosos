@@ -1,0 +1,20 @@
+﻿version: '3.8'
+
+services:
+  app:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      - PORT=3000
+    depends_on:
+      - mysql_db
+
+  mysql_db:
+    image: mysql:8.0
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: 1819diana
+      MYSQL_DATABASE: autos_amistosos
+    ports:
+      - "3306:3306"
