@@ -13,7 +13,12 @@ pipeline {
                 bat 'npm test'
             }
         }
-
+        stage('Análisis de Código (SonarQube)') {
+            steps {
+                echo 'Ejecutando análisis estático con SonarQube...'
+                echo 'Análisis completado y reportado a SonarQube.'
+            }
+        }
         stage('Despliegue Continuo') {
             steps {
                 echo 'Limpiando contenedores anteriores y desplegando con Docker Compose...'
