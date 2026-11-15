@@ -16,6 +16,7 @@ pipeline {
 
         stage('Despliegue Continuo') {
             steps {
+                
                 echo 'Iniciando el despliegue automático con Docker Compose...'
                 bat 'docker compose up -d --build'
             }
