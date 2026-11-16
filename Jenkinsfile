@@ -16,7 +16,7 @@ pipeline {
         stage('Análisis de Código (SonarQube)') {
             steps {
                 echo 'Ejecutando escaneo seguro con SonarQube...'
-                withCredentials([String(credentialsId: 'sonarkube', variable: 'SONAR_TOKEN')]) {
+                withCredentials([string(credentialsId: 'sonarkube', variable: 'SONAR_TOKEN')]) {
                     bat "sonar-scanner -Dsonar.host.url=http://localhost:9000 -Dsonar.token=${SONAR_TOKEN}"
                 }
             }
